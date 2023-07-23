@@ -1,0 +1,9 @@
+{
+  "name": "tfjs-webgpu Test",
+  "version": "1.0.0",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.7.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.7.0"
+  },
+  "type": "module"
+}
