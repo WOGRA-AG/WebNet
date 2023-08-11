@@ -24,7 +24,7 @@ async function performOperations(backend) {
     const ys = tf.tensor2d([-3, -1, 1, 3, 5, 7], [6, 1]);
 
     console.time(`Timer (${backend}): `);
-    await model.fit(xs, ys, { epochs: 250 });
+    await model.fit(xs, ys, { epochs: 250});
     console.timeEnd(`Timer (${backend}): `);
 
     const result = model.predict(tf.tensor2d([20], [1, 1])).dataSync();
