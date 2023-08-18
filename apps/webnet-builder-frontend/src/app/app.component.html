@@ -1,0 +1,20 @@
+<mat-sidenav-container class="" role="navigation">
+  <mat-sidenav class="site-navigation" mode="side" opened fixedInViewport>
+    <a [routerLink]="['/home']">
+      <div class="site-logo"><img src="assets/imgs/logo-with-text.png" alt="WebNet Builder logo"></div>
+    </a>
+    <mat-nav-list class="site-navigation-links">
+      <a mat-list-item [routerLink]="['/home']" routerLinkActive="active">Home</a>
+      <a mat-list-item [routerLink]="['/testing']" routerLinkActive="active">Testing</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      test
+    </mat-toolbar>
+    <div class="site-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

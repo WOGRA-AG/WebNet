@@ -1,0 +1,19 @@
+.site-content {
+  margin: 1rem;
+}
+
+.active {
+  background-color: orange;
+}
+
+.site-logo {
+  margin: 5px 5px 0 5px;
+}
+
+.site-navigation {
+  width: 12rem;
+
+  .site-navigation-links {
+    padding-top: 0;
+  }
+}
