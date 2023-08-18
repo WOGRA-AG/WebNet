@@ -43,7 +43,7 @@ export class MnistData {
         // Make a request for the MNIST sprited image.
         const img = new Image();
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', {willReadFrequently: true});
         const imgRequest = new Promise((resolve, reject) => {
             img.crossOrigin = '';
             img.onload = () => {

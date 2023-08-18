@@ -16,13 +16,55 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
 
   <!-- Import the data file -->
-  <script src="data.js" type="module"></script>
+  <script src="data.js" type="module" defer></script>
 
   <!-- Import the main script file -->
-  <script src="script.js" type="module"></script>
+  <script src="script.js" type="module" defer></script>
 
+  <style>
+    .backend-container {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+    }
+
+    .backend-container h3 {
+      margin: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .backend-stats ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .backend-stats li {
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 
 <body>
+<h2>MNIST Dataset Training</h2>
+<div class="backend-container">
+  <h3>WebGPU Backend</h3>
+  <button id="webgpu-button">Start WEB GPU Training</button>
+  <div class="backend-stats" id="webgpu-stats"></div>
+</div>
+
+<div class="backend-container">
+  <h3>WebGL Backend</h3>
+  <button id="webgl-button">Start WEB GL Training</button>
+  <div class="backend-stats" id="webgl-stats"></div>
+</div>
+
+<div class="backend-container">
+  <h3>CPU Backend</h3>
+  <button id="cpu-button">Start CPU Training</button>
+  <div class="backend-stats" id="cpu-stats"></div>
+</div>
 </body>
 </html>

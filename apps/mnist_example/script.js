@@ -1,9 +1,14 @@
 import {MnistData} from './data.js';
 
+const Backend = {
+    WEB_GPU: 'webgpu',
+    WEB_GL: 'webgl',
+    CPU: 'cpu'
+}
+
 async function showExamples(data) {
     // Create a container in the visor
-    const surface =
-        tfvis.visor().surface({ name: 'Input Data Examples', tab: 'Input Data'});
+    const surface = tfvis.visor().surface({name: 'Input Data Examples', tab: 'Input Data'});
 
     // Get the examples
     const examples = data.nextTestBatch(20);
@@ -29,28 +34,28 @@ async function showExamples(data) {
     }
 }
 
-async function run() {
-    const WEB_GPU = 'webgpu';
-    const WEB_GL = 'webgl';
-    const CPU = 'cpu';
-    const backend = WEB_GL;
-
+async function train(backend, data) {
     await tf.setBackend(backend);
     await tf.ready();
-
-    const data = new MnistData();
-    await data.load();
-    await showExamples(data);
-
+    const {BATCH_SIZE, trainXs, trainYs, testXs, testYs} = prepData(backend, data);
     const model = getModel();
-    tfvis.show.modelSummary({name: 'Model Architecture', tab: 'Model'}, model);
+    // tfvis.show.modelSummary({name: 'Model Architecture', tab: backend}, modelWebGPU);
 
-    console.time(`Timer (${backend}): `);
-    await train(model, data);
-    console.timeEnd(`Timer (${backend}): `);
-
-    await showAccuracy(model, data);
-    await showConfusion(model, data);
+    // const time = await tf.time(async () => await model.fit(trainXs, trainYs, {
+    //         batchSize: BATCH_SIZE, validationData: [testXs, testYs], epochs: 100, shuffle: true
+    //     }
+    //     // callbacks: fitCallbacks
+    // ));
+    const startTime = performance.now();
+    await model.fit(trainXs, trainYs, {
+            batchSize: BATCH_SIZE, validationData: [testXs, testYs], epochs: 100, shuffle: true            //, callbacks: fitCallbacks
+        }
+    )
+    const endTime = performance.now();
+    const totalTimeInMilliseconds = endTime - startTime;
+    // await showAccuracy(model, data, backend);
+    // await showConfusion(model, data, backend);
+    return totalTimeInMilliseconds;
 }
 
 function getModel() {
@@ -79,11 +84,7 @@ function getModel() {
     // Repeat another conv2d + maxPooling stack.
     // Note that we have more filters in the convolution.
     model.add(tf.layers.conv2d({
-        kernelSize: 5,
-        filters: 16,
-        strides: 1,
-        activation: 'relu',
-        kernelInitializer: 'varianceScaling'
+        kernelSize: 5, filters: 16, strides: 1, activation: 'relu', kernelInitializer: 'varianceScaling'
     }));
     model.add(tf.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
 
@@ -96,9 +97,7 @@ function getModel() {
     // output class (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, 9).
     const NUM_OUTPUT_CLASSES = 10;
     model.add(tf.layers.dense({
-        units: NUM_OUTPUT_CLASSES,
-        kernelInitializer: 'varianceScaling',
-        activation: 'softmax'
+        units: NUM_OUTPUT_CLASSES, kernelInitializer: 'varianceScaling', activation: 'softmax'
     }));
 
 
@@ -106,48 +105,33 @@ function getModel() {
     // then compile and return the model
     const optimizer = tf.train.adam();
     model.compile({
-        optimizer: optimizer,
-        loss: 'categoricalCrossentropy',
-        metrics: ['accuracy'],
+        optimizer: optimizer, loss: 'categoricalCrossentropy', metrics: ['accuracy'],
     });
 
     return model;
 }
 
-async function train(model, data) {
+function prepData(backend, data) {
     const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
-    const container = {
-        name: 'Model Training', tab: 'Model', styles: { height: '1000px' }
-    };
-    const fitCallbacks = tfvis.show.fitCallbacks(container, metrics);
+    // const container = {
+    //     name: 'Model Training', tab: backend, styles: {height: '1000px'}
+    // };
+    // const fitCallbacks = tfvis.show.fitCallbacks(container, metrics);
 
     const BATCH_SIZE = 512;
-    const TRAIN_DATA_SIZE = 5500;
+    const TRAIN_DATA_SIZE = 5000;
     const TEST_DATA_SIZE = 1000;
 
     const [trainXs, trainYs] = tf.tidy(() => {
         const d = data.nextTrainBatch(TRAIN_DATA_SIZE);
-        return [
-            d.xs.reshape([TRAIN_DATA_SIZE, 28, 28, 1]),
-            d.labels
-        ];
+        return [d.xs.reshape([TRAIN_DATA_SIZE, 28, 28, 1]), d.labels];
     });
 
     const [testXs, testYs] = tf.tidy(() => {
         const d = data.nextTestBatch(TEST_DATA_SIZE);
-        return [
-            d.xs.reshape([TEST_DATA_SIZE, 28, 28, 1]),
-            d.labels
-        ];
+        return [d.xs.reshape([TEST_DATA_SIZE, 28, 28, 1]), d.labels];
     });
-
-    return model.fit(trainXs, trainYs, {
-        batchSize: BATCH_SIZE,
-        validationData: [testXs, testYs],
-        epochs: 10,
-        shuffle: true,
-        callbacks: fitCallbacks
-    });
+    return {BATCH_SIZE, trainXs, trainYs, testXs, testYs};
 }
 
 function doPrediction(model, data, testDataSize = 500) {
@@ -163,24 +147,46 @@ function doPrediction(model, data, testDataSize = 500) {
 }
 
 
-async function showAccuracy(model, data) {
+async function showAccuracy(model, data, backend) {
     const [preds, labels] = doPrediction(model, data);
     const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
-    const container = {name: 'Accuracy', tab: 'Evaluation'};
+    const container = {name: 'Accuracy', tab: backend};
     tfvis.show.perClassAccuracy(container, classAccuracy, classNames);
 
     labels.dispose();
 }
 
-async function showConfusion(model, data) {
+async function showConfusion(model, data, backend) {
     const [preds, labels] = doPrediction(model, data);
     const confusionMatrix = await tfvis.metrics.confusionMatrix(labels, preds);
-    const container = {name: 'Confusion Matrix', tab: 'Evaluation'};
+    const container = {name: 'Confusion Matrix', tab: backend};
     tfvis.render.confusionMatrix(container, {values: confusionMatrix, tickLabels: classNames});
 
     labels.dispose();
 }
 
-const classNames = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-document.addEventListener('DOMContentLoaded', run);
+async function startTraining(backend) {
+    const data = new MnistData();
+    await data.load();
+    const time = await train(backend, data);
+    const statsContainer = document.getElementById(`${backend.toLowerCase()}-stats`);
+    const minutes = Math.floor(time / 60000);
+    const seconds = ((time % 60000) / 1000).toFixed(0);
+    statsContainer.innerHTML = `
+    <h2>Performance</h2>
+    <ul>
+    <li>Total Training Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}</li>
+      // <li>kernelMs: ${time.kernelMs}</li>
+      // <li>wallTimeMs: ${time.wallMs}</li>
+      // <li>uploadWaitMs: ${time.uploadWaitMs}</li>
+      // <li>downloadWaitMs: ${time.downloadWaitMs}</li>
+    </ul>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('webgpu-button').addEventListener('click', () => startTraining(Backend.WEB_GPU));
+    document.getElementById('webgl-button').addEventListener('click', () => startTraining(Backend.WEB_GL));
+    document.getElementById('cpu-button').addEventListener('click', () => startTraining(Backend.CPU));
+});
 
