@@ -4,7 +4,7 @@
       <div class="site-logo"><img src="assets/imgs/logo-with-text.png" alt="WebNet Builder logo"></div>
     </a>
     <mat-nav-list class="site-navigation-links">
-      <a mat-list-item [routerLink]="['/home']" routerLinkActive="active">Home</a>
+      <a mat-list-item [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
       <a mat-list-item [routerLink]="['/testing']" routerLinkActive="active">Testing</a>
     </mat-nav-list>
   </mat-sidenav>
