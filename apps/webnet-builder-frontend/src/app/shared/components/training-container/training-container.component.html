@@ -1,0 +1,22 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-subtitle>Backend</mat-card-subtitle>
+    <mat-card-title>{{backend}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngIf="!trainingDone && !trainingInProgress">No Run yet done...</mat-list-item>
+      <mat-list-item role="listitem" *ngIf="trainingInProgress">Training in Progress...</mat-list-item>
+      <mat-list-item *ngIf="trainingDone" role="listitem">Total Training Time: {{ trainingTime | date:'mm:ss'}}
+        minutes
+      </mat-list-item>
+    </mat-list>
+    <mat-divider></mat-divider>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="startTraining()">Start Training</button>
+  </mat-card-actions>
+  <mat-card-footer>
+    <mat-progress-bar *ngIf="trainingInProgress" mode="indeterminate"></mat-progress-bar>
+  </mat-card-footer>
+</mat-card>

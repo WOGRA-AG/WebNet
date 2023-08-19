@@ -1,0 +1,10 @@
+.backends-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.card-wrapper {
+  flex-basis: calc(33.33% - 20px);
+  margin: 1rem;
+}

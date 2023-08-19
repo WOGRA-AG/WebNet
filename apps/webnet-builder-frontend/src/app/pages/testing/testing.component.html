@@ -1,1 +1,15 @@
-<p>testing works!</p>
+<h1>Performance</h1>
+<p>
+  Measure the performance of different backends for different neural network examples.
+</p>
+<mat-tab-group>
+  <mat-tab label="MNIST CNN Example" >
+    <div class="backends-container">
+    <div *ngFor="let backend of backends" class="card-wrapper" style="display: inline-block;">
+      <app-training-container [backend]="backend"></app-training-container>
+    </div>
+  </div>
+  </mat-tab>
+  <mat-tab label="Second"> Content 2</mat-tab>
+  <mat-tab label="Third"> Content 3</mat-tab>
+</mat-tab-group>
