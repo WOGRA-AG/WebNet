@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@tensorflow/tfjs": "^4.10.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.10.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.10.0",
     "@tensorflow/tfjs-vis": "^1.1.0",
     "rxjs": "~7.8.0",

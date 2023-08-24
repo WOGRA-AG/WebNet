@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {MnistDataService} from "../../../core/services/mnist-data.service";
 import * as tf from "@tensorflow/tfjs";
 import '@tensorflow/tfjs-backend-webgpu';
+import '@tensorflow/tfjs-backend-wasm';
 
 @Component({
   selector: 'app-training-container',
@@ -88,7 +89,7 @@ export class TrainingContainerComponent {
   prepData() {
     const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
 
-    const BATCH_SIZE = 512;
+    const BATCH_SIZE = 1024;
     const TRAIN_DATA_SIZE = 5000;
     const TEST_DATA_SIZE = 1000;
 

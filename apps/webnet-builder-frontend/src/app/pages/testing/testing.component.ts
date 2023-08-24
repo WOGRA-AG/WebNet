@@ -8,6 +8,6 @@ import {Backend} from "../../core/enums";
   styleUrls: ['./testing.component.scss']
 })
 export class TestingComponent {
-  backends: string[] = [Backend.WEB_GPU, Backend.WEB_GL, Backend.CPU];
+  backends: string[] = [Backend.WEB_GPU, Backend.WEB_GL, Backend.WEB_ASSEMBLY, Backend.CPU];
 
 }
