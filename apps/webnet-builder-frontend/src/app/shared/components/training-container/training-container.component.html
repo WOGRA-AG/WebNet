@@ -6,17 +6,24 @@
   <mat-card-content>
     <mat-list role="list">
       <mat-list-item role="listitem" *ngIf="!trainingDone && !trainingInProgress">No Run yet done...</mat-list-item>
-      <mat-list-item role="listitem" *ngIf="trainingInProgress">Training in Progress...</mat-list-item>
-      <mat-list-item *ngIf="trainingDone" role="listitem">Total Training Time: {{ trainingTime | date:'mm:ss'}}
-        minutes
+      <ng-container *ngIf="trainingInProgress || trainingDone">
+        <mat-list-item role="listitem">Epoch: {{ stats.epoch}}</mat-list-item>
+        <mat-list-item role="listitem">Batch: {{ stats.batch}}</mat-list-item>
+        <mat-list-item role="listitem">Accuracy: {{ stats.accuracy | number:'1.1-2'}}</mat-list-item>
+        <mat-list-item role="listitem">Loss: {{ stats.loss | number:'1.1-2'}}</mat-list-item>
+      </ng-container>
+      <mat-list-item *ngIf="trainingDone" role="listitem">
+        Training Time: {{ trainingTime | date:'mm:ss'}} min
       </mat-list-item>
     </mat-list>
     <mat-divider></mat-divider>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="startTraining()">Start Training</button>
+    <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="startTraining()">Start Training</button>
+    <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training</button>
   </mat-card-actions>
-  <mat-card-footer>
-    <mat-progress-bar *ngIf="trainingInProgress" mode="indeterminate"></mat-progress-bar>
+  <mat-card-footer *ngIf="trainingInProgress">
+    <span>{{stats.progress | number:'1.1-1'}}%</span>
+    <mat-progress-bar mode="determinate" value="{{stats.progress}}"></mat-progress-bar>
   </mat-card-footer>
 </mat-card>

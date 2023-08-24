@@ -5,6 +5,7 @@
   flex-direction: row;
 }
 .card-wrapper {
+  display: inline-block;
   flex-basis: calc(33.33% - 20px);
   margin: 1rem;
 }
