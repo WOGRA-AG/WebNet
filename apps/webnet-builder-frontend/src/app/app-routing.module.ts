@@ -6,7 +6,7 @@ import {TestingComponent} from "./pages/testing/testing.component";
 const routes: Routes = [
   {path: '', component: HomeComponent, pathMatch: 'full'},
   {path: 'home',  redirectTo: '', pathMatch: 'full'},
-  {path: 'testing', component: TestingComponent, pathMatch:'full'},
+  {path: 'testing', component: TestingComponent, pathMatch:'full', data: { pageTitle: 'Performance Tests' }},
   {path: '**', redirectTo:''}
 ];
 

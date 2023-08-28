@@ -1,40 +1,73 @@
-<h1>Performance</h1>
 <p>
   Measure the performance of different backends for different neural network examples.
 </p>
-<mat-tab-group>
-  <ng-container *ngFor="let example of trainingExample;">
-    <mat-tab label="{{example}}">
-      <div class="tab-content">
-        <form class="hyperparameter-container" [formGroup]="hyperparameterForm">
-<!--          <mat-form-field>-->
-<!--            <mat-label>Select an option</mat-label>-->
-<!--            <mat-select [(value)]="selected" formControlName="options">-->
-<!--              <mat-option>None</mat-option>-->
-<!--              <mat-option value="option1">Option 1</mat-option>-->
-<!--              <mat-option value="option2">Option 2</mat-option>-->
-<!--              <mat-option value="option3">Option 3</mat-option>-->
-<!--            </mat-select>-->
-<!--          </mat-form-field>-->
-          <mat-form-field>
-            <mat-label>Training Data Samples</mat-label>
-            <input matInput formControlName="trainDataSize" placeholder="Training Data Samples" type="number">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Epochs</mat-label>
-            <input matInput formControlName="epochs" placeholder="Epochs" type="number">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Batch Size</mat-label>
-            <input matInput formControlName="batchSize" placeholder="Batch Size" type="number">
-          </mat-form-field>
-        </form>
-        <div class="backends-container">
-          <div *ngFor="let backend of backends" class="card-wrapper">
-            <app-training-container [backend]="backend" [trainingExample]="example" [hyperparameter]="hyperparameterForm.value"></app-training-container>
-          </div>
-        </div>
+<div class="testing-content">
+  <form class="hyperparameter-container" [formGroup]="hyperParameter">
+    <mat-form-field>
+      <mat-label>Select an Example</mat-label>
+      <mat-select formControlName="example">
+        <mat-option value="mnist">MNIST CNN</mat-option>
+        <mat-option value="text">Text?</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Select an Backend</mat-label>
+      <mat-select formControlName="backend">
+        <mat-option value="webgpu">Web GPU</mat-option>
+        <mat-option value="webgl">Web GL</mat-option>
+        <mat-option value="wasm">Web Assembly</mat-option>
+        <mat-option value="cpu">CPU</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Training Data Samples</mat-label>
+      <input matInput formControlName="trainDataSize" placeholder="Training Data Samples" type="number">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Epochs</mat-label>
+      <input matInput formControlName="epochs" placeholder="Epochs" type="number">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Batch Size</mat-label>
+      <input matInput formControlName="batchSize" placeholder="Batch Size" type="number">
+    </mat-form-field>
+  </form>
+  <div class="button-container">
+    <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="startTraining()">Start
+      Training
+    </button>
+    <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training
+    </button>
+  </div>
+  <div class="current-training-container" *ngIf="trainingInProgress">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Training in Progress</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list role="list">
+          <mat-list-item role="listitem">Epoch: {{ trainingStats.epoch}}</mat-list-item>
+          <mat-list-item role="listitem">Batch: {{ trainingStats.batch}}</mat-list-item>
+          <mat-list-item role="listitem">Accuracy: {{ trainingStats.accuracy | number:'1.1-2'}}</mat-list-item>
+          <mat-list-item role="listitem">Loss: {{ trainingStats.loss | number:'1.1-2'}}</mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+      </mat-card-content>
+      <mat-card-footer *ngIf="trainingInProgress">
+        <span>{{trainingStats.progress | number:'1.1-1'}}%</span>
+        <mat-progress-bar mode="determinate" value="{{trainingStats.progress}}"></mat-progress-bar>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="history-container" *ngIf="trainingHistory.length > 0">
+    <h2>History:</h2>
+    <div class="trainings-container">
+      <div class="card-wrapper" *ngFor="let stats of trainingHistory.slice().reverse(); let indexOfElement=index;">
+        <app-training-container [stats]="stats"
+                                [historyIndex]="trainingHistory.length - indexOfElement"></app-training-container>
       </div>
-    </mat-tab>
-  </ng-container>
-</mat-tab-group>
+    </div>
+  </div>
+</div>
+

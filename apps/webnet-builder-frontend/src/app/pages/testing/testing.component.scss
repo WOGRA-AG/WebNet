@@ -1,13 +1,30 @@
-.backends-container {
+.trainings-container {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   flex-direction: row;
+  margin-top: 1rem;
+  flex-wrap: wrap;
 }
+
+mat-divider {
+  margin: 1rem 0 1rem 0;
+}
+
 .card-wrapper {
-  display: inline-block;
-  flex-basis: calc(33.33% - 20px);
+  margin: 5px;
 }
-.tab-content {
-  margin: 1rem;
+.testing-content {
+  margin: 1rem 0 1rem 0;
+}
+
+.history-container {
+  margin-top: 1rem;
+}
+.button-container {
+  margin-bottom: 1rem;
+}
+
+.mat-mdc-list-item {
+  height: 24px;
+  padding: 4px;
 }

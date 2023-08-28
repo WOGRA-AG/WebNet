@@ -6,6 +6,6 @@ export enum Backend {
 }
 
 export enum TrainingExample {
-  MNIST="MNIST CNN Example!",
-  TEXT="Text Recognition Example!"
+  MNIST="mnist",
+  TEXT="text"
 }
