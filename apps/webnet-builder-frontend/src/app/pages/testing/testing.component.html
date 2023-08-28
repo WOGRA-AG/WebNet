@@ -5,9 +5,34 @@
 <mat-tab-group>
   <ng-container *ngFor="let example of trainingExample;">
     <mat-tab label="{{example}}">
-      <div class="backends-container">
-        <div *ngFor="let backend of backends" class="card-wrapper">
-          <app-training-container [backend]="backend" [trainingExample]="example"></app-training-container>
+      <div class="tab-content">
+        <form class="hyperparameter-container" [formGroup]="hyperparameterForm">
+<!--          <mat-form-field>-->
+<!--            <mat-label>Select an option</mat-label>-->
+<!--            <mat-select [(value)]="selected" formControlName="options">-->
+<!--              <mat-option>None</mat-option>-->
+<!--              <mat-option value="option1">Option 1</mat-option>-->
+<!--              <mat-option value="option2">Option 2</mat-option>-->
+<!--              <mat-option value="option3">Option 3</mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+          <mat-form-field>
+            <mat-label>Training Data Samples</mat-label>
+            <input matInput formControlName="trainDataSize" placeholder="Training Data Samples" type="number">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Epochs</mat-label>
+            <input matInput formControlName="epochs" placeholder="Epochs" type="number">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Batch Size</mat-label>
+            <input matInput formControlName="batchSize" placeholder="Batch Size" type="number">
+          </mat-form-field>
+        </form>
+        <div class="backends-container">
+          <div *ngFor="let backend of backends" class="card-wrapper">
+            <app-training-container [backend]="backend" [trainingExample]="example" [hyperparameter]="hyperparameterForm.value"></app-training-container>
+          </div>
         </div>
       </div>
     </mat-tab>

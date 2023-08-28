@@ -30,8 +30,8 @@ export class ModelWrapperService {
     return this.getService(trainingExample).nextBatch(batchSize, data, index);
   }
 
-  prepData(trainingExample: string) {
-    return this.getService(trainingExample).prepData();
+  prepData(trainingExample: string, trainDataSize: number) {
+    return this.getService(trainingExample).prepData(trainDataSize);
   }
 
   getService(trainingExample: string) {

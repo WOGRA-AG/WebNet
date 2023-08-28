@@ -7,6 +7,9 @@
     <mat-list role="list">
       <mat-list-item role="listitem" *ngIf="!trainingDone && !trainingInProgress">No Run yet done...</mat-list-item>
       <ng-container *ngIf="trainingInProgress || trainingDone">
+        <mat-list-item role="listitem">Trainings Samples:{{ hyperparameter.trainDataSize }} |
+          Epochs: {{ hyperparameter.epochs }} |
+          Batch Size: {{ hyperparameter.batchSize }}</mat-list-item>
         <mat-list-item role="listitem">Epoch: {{ stats.epoch}}</mat-list-item>
         <mat-list-item role="listitem">Batch: {{ stats.batch}}</mat-list-item>
         <mat-list-item role="listitem">Accuracy: {{ stats.accuracy | number:'1.1-2'}}</mat-list-item>

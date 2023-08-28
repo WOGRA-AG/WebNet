@@ -186,23 +186,20 @@ export class MnistDataService {
     return {xs, labels};
   }
 
-  prepData() {
+  prepData(trainDataSize: number) {
     const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
-
-    const BATCH_SIZE = 1024;
-    const TRAIN_DATA_SIZE = 5000;
     const TEST_DATA_SIZE = 1000;
 
     const [trainXs, trainYs] = tf.tidy(() => {
-      const d = this.nextTrainBatch(TRAIN_DATA_SIZE);
-      return [d.xs.reshape([TRAIN_DATA_SIZE, 28, 28, 1]), d.labels];
+      const d = this.nextTrainBatch(trainDataSize);
+      return [d.xs.reshape([trainDataSize, 28, 28, 1]), d.labels];
     });
 
     const [testXs, testYs] = tf.tidy(() => {
       const d = this.nextTestBatch(TEST_DATA_SIZE);
       return [d.xs.reshape([TEST_DATA_SIZE, 28, 28, 1]), d.labels];
     });
-    return {BATCH_SIZE, trainXs, trainYs, testXs, testYs};
+    return {trainXs, trainYs, testXs, testYs};
   }
 
 }

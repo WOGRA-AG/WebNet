@@ -5,6 +5,7 @@ import '@tensorflow/tfjs-backend-webgpu';
 import '@tensorflow/tfjs-backend-wasm';
 import {Logs} from "@tensorflow/tfjs";
 import {ModelWrapperService} from "../../../core/services/model-wrapper.service";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-training-container',
@@ -14,6 +15,8 @@ import {ModelWrapperService} from "../../../core/services/model-wrapper.service"
 export class TrainingContainerComponent {
   @Input({required: true}) backend!: string;
   @Input({required: true}) trainingExample!: string;
+  @Input({required: true}) hyperparameter!: any;
+
   trainingTime: number = 0;
   trainingInProgress: boolean = false;
   trainingDone: boolean = false;
@@ -27,11 +30,11 @@ export class TrainingContainerComponent {
   }
 
   async train() {
-    const EPOCHS = 100;
-    const {BATCH_SIZE, trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(this.trainingExample);
+    console.log(this.hyperparameter);
+    const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(this.trainingExample, this.hyperparameter.batchSize);
     const model = this.modelWrapperService.getModel(this.trainingExample);
-    const NumBatchesInEpoch = Math.ceil(trainXs.shape[0]  / BATCH_SIZE);
-    const totalNumBatches = NumBatchesInEpoch * EPOCHS;
+    const NumBatchesInEpoch = Math.ceil(trainXs.shape[0]  / this.hyperparameter.batchSize);
+    const totalNumBatches = NumBatchesInEpoch * this.hyperparameter.epochs;
     const fitCallback = {
       onTrainBegin: async (logs?: Logs) => {
         // console.log("Training begins...");
@@ -77,7 +80,7 @@ export class TrainingContainerComponent {
     }
     const startTime = performance.now();
     const h = await model.fit(trainXs, trainYs, {
-        batchSize: BATCH_SIZE, validationData: [testXs, testYs], epochs: EPOCHS, shuffle: true, callbacks: fitCallback}
+        batchSize: this.hyperparameter.batchSize, validationData: [testXs, testYs], epochs: this.hyperparameter.epochs, shuffle: true, callbacks: fitCallback}
     )
     const endTime = performance.now();
     const totalTimeInMilliseconds = endTime - startTime;
