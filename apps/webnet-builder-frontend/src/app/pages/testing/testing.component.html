@@ -39,6 +39,7 @@
     <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training
     </button>
   </div>
+  <div #modelSummaryContainer></div>
   <div class="current-training-container" *ngIf="trainingInProgress">
     <mat-card>
       <mat-card-header>
@@ -70,4 +71,3 @@
     </div>
   </div>
 </div>
-

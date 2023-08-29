@@ -1,12 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Backend, TrainingExample} from "../../core/enums";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MnistDataService} from "../../core/services/mnist-data.service";
 import {ModelWrapperService} from "../../core/services/model-wrapper.service";
-import {TrainingInfo, TrainingStats} from "../../core/interfaces";
+import {TrainingStats} from "../../core/interfaces";
 import * as tf from "@tensorflow/tfjs";
-import {Logs} from "@tensorflow/tfjs";
-import {cloneObject} from "../../shared/helperfunctions";
+import * as tfvis from '@tensorflow/tfjs-vis';
+import {cloneObject} from "../../shared/utils";
 
 
 @Component({
@@ -32,8 +32,21 @@ export class TestingComponent {
     }
   };
   trainingHistory: TrainingStats[] = [];
+  @ViewChild('modelSummaryContainer', { static: false }) modelSummaryContainer!: ElementRef;
 
   constructor(private mnistDataService: MnistDataService, private modelWrapperService: ModelWrapperService) {
+  }
+
+  async ngOnInit() {
+    await this.initBackend()
+    const model = this.modelWrapperService.getModel(this.hyperParameter.get('example')?.value!);
+    if (model) {
+      tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
+      const tableElement = this.modelSummaryContainer.nativeElement.querySelector('table');
+      if (tableElement) {
+        tableElement.style.margin = '0';
+      }
+    }
   }
 
   async initBackend() {
@@ -46,7 +59,6 @@ export class TestingComponent {
 
   async startTraining() {
     await this.modelWrapperService.load(this.hyperParameter.get('example')?.value!);
-    await this.initBackend()
     this.trainingStats.trainingTime = await this.train();
     this.trainingHistory.push(cloneObject(this.trainingStats));
   }
@@ -56,52 +68,48 @@ export class TestingComponent {
   }
 
   async train() {
-    const example = this.hyperParameter.get('example')?.value!;
-    const backend = this.hyperParameter.get('backend')?.value!;
-    const batchSize = this.hyperParameter.get('batchSize')?.value!;
-    const epochs = this.hyperParameter.get('epochs')?.value!;
-    const sampleSize = this.hyperParameter.get('trainDataSize')?.value!;
-    this.trainingStats.trainingInfo.example = example;
-    this.trainingStats.trainingInfo.backend = backend;
-    this.trainingStats.trainingInfo.batchSize = batchSize;
-    this.trainingStats.trainingInfo.epochs = epochs;
-    this.trainingStats.trainingInfo.sampleSize = sampleSize;
+    const { example, backend, batchSize, epochs, trainDataSize } = this.hyperParameter.value;
+    this.trainingStats.trainingInfo.example = example!;
+    this.trainingStats.trainingInfo.backend = backend!;
+    this.trainingStats.trainingInfo.batchSize = batchSize!;
+    this.trainingStats.trainingInfo.epochs = epochs!;
+    this.trainingStats.trainingInfo.sampleSize = trainDataSize!;
 
-    const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(example, batchSize);
-    const model = this.modelWrapperService.getModel(example);
-    const NumBatchesInEpoch = Math.ceil(trainXs.shape[0] / batchSize);
-    const totalNumBatches = NumBatchesInEpoch * epochs;
+    const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(example!, batchSize!)!;
+    const model = this.modelWrapperService.getModel(example!);
+    const NumBatchesInEpoch = Math.ceil(trainXs.shape[0] / batchSize!);
+    const totalNumBatches = NumBatchesInEpoch * epochs!;
     const fitCallback = {
-      onTrainBegin: async (logs?: Logs) => {
+      onTrainBegin: async (logs?: tf.Logs) => {
         this.trainingInProgress = true;
       },
-      onTrainEnd: async (logs?: Logs) => {
+      onTrainEnd: async (logs?: tf.Logs) => {
         this.trainingInProgress = false;
         this.trainingDone = true;
       },
-      onEpochBegin: async (epoch: number, logs?: Logs) => {
+      onEpochBegin: async (epoch: number, logs?: tf.Logs) => {
         this.trainingStats.epoch = epoch;
       },
-      onEpochEnd: async (epoch: number, logs?: Logs) => {
+      onEpochEnd: async (epoch: number, logs?: tf.Logs) => {
         this.trainingStats.accuracy = logs!['acc'];
         this.trainingStats.loss = logs!['loss'];
       },
-      onBatchBegin: async (batch: number, logs?: Logs) => {
+      onBatchBegin: async (batch: number, logs?: tf.Logs) => {
         this.trainingStats.batch = batch;
       },
-      onBatchEnd: async (batch: number, logs?: Logs) => {
+      onBatchEnd: async (batch: number, logs?: tf.Logs) => {
         this.trainingStats.progress = (this.trainingStats.epoch * NumBatchesInEpoch + batch) / totalNumBatches * 100;
         this.trainingStats.accuracy = logs!['acc'];
         this.trainingStats.loss = logs!['loss'];
       },
-      onYield: async (epoch: number, batch: number, logs?: Logs) => {
-        model.stopTraining = this.stopTrainingFlag;
+      onYield: async (epoch: number, batch: number, logs?: tf.Logs) => {
+        model!.stopTraining = this.stopTrainingFlag;
         this.stopTrainingFlag = false;
       }
     }
     const startTime = performance.now();
-    const h = await model.fit(trainXs, trainYs, {
-        batchSize: batchSize, validationData: [testXs, testYs], epochs: epochs, shuffle: true, callbacks: fitCallback
+    const h = await model?.fit(trainXs, trainYs, {
+        batchSize: batchSize!, validationData: [testXs, testYs], epochs: epochs!, shuffle: true, callbacks: fitCallback
       }
     )
     const endTime = performance.now();

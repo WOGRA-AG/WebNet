@@ -11,33 +11,35 @@ export class ModelWrapperService {
   }
 
   getModel(trainingExample: string) {
-    return this.getService(trainingExample).getModel();
+    return this.getService(trainingExample)?.getModel();
   }
 
   async load(trainingExample: string) {
-    await this.getService(trainingExample).load();
+    await this.getService(trainingExample)?.load();
   }
 
   nextTrainBatch(batchSize: number, trainingExample: string) {
-    return this.getService(trainingExample).nextTrainBatch(batchSize);
+    return this.getService(trainingExample)?.nextTrainBatch(batchSize);
   }
 
   nextTestBatch(batchSize: number, trainingExample: string) {
-    return this.getService(trainingExample).nextTestBatch(batchSize);
+    return this.getService(trainingExample)?.nextTestBatch(batchSize);
   }
 
   nextBatch(batchSize: number, data: any, index: CallableFunction, trainingExample: string) {
-    return this.getService(trainingExample).nextBatch(batchSize, data, index);
+    return this.getService(trainingExample)?.nextBatch(batchSize, data, index);
   }
 
   prepData(trainingExample: string, trainDataSize: number) {
-    return this.getService(trainingExample).prepData(trainDataSize);
+    return this.getService(trainingExample)?.prepData(trainDataSize);
   }
 
   getService(trainingExample: string) {
     switch (trainingExample) {
       case TrainingExample.MNIST:
         return this.mnistDataService;
+      default:
+        return null;
     }
     return this.mnistDataService;
   }

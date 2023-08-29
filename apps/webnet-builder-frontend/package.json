@@ -26,6 +26,7 @@
     "@tensorflow/tfjs-vis": "^1.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "vega-lib": "^4.4.0",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

@@ -9,13 +9,15 @@ import { HomeComponent } from './pages/home/home.component';
 import { TestingComponent } from './pages/testing/testing.component';
 import { TrainingContainerComponent } from './shared/components/training-container/training-container.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     TestingComponent,
-    TrainingContainerComponent
+    TrainingContainerComponent,
+    NnBuilderComponent
   ],
   imports: [
     BrowserModule,
