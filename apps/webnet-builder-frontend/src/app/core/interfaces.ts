@@ -16,3 +16,7 @@ export interface TrainingInfo {
   sampleSize: number,
 }
 
+export interface XY {
+  x: number,
+  y: number
+}

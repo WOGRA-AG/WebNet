@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@svgdotjs/svg.draggable.js": "^3.0.3",
+    "@svgdotjs/svg.js": "^3.2.0",
     "@tensorflow/tfjs": "^4.10.0",
     "@tensorflow/tfjs-backend-wasm": "^4.10.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.10.0",
