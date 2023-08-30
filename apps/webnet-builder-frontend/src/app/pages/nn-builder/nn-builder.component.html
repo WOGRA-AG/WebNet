@@ -2,3 +2,10 @@
   Flatten Layer
 </button>
 <div id="svg-container"></div>
+<div id="layer-list">
+  <mat-list>
+    <mat-list-item *ngFor="let layer of elementList;">
+      {{ layer.getLayerName() }}
+    </mat-list-item>
+  </mat-list>
+</div>

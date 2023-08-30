@@ -9,5 +9,4 @@ export class Flatten extends Layer {
     super({layerName: "Flatten", color: "green"} );
   }
 
-
 }

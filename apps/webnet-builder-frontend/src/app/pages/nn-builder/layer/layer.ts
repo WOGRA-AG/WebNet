@@ -53,4 +53,7 @@ export class Layer {
     this.svgElement.forward();
   }
 
+  public getLayerName() {
+    return this.layerName;
+  }
 }
