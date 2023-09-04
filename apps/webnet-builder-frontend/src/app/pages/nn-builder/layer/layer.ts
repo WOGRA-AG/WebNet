@@ -1,7 +1,7 @@
 import {XY} from "../../../core/interfaces";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import * as tf from "@tensorflow/tfjs";
+import {ModelBuilderService} from "../../../core/services/model-builder.service";
 
 export class Layer {
   svgElement: Selection<any, any, any, any>;
@@ -15,7 +15,7 @@ export class Layer {
   protected width: number;
   protected height: number;
   protected color: string;
-  protected dragColor: string;
+  protected fillColor: string;
   protected namePos: XY;
 
   // todo:
@@ -25,33 +25,36 @@ export class Layer {
     {
       layerName = 'layer',
       position = {x: 50, y: 50},
-      dragColor = 'black',
+      color = 'black',
       namePos = {x: 0, y: -15},
       width = 20,
       height = 100,
-      color = 'white'
-    }) {
+      fillColor = 'black'
+    }, private modelBuilderService: ModelBuilderService) {
     this.tfjsLayer = tfjsLayer;
     this.layerName = layerName;
     this.position = position;
     this.width = width;
     this.height = height;
+    this.fillColor = fillColor;
     this.color = color;
-    this.dragColor = dragColor;
     this.namePos = namePos;
 
     // todo:
     // anchor?
 
-    const layerGrp: Selection<any, any, any, any> = d3.select("#svg-container").append('g')
+    const layerGrp: Selection<any, any, any, any> = d3.select("#svg-container")
+      .append('g')
+      .classed('layerGroup', true)
+      .attr('stroke', this.color)
+      .attr('fill', this.fillColor);
 
     layerGrp.append('rect')
       .attr('x', this.position.x)
       .attr('y', this.position.y)
       .attr('width', this.width)
       .attr('height', this.height)
-      .attr('stroke', 'black')
-      .attr('fill', this.color);
+
 
     layerGrp.append('text')
       .attr('x', this.position.y - 10)
@@ -62,7 +65,7 @@ export class Layer {
       .on("start", (event: any) => this.dragStarted(event))
       .on("drag", (event: any) => this.dragging(event))
       .on("end", (event: any) => this.dragEnded(event)))
-      .on("click", (event: any) => console.log(event));
+      .on("click", (event: any) => this.selected(event));
 
     this.svgElement = layerGrp;
   }
@@ -75,21 +78,21 @@ export class Layer {
     return this.tfjsLayer;
   }
 
-  dragStarted(event: any) {
-    console.log(event);
-    console.log("DRAG STARTED");
+  selected(event: any) {
+    event.stopPropagation();
+    this.modelBuilderService.selectedLayerSubject.next(this);
+    this.svgElement.attr('stroke', 'green');
   }
 
-  test(event: any) {
-    console.log(event);
-    console.log("DRAG STARTED");
+  unselect() {
+    this.svgElement.attr('stroke', this.color);
   }
+
+  dragStarted(event: any) {}
 
   dragging(event: any) {
     this.svgElement.attr("transform", `translate(${event.x},${event.y})`);
   }
 
-  dragEnded(event: any) {
-    console.log("DRAG ENDED");
-  }
+  dragEnded(event: any) {}
 }
