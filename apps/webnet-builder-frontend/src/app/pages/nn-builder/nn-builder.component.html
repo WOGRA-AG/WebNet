@@ -1,16 +1,20 @@
-<button mat-raised-button color="primary" (click)="createLayer('flatten')">
-  Flatten Layer
-</button>
-<button mat-raised-button color="primary" (click)="createLayer('dense')">
-  Dense Layer
-</button>
-<svg id="svg-container"></svg>
-<div id="layer-list">
-  <mat-list>
-<!--    <mat-list-item *ngFor="let layer of elementList;">-->
-<!--      {{ layer.getLayerName() }}-->
-<!--    </mat-list-item>-->
-  </mat-list>
+<div>
+  <button mat-raised-button color="primary" (click)="createLayer('flatten')">
+    Flatten Layer
+  </button>
+  <button mat-raised-button color="primary" (click)="createLayer('dense')">
+    Dense Layer
+  </button>
+</div>
+<div>
+  <svg id="svg-container"></svg>
+  <div id="layer-list">
+    <mat-list>
+      <!--    <mat-list-item *ngFor="let layer of elementList;">-->
+      <!--      {{ layer.getLayerName() }}-->
+      <!--    </mat-list-item>-->
+    </mat-list>
+  </div>
 </div>
 <button mat-raised-button color="warn" (click)="printModelSummary()">
   Print Model Summary
