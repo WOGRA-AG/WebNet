@@ -1,5 +1,12 @@
 #svg-container {
   height: 500px;
-  width: 800px;
+  width: 1000px;
   border: 1px solid black;
+  margin-right: 20px;
+  //flex: 1;
+}
+
+.ui-container {
+  display: flex;
+  flex-direction: row;
 }

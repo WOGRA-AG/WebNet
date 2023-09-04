@@ -10,6 +10,7 @@ import { TestingComponent } from './pages/testing/testing.component';
 import { TrainingContainerComponent } from './shared/components/training-container/training-container.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
+import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-form/dynamic-layer-form.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
     HomeComponent,
     TestingComponent,
     TrainingContainerComponent,
-    NnBuilderComponent
+    NnBuilderComponent,
+    DynamicLayerFormComponent
   ],
   imports: [
     BrowserModule,

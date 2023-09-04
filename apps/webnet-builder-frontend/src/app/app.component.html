@@ -1,21 +1,40 @@
-<mat-sidenav-container role="navigation">
-  <mat-sidenav class="site-navigation" mode="side" opened fixedInViewport>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
     <a [routerLink]="['/home']">
       <div class="site-logo"><img src="assets/imgs/logo-with-text.png" alt="WebNet Builder logo"></div>
     </a>
-    <mat-nav-list class="site-navigation-links">
-      <a mat-list-item [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-      <a mat-list-item [routerLink]="['/testing']" routerLinkActive="active">Testing</a>
-      <a mat-list-item [routerLink]="['/builder']" routerLinkActive="active">Builder</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      {{getPageTitle()}}
-    </mat-toolbar>
-    <div class="site-content">
-      <router-outlet></router-outlet>
+    <span class="menu-spacer"></span>
+    <div>
+      <a mat-button [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a mat-button [routerLink]="['/testing']" routerLinkActive="active">Testing</a>
+      <a mat-button [routerLink]="['/builder']" routerLinkActive="active">Builder</a>
     </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <span style="font-size: 12px;">{{getPageDesciption()}}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="site-content">
+  <router-outlet></router-outlet>
+</div>
+<!--<mat-sidenav-container role="navigation" color="primary">-->
+<!--  <mat-sidenav class="site-navigation" mode="side" opened fixedInViewport>-->
+<!--    <a [routerLink]="['/home']">-->
+<!--      <div class="site-logo"><img src="assets/imgs/logo-with-text.png" alt="WebNet Builder logo"></div>-->
+<!--    </a>-->
+<!--    <mat-nav-list class="site-navigation-links">-->
+<!--      <a mat-list-item [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>-->
+<!--      <a mat-list-item [routerLink]="['/testing']" routerLinkActive="active">Testing</a>-->
+<!--      <a mat-list-item [routerLink]="['/builder']" routerLinkActive="active">Builder</a>-->
+<!--    </mat-nav-list>-->
+<!--  </mat-sidenav>-->
+<!--  <mat-sidenav-content>-->
+<!--&lt;!&ndash;    <mat-toolbar color="primary">&ndash;&gt;-->
+<!--&lt;!&ndash;      {{getPageTitle()}}&ndash;&gt;-->
+<!--&lt;!&ndash;    </mat-toolbar>&ndash;&gt;-->
+<!--    <div class="site-content">-->
+<!--      <router-outlet></router-outlet>-->
+<!--    </div>-->
+<!--  </mat-sidenav-content>-->
+<!--</mat-sidenav-container>-->
 

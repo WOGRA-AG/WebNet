@@ -25,4 +25,19 @@ export class AppComponent {
       return pathSegments.join(' / ');
     }
   }
+
+  getPageDesciption(): string {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+
+    const pageDesc = route.snapshot.data['desc'];
+    if (pageDesc) {
+      return pageDesc;
+    } else {
+      const pathSegments = route.snapshot.url.map(segment => segment.path);
+      return pathSegments.join(' / ');
+    }
+  }
 }
