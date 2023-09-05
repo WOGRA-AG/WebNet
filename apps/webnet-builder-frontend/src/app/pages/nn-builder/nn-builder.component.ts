@@ -18,7 +18,9 @@ export class NnBuilderComponent {
 
   layerForm = this.fb.group({
     shape: [''],
-    units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]]
+    units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+    filter: [3],
+    kernelSize: [2]
   });
   configuration: any;
 

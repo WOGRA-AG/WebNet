@@ -47,7 +47,7 @@ export const layerConfig = {
       type: 'number'
     },
       {
-        key: 'kernel_size',
+        key: 'kernelSize',
         label: 'Kernel Size',
         controlType: 'textbox',
         required: true,

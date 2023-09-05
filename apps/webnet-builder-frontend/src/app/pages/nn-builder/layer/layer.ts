@@ -43,8 +43,8 @@ export class Layer {
 
   selected(event: any) {
     event.stopPropagation();
+    this.svgElement.raise().select("rect").style("fill", "lightgray");
     this.modelBuilderService.selectedLayerSubject.next(this);
-    this.svgElement.select("rect").style("fill", "lightgray");
   }
 
   unselect() {
@@ -52,7 +52,6 @@ export class Layer {
   }
 
   dragStarted(event: any) {
-    this.svgElement.raise();
   }
 
   dragging(event: any) {
