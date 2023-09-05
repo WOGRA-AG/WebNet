@@ -13,7 +13,7 @@ export class Output extends Layer {
   override createLayer(): Selection<any, any, any, any> {
     const outputData = { name: "Output", neuronCount: 10 };
 
-    const outputGrp = d3.select("#svg-container").append("g")
+    const outputGrp = d3.select("#inner-svg-container").append("g")
       .classed("layerGroup", true)
       .attr("stroke", "black")
       .attr("transform", "translate(1100, 200)");

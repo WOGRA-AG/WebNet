@@ -14,7 +14,7 @@ export class Dense extends Layer {
   override createLayer(): Selection<any, any, any, any> {
       const denseData = { name: "Dense", neuronCount: Math.min(9, 64) };
 
-      const denseGrp = d3.select("#svg-container").append("g")
+      const denseGrp = d3.select("#inner-svg-container").append("g")
         .classed("layerGroup", true)
         .attr("stroke", "black")
         .attr("transform", "translate(300, 160)");

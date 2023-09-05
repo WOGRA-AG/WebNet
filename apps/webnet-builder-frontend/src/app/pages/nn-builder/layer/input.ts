@@ -14,7 +14,7 @@ export class Input extends Layer{
   override createLayer(): Selection<any, any, any, any> {
     const inputData = { name: "Input", shape: [64, 64, 3] };
 
-    const inputGrp = d3.select("#svg-container").append("g")
+    const inputGrp = d3.select("#inner-svg-container").append("g")
       .classed("layerGroup", true)
       .attr("stroke", "black")
       .attr("transform", "translate(30, 200)");

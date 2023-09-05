@@ -8,6 +8,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {Input} from "./layer/input";
 import {Output} from "./layer/output";
 import {Convolution} from "./layer/convolution";
+import {Selection} from "d3";
 
 @Component({
   selector: 'app-nn-builder',
@@ -31,55 +32,11 @@ export class NnBuilderComponent {
   }
 
   ngOnInit() {
-//     // Create the input section separator line and label
-//     d3.select("#svg-container")
-//       .append("line")
-//       .attr("x1", 300) // X-coordinate for the start of the line
-//       .attr("y1", 0) // Y-coordinate for the start of the line
-//       .attr("x2", 300) // X-coordinate for the end of the line
-//       .attr("y2", 500) // Y-coordinate for the end of the line
-//       .attr("stroke", "black");
-//
-//     d3.select("#svg-container")
-//       .append("text")
-//       .attr("x", 150) // X-coordinate for the label
-//       .attr("y", 20) // Y-coordinate for the label
-//       .attr("text-anchor", "middle")
-//       .text("Input");
-//
-// // Create the hidden layer section separator line and label
-//     d3.select("#svg-container")
-//       .append("line")
-//       .attr("x1", 600) // X-coordinate for the start of the line
-//       .attr("y1", 0) // Y-coordinate for the start of the line
-//       .attr("x2", 600) // X-coordinate for the end of the line
-//       .attr("y2", 500) // Y-coordinate for the end of the line
-//       .attr("stroke", "black");
-//
-//     d3.select("#svg-container")
-//       .append("text")
-//       .attr("x", 450) // X-coordinate for the label
-//       .attr("y", 20) // Y-coordinate for the label
-//       .attr("text-anchor", "middle")
-//       .text("Hidden Layer");
-//
-// // Create the output section separator line and label
-//     d3.select("#svg-container")
-//       .append("line")
-//       .attr("x1", 900) // X-coordinate for the start of the line
-//       .attr("y1", 0) // Y-coordinate for the start of the line
-//       .attr("x2", 900) // X-coordinate for the end of the line
-//       .attr("y2", 500) // Y-coordinate for the end of the line
-//       .attr("stroke", "black");
-//
-//     d3.select("#svg-container")
-//       .append("text")
-//       .attr("x", 750) // X-coordinate for the label
-//       .attr("y", 20) // Y-coordinate for the label
-//       .attr("text-anchor", "middle")
-//       .text("Output");
-
-    d3.select("#svg-container").on("click", (event: any) => this.unselect(event));
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    svg.on("click", (event: any) => this.unselect(event));
+    svg.call(d3.zoom().scaleExtent([0.4, 1.1]).translateExtent([[-1200, -600], [2400, 1200]]).on('zoom', (event: any) => {
+      d3.select("#inner-svg-container").attr('transform', event.transform);
+    }));
     this.createLayer('input');
     this.createLayer('output');
   }

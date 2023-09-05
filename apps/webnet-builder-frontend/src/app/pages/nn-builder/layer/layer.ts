@@ -82,7 +82,7 @@ export class Layer {
   }
 
   createLayer(): Selection<any, any, any, any> {
-    const layerGrp = d3.select("#svg-container")
+    const layerGrp = d3.select("#inner-svg-container")
       .append('g')
       .classed('layerGroup', true)
       .attr('stroke', 'yellow')
