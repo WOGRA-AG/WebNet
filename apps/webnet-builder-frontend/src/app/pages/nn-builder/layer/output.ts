@@ -16,7 +16,7 @@ export class Output extends Layer {
     const outputGrp = d3.select("#svg-container").append("g")
       .classed("layerGroup", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(900, 160)");
+      .attr("transform", "translate(1100, 200)");
 
     outputGrp.append("rect")
       .attr("width", 60)
@@ -67,7 +67,7 @@ export class Output extends Layer {
     return outputGrp;
   }
 
-  override mouseLeave(event: any) {
+  override unselect() {
     this.svgElement.style("cursor", "default").select("rect").style("fill", "#FF5733");
   }
 }

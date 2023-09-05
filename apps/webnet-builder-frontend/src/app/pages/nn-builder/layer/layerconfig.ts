@@ -30,5 +30,29 @@ export const layerConfig = {
       value: 'Shape???',
       type: 'text'
     }]
+  },
+  convolution: {
+    name: 'Convolution',
+    title: 'Convolution Layer Parameter',
+    parameters: {
+      filters: 3,
+      kernelSize: 2
+    },
+    formConfig: [{
+      key: 'filter',
+      label: 'Filters',
+      controlType: 'textbox',
+      required: true,
+      value: 3,
+      type: 'number'
+    },
+      {
+        key: 'kernel_size',
+        label: 'Kernel Size',
+        controlType: 'textbox',
+        required: true,
+        value: 2,
+        type: 'number'
+      }]
   }
 }

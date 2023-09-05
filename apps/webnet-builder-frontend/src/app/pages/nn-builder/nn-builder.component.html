@@ -5,9 +5,13 @@
   <button mat-raised-button color="primary" (click)="createLayer('dense')">
     Dense Layer
   </button>
+  <button mat-raised-button color="primary" (click)="createLayer('convolution')">
+    Convolution Layer
+  </button>
 </div>
 <div class="ui-container">
-  <svg id="svg-container"></svg>
+  <svg id="svg-container">
+  </svg>
   <div *ngIf="configuration">
     <h2>{{configuration.title}}</h2>
     <app-dynamic-layer-form  [parameterConfig]="configuration.formConfig"

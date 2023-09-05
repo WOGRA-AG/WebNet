@@ -57,7 +57,7 @@ export class Flatten extends Layer {
     return flattenGrp;
   }
 
-  override mouseLeave(event: any) {
+  override unselect() {
     this.svgElement.style("cursor", "default").select("rect").style("fill", "#33FF57");
   }
 }

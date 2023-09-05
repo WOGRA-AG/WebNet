@@ -57,7 +57,7 @@ export class Dense extends Layer {
       return denseGrp;
   }
 
-  override mouseLeave(event: any) {
+  override unselect() {
     this.svgElement.style("cursor", "default").select("rect").style("fill", "#5733FF");
   }
 

@@ -34,28 +34,45 @@ export class Layer {
   }
 
   mouseEnter(event: any) {
-    this.svgElement.style("cursor", "pointer").select("rect").style("fill", "lightgray");
+    this.svgElement.style("cursor", "pointer").select("rect").attr("stroke", "red").attr("stroke-width", 1);
   }
 
   mouseLeave(event: any) {
-    this.svgElement.style("cursor", "default").select("rect").style("fill", "RED");
+    this.svgElement.style("cursor", "default").select("rect").attr('stroke', 'black').attr("stroke-width", 1);
   }
 
   selected(event: any) {
     event.stopPropagation();
     this.modelBuilderService.selectedLayerSubject.next(this);
-    this.svgElement.select("rect").attr("stroke", "red");
+    this.svgElement.select("rect").style("fill", "lightgray");
   }
 
   unselect() {
-    this.svgElement.select("rect").attr('stroke', 'black');
+    this.svgElement.select("rect").style("fill", "RED");
   }
 
   dragStarted(event: any) {
+    this.svgElement.raise();
   }
 
   dragging(event: any) {
-    this.svgElement.attr("transform", `translate(${event.x},${event.y})`);
+    const svgContainer = d3.select("#svg-container");
+
+    const svgWidth = (svgContainer.node() as SVGSVGElement).clientWidth;
+    const svgHeight = (svgContainer.node() as SVGSVGElement).clientHeight;
+
+
+    const minX = 0;
+    const minY = 0;
+    const maxX = svgWidth;
+    const maxY = svgHeight;
+    // Calculate the new position while constraining it within the SVG boundaries
+    const x = Math.max(minX, Math.min(maxX, event.x));
+    const y = Math.max(minY, Math.min(maxY, event.y));
+
+    // Update the element's position
+    // this.svgElement.attr("transform", `translate(${d.x},${d.y})`);
+    this.svgElement.attr("transform", `translate(${x},${y})`);
   }
 
   dragEnded(event: any) {

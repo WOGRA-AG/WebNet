@@ -17,7 +17,7 @@ export class Input extends Layer{
     const inputGrp = d3.select("#svg-container").append("g")
       .classed("layerGroup", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(50, 160)");
+      .attr("transform", "translate(30, 200)");
 
     inputGrp.append("rect")
       .attr("width", 60)
@@ -42,7 +42,7 @@ export class Input extends Layer{
     return inputGrp;
   }
 
-  override mouseLeave(event: any) {
+  override unselect() {
     this.svgElement.style("cursor", "default").select("rect").style("fill", "#33FF57");
   }
 
