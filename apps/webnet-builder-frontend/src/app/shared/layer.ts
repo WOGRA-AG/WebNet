@@ -3,11 +3,13 @@ import {Selection} from "d3";
 import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
+import {XY} from "../core/interfaces";
 
 export class Layer {
   protected svgElement: Selection<any, any, any, any>;
-  protected outputAnchor: Connection|null = null;
-  protected inputAnchor: Connection|null = null;
+  protected outputAnchor: Connection | null = null;
+  protected inputAnchor: Connection | null = null;
+  protected mousePositionOnElement: XY = {x: 0, y: 0};
   protected configuration: any;
   protected tfjsLayer: any;
 
@@ -55,9 +57,13 @@ export class Layer {
   }
 
   dragStarted(event: any) {
+    const position = d3.pointer(event);
+    this.mousePositionOnElement = {x: position[0], y: position[1]};
+    // this.svgElement.raise();
   }
 
   dragging(event: any) {
+
     const svgContainer: Selection<any, any, any, any> = d3.select("#svg-container");
 
     const svgWidth = (svgContainer.node() as SVGSVGElement).clientWidth;
@@ -70,17 +76,17 @@ export class Layer {
     const minY = -svgHeight;
     const maxX = 2 * svgWidth - elementWidth;
     const maxY = 2 * svgHeight - elementHeight;
-
-    const x = Math.max(minX, Math.min(maxX, event.x));
-    const y = Math.max(minY, Math.min(maxY, event.y));
+    const x = Math.max(minX, Math.min(maxX, event.x)) - this.mousePositionOnElement.x;
+    const y = Math.max(minY, Math.min(maxY, event.y)) - this.mousePositionOnElement.y;
 
     this.svgElement.attr("transform", `translate(${x},${y})`);
-    if(this.outputAnchor) {
+    if (this.outputAnchor) {
       this.outputAnchor.updateSourcePosition();
     }
   }
 
-  dragEnded(event: any) {}
+  dragEnded(event: any) {
+  }
 
   getConfiguration() {
     return this.configuration;

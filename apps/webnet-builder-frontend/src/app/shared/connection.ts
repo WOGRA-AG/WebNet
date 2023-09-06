@@ -10,19 +10,13 @@ export class Connection {
     this.dashedLine =  d3.select("#inner-svg-container").append<SVGGraphicsElement>("line")
       .attr("x1", position.x)
       .attr("y1", position.y)
-      .attr("x2", position.x)
-      .attr("y2", position.y)
       .style("stroke", "black")
       .style("stroke-width", 6)
       .style("stroke-dasharray", ("8, 8"));
   }
 
   moveToMouse(event: any): void {
-    console.log("MOVE TO MOUSE");
-    const position = this.source.getOutputAnchorPosition();
     this.dashedLine
-      .attr("x1", position.x)
-      .attr("y1", position.y)
       .attr("x2", event.x)
       .attr("y2", event.y);
   }
