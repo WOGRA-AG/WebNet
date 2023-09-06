@@ -41,6 +41,11 @@ export class NnBuilderComponent {
     }));
     this.createLayer('input');
     this.createLayer('output');
+
+  //   todo:
+    const link = d3.link(d3.curveBumpY)
+      .x((d) => 50)
+      .y((d) => 50);
   }
 
   printModelSummary() {

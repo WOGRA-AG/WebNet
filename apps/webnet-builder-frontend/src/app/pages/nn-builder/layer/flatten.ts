@@ -54,6 +54,9 @@ export class Flatten extends Layer {
         .attr("text-anchor", "middle")
         .text("...");
     }
+
+    this.addInputAnchor(flattenGrp);
+    this.addOutputAnchor(flattenGrp);
     return flattenGrp;
   }
 

@@ -64,6 +64,7 @@ export class Output extends Layer {
       outputGrp.select("rect").style("fill", "#FF5733");
     });
 
+    this.addInputAnchor(outputGrp);
     return outputGrp;
   }
 

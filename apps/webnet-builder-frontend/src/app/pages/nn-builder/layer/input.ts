@@ -39,6 +39,7 @@ export class Input extends Layer{
       .text(`Shape: [${inputData.shape.join(", ")}]`)
       .style("font-size", "10px");
 
+    this.addOutputAnchor(inputGrp);
     return inputGrp;
   }
 

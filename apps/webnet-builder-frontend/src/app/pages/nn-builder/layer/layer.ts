@@ -15,7 +15,6 @@ export class Layer {
     this.configuration = configuration
 
     this.svgElement = this.createLayer();
-
     this.svgElement.call(d3.drag<SVGElement, any, any>()
       .on("start", (event: any) => this.dragStarted(event))
       .on("drag", (event: any) => this.dragging(event))
@@ -101,5 +100,43 @@ export class Layer {
       .text("Layer");
     return layerGrp;
   }
+  addInputAnchor(layerGrp: Selection<any, any, any, any>) {
+    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild("rect");
+    const circleX = -10;
+    const circleY = layerRect.node().getBBox().height / 2;
 
+    const leftAnchorGroup = layerGrp.append("g")
+      .classed("anchor-group", true)
+      .attr("transform", `translate(${circleX}, ${circleY})`);
+
+    leftAnchorGroup.append("circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", 5)
+      .style("fill", "red")
+  }
+
+  addOutputAnchor(layerGrp: Selection<any, any, any, any>) {
+    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild("rect");
+    const circleX = layerRect.node().getBBox().width + 10;
+    const circleY = layerRect.node().getBBox().height / 2;
+
+    const rightAnchorGroup: Selection<any, any, any, any> = layerGrp.append("g")
+      .classed("anchor-group", true)
+      .attr("transform", `translate(${circleX}, ${circleY})`);
+
+    rightAnchorGroup.append("circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", 5)
+      .style("fill", "blue")
+
+    rightAnchorGroup.call(d3.drag()
+      .on("start", (event: any) => console.log("drag started"))
+      .on("drag", (event: any) => console.log("drag dragged"))
+      .on("end", (event: any) => console.log("drag ended")))
+      .on("click", (event: any) => console.log("create line"))
+      .on("mouseenter", (event: any) => rightAnchorGroup.style("cursor", "crosshair"))
+      .on("mouseleave", (event: any) => rightAnchorGroup.style("cursor", "default"));
+  }
 }

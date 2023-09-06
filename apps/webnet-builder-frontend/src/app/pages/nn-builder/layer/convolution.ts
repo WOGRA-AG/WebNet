@@ -49,6 +49,8 @@ export class Convolution extends Layer {
         .style("fill", filterColors[i]);
     }
 
+    this.addInputAnchor(convGrp);
+    this.addOutputAnchor(convGrp);
     return convGrp;
   }
   override unselect() {
