@@ -1,38 +1,38 @@
 import * as tf from "@tensorflow/tfjs";
-import {Layer} from "./layer";
-import {ModelBuilderService} from "../../../core/services/model-builder.service";
-import * as d3 from "d3";
+import {Layer} from "../layer";
+import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
-import {layerConfig} from "./layerconfig";
+import * as d3 from "d3";
+import {layerConfig} from "../layerconfig";
 
-export class Dense extends Layer {
 
+export class Flatten extends Layer {
   constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.dense, layerConfig.dense, modelBuilderService);
+    super(tf.layers.flatten, layerConfig.flatten, modelBuilderService );
   }
 
   override createLayer(): Selection<any, any, any, any> {
-    const denseData = {name: "Dense", neuronCount: Math.min(9, 64)};
+    const flattenData = { name: "Flatten", neuronCount: Math.min(12, 64) };
 
-    const denseGrp: Selection<any, any, any, any> = d3.select("#inner-svg-container").append("g")
+    const flattenGrp = d3.select("#inner-svg-container").append("g")
       .classed("layerGroup", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(300, 160)");
+      .attr("transform", "translate(500, 160)");
 
-    denseGrp.append("rect")
+    flattenGrp.append("rect")
       .attr("width", 60)
       .attr("height", 150)
       .attr("rx", 10)
       .attr("ry", 10)
-      .style("fill", "#5733FF");
+      .style("fill", "#33FF57");
 
-    denseGrp.append("text")
+    flattenGrp.append("text")
       .attr("x", 30)
       .attr("y", -10)
       .attr("text-anchor", "middle")
-      .text(denseData.name);
+      .text(flattenData.name);
 
-    const numNeurons = Math.min(denseData.neuronCount, 7);
+    const numNeurons = Math.min(flattenData.neuronCount,7);
 
     const neuronRadius = 8;
     const neuronMargin = 4;
@@ -40,27 +40,27 @@ export class Dense extends Layer {
     const startY = (150 - totalHeight) / 2;
 
     for (let i = 0; i < numNeurons; i++) {
-      denseGrp.append("circle")
+      flattenGrp.append("circle")
         .attr("cx", 30)
         .attr("cy", startY + i * (2 * neuronRadius + neuronMargin) + neuronRadius)
         .attr("r", neuronRadius)
         .style("fill", "#FF5733");
     }
 
-    if (denseData.neuronCount > 8) {
-      denseGrp.append("text")
+    if (flattenData.neuronCount > 8) {
+      flattenGrp.append("text")
         .attr("x", 30)
         .attr("y", startY + 7 * (2 * neuronRadius + neuronMargin) + 15)
         .attr("text-anchor", "middle")
         .text("...");
     }
-    this.addOutputAnchor(denseGrp);
-    this.addInputAnchor(denseGrp);
-    return denseGrp;
+
+    this.addInputAnchor(flattenGrp);
+    this.addOutputAnchor(flattenGrp);
+    return flattenGrp;
   }
 
   override unselect() {
-    this.svgElement.style("cursor", "default").select("rect").style("fill", "#5733FF");
+    this.svgElement.style("cursor", "default").select("rect").style("fill", "#33FF57");
   }
-
 }

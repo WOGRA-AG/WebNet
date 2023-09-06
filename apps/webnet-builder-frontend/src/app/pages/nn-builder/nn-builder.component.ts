@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
-import {Flatten} from "./layer/flatten";
+import {Flatten} from "../../shared/layer/flatten";
 import * as d3 from 'd3';
-import {Dense} from "./layer/dense";
+import {Dense} from "../../shared/layer/dense";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {FormBuilder, Validators} from '@angular/forms';
-import {Input} from "./layer/input";
-import {Output} from "./layer/output";
-import {Convolution} from "./layer/convolution";
+import {Input} from "../../shared/layer/input";
+import {Output} from "../../shared/layer/output";
+import {Convolution} from "../../shared/layer/convolution";
 import {Selection} from "d3";
 
 @Component({
@@ -41,11 +41,6 @@ export class NnBuilderComponent {
     }));
     this.createLayer('input');
     this.createLayer('output');
-
-  //   todo:
-    const link = d3.link(d3.curveBumpY)
-      .x((d) => 50)
-      .y((d) => 50);
   }
 
   printModelSummary() {

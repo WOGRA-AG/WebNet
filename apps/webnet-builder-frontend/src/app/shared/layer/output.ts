@@ -1,9 +1,9 @@
 import * as d3 from "d3";
 import { Selection } from "d3";
-import { layerConfig } from "./layerconfig";
-import { ModelBuilderService } from "../../../core/services/model-builder.service";
+import { layerConfig } from "../layerconfig";
+import { ModelBuilderService } from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
-import { Layer } from "./layer";
+import { Layer } from "../layer";
 
 export class Output extends Layer {
   constructor(modelBuilderService: ModelBuilderService) {

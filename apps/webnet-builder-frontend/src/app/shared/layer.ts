@@ -1,9 +1,13 @@
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {ModelBuilderService} from "../../../core/services/model-builder.service";
+import {ModelBuilderService} from "../core/services/model-builder.service";
+import {Connection} from "./connection";
+import {getTransformPosition} from "./utils";
 
 export class Layer {
-  svgElement: Selection<any, any, any, any>;
+  protected svgElement: Selection<any, any, any, any>;
+  protected outputAnchor: Connection|null = null;
+  protected inputAnchor: Connection|null = null;
   protected configuration: any;
   protected tfjsLayer: any;
 
@@ -71,10 +75,12 @@ export class Layer {
     const y = Math.max(minY, Math.min(maxY, event.y));
 
     this.svgElement.attr("transform", `translate(${x},${y})`);
+    if(this.outputAnchor) {
+      this.outputAnchor.updateSourcePosition();
+    }
   }
 
-  dragEnded(event: any) {
-  }
+  dragEnded(event: any) {}
 
   getConfiguration() {
     return this.configuration;
@@ -100,13 +106,14 @@ export class Layer {
       .text("Layer");
     return layerGrp;
   }
+
   addInputAnchor(layerGrp: Selection<any, any, any, any>) {
     const layerRect: Selection<any, any, any, any> = layerGrp.selectChild("rect");
     const circleX = -10;
     const circleY = layerRect.node().getBBox().height / 2;
 
     const leftAnchorGroup = layerGrp.append("g")
-      .classed("anchor-group", true)
+      .classed("input-anchor-group", true)
       .attr("transform", `translate(${circleX}, ${circleY})`);
 
     leftAnchorGroup.append("circle")
@@ -121,22 +128,35 @@ export class Layer {
     const circleX = layerRect.node().getBBox().width + 10;
     const circleY = layerRect.node().getBBox().height / 2;
 
-    const rightAnchorGroup: Selection<any, any, any, any> = layerGrp.append("g")
-      .classed("anchor-group", true)
+    const outputAnchor: Selection<any, any, any, any> = layerGrp.append("g")
+      .classed("output-anchor-group", true)
       .attr("transform", `translate(${circleX}, ${circleY})`);
 
-    rightAnchorGroup.append("circle")
+    outputAnchor.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
       .attr("r", 5)
       .style("fill", "blue")
 
-    rightAnchorGroup.call(d3.drag()
-      .on("start", (event: any) => console.log("drag started"))
-      .on("drag", (event: any) => console.log("drag dragged"))
+    outputAnchor.call(d3.drag()
+      .on("start", (event: any) => this.outputAnchor = new Connection(this))
+      .on("drag", (event: any) => this.outputAnchor?.moveToMouse(event))
       .on("end", (event: any) => console.log("drag ended")))
       .on("click", (event: any) => console.log("create line"))
-      .on("mouseenter", (event: any) => rightAnchorGroup.style("cursor", "crosshair"))
-      .on("mouseleave", (event: any) => rightAnchorGroup.style("cursor", "default"));
+      .on("mouseenter", (event: any) => outputAnchor.style("cursor", "crosshair"))
+      .on("mouseleave", (event: any) => outputAnchor.style("cursor", "default"));
+  }
+
+  getSvgPosition() {
+    const transformAttr = this.svgElement.attr("transform");
+    const svgPos = getTransformPosition(transformAttr);
+    return {x: svgPos.x, y: svgPos.y};
+  }
+
+  getOutputAnchorPosition() {
+    const svgPos = this.getSvgPosition();
+    const transformAttr = this.svgElement.selectChild('.output-anchor-group').attr("transform");
+    const anchorPos = getTransformPosition(transformAttr);
+    return {x: svgPos.x + anchorPos.x, y: svgPos.y + anchorPos.y}
   }
 }

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Layer} from "../../pages/nn-builder/layer/layer";
+import {Layer} from "../../shared/layer";
 import * as tf from "@tensorflow/tfjs";
 import {BehaviorSubject, Observable} from "rxjs";
 
