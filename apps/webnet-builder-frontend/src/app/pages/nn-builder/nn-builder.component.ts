@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import '@svgdotjs/svg.draggable.js'
 import {Flatten} from "./layer/flatten";
 import * as d3 from 'd3';
 import {Dense} from "./layer/dense";
@@ -34,7 +33,10 @@ export class NnBuilderComponent {
   ngOnInit() {
     const svg: Selection<any, any, any, any> = d3.select("#svg-container");
     svg.on("click", (event: any) => this.unselect(event));
-    svg.call(d3.zoom().scaleExtent([0.4, 1.1]).translateExtent([[-1200, -600], [2400, 1200]]).on('zoom', (event: any) => {
+
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const svgHeight = svg.node().getBoundingClientRect().height;
+    svg.call(d3.zoom().scaleExtent([0.4, 1.1]).translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]]).on('zoom', (event: any) => {
       d3.select("#inner-svg-container").attr('transform', event.transform);
     }));
     this.createLayer('input');

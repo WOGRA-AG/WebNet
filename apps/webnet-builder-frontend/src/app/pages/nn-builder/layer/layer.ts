@@ -55,22 +55,22 @@ export class Layer {
   }
 
   dragging(event: any) {
-    const svgContainer = d3.select("#svg-container");
+    const svgContainer: Selection<any, any, any, any> = d3.select("#svg-container");
 
     const svgWidth = (svgContainer.node() as SVGSVGElement).clientWidth;
     const svgHeight = (svgContainer.node() as SVGSVGElement).clientHeight;
 
+    const elementWidth = this.svgElement.node().getBBox().width;
+    const elementHeight = this.svgElement.node().getBBox().height;
 
-    const minX = 0;
-    const minY = 0;
-    const maxX = svgWidth;
-    const maxY = svgHeight;
-    // Calculate the new position while constraining it within the SVG boundaries
+    const minX = -svgWidth;
+    const minY = -svgHeight;
+    const maxX = 2 * svgWidth - elementWidth;
+    const maxY = 2 * svgHeight - elementHeight;
+
     const x = Math.max(minX, Math.min(maxX, event.x));
     const y = Math.max(minY, Math.min(maxY, event.y));
 
-    // Update the element's position
-    // this.svgElement.attr("transform", `translate(${d.x},${d.y})`);
     this.svgElement.attr("transform", `translate(${x},${y})`);
   }
 
