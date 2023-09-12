@@ -14,12 +14,15 @@ export class Input extends Layer{
   override createLayer(): Selection<any, any, any, any> {
     const inputData = { name: "Input", shape: [64, 64, 3] };
 
-    const inputGrp = d3.select("#inner-svg-container").append("g")
-      .classed("layerGroup", true)
+    const inputGrp = d3.select("#inner-svg-container")
+      .append("g")
+      .classed("layer-group", true)
       .attr("stroke", "black")
       .attr("transform", "translate(30, 200)");
 
     inputGrp.append("rect")
+      .classed('layer', true)
+      .classed('selectable', true)
       .attr("width", 60)
       .attr("height", 150)
       .attr("rx", 10)
@@ -27,6 +30,8 @@ export class Input extends Layer{
       .style("fill", "#33FF57");
 
     inputGrp.append("text")
+      .classed('layer-title', true)
+      .classed('untouchable', true)
       .attr("x", 30)
       .attr("y", -10)
       .attr("text-anchor", "middle")
@@ -41,10 +46,6 @@ export class Input extends Layer{
 
     this.addOutputAnchor(inputGrp);
     return inputGrp;
-  }
-
-  override unselect() {
-    this.svgElement.style("cursor", "default").select("rect").style("fill", "#33FF57");
   }
 
 }

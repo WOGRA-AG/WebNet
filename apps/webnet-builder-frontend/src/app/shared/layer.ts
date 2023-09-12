@@ -7,7 +7,7 @@ import {XY} from "../core/interfaces";
 
 export class Layer {
   protected svgElement: Selection<any, any, any, any>;
-  protected outputAnchor: Connection | null = null;
+  protected outputAnchor: Connection|null = null;
   protected inputAnchor: Connection | null = null;
   protected mousePositionOnElement: XY = {x: 0, y: 0};
   protected configuration: any;
@@ -21,10 +21,19 @@ export class Layer {
     this.configuration = configuration
 
     this.svgElement = this.createLayer();
+
+    // add dragable events to the svg element
     this.svgElement.call(d3.drag<SVGElement, any, any>()
       .on("start", (event: any) => this.dragStarted(event))
       .on("drag", (event: any) => this.dragging(event))
-      .on("end", (event: any) => this.dragEnded(event)))
+      .on("end", (event: any) => this.dragEnded(event)));
+
+    // remove drag events from untouchable children
+    this.svgElement.selectChildren<SVGElement, any>('.untouchable')
+      .call(d3.drag<SVGElement, any, any>().on('.drag', null));
+
+    // add event listeners to selectable children
+    this.svgElement.selectChildren('.selectable')
       .on("click", (event: any) => this.selected(event))
       .on("mouseenter", (event: any) => this.mouseEnter(event))
       .on("mouseleave", (event: any) => this.mouseLeave(event));
@@ -39,21 +48,22 @@ export class Layer {
   }
 
   mouseEnter(event: any) {
-    this.svgElement.style("cursor", "pointer").select("rect").attr("stroke", "red").attr("stroke-width", 1);
+    this.svgElement.classed("hovered", true);
   }
 
   mouseLeave(event: any) {
-    this.svgElement.style("cursor", "default").select("rect").attr('stroke', 'black').attr("stroke-width", 1);
+    this.svgElement.classed("hovered", false);
   }
 
   selected(event: any) {
     event.stopPropagation();
-    this.svgElement.raise().select("rect").style("fill", "lightgray");
+    event.preventDefault();
+    this.svgElement.classed("selected", true).raise();
     this.modelBuilderService.selectedLayerSubject.next(this);
   }
 
   unselect() {
-    this.svgElement.select("rect").style("fill", "RED");
+    this.svgElement.classed("selected", false);
   }
 
   dragStarted(event: any) {
@@ -63,7 +73,6 @@ export class Layer {
   }
 
   dragging(event: any) {
-
     const svgContainer: Selection<any, any, any, any> = d3.select("#svg-container");
 
     const svgWidth = (svgContainer.node() as SVGSVGElement).clientWidth;
@@ -76,6 +85,7 @@ export class Layer {
     const minY = -svgHeight;
     const maxX = 2 * svgWidth - elementWidth;
     const maxY = 2 * svgHeight - elementHeight;
+
     const x = Math.max(minX, Math.min(maxX, event.x)) - this.mousePositionOnElement.x;
     const y = Math.max(minY, Math.min(maxY, event.y)) - this.mousePositionOnElement.y;
 
@@ -95,38 +105,39 @@ export class Layer {
   createLayer(): Selection<any, any, any, any> {
     const layerGrp = d3.select("#inner-svg-container")
       .append('g')
-      .classed('layerGroup', true)
+      .classed('layer-group', true)
       .attr('stroke', 'yellow')
       .attr('fill', 'black');
 
     layerGrp.append('rect')
+      .classed('layer', true)
       .attr('x', 10)
       .attr('y', 10)
       .attr('width', 20)
       .attr('height', 100)
 
-
     layerGrp.append('text')
+      .classed('layer-title', true)
       .attr('x', 50 - 10)
       .attr('y', 50 - 20 / 2)
-      .text("Layer");
+      .text("Default Layer");
     return layerGrp;
   }
 
   addInputAnchor(layerGrp: Selection<any, any, any, any>) {
-    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild("rect");
+    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild(".layer");
     const circleX = -10;
     const circleY = layerRect.node().getBBox().height / 2;
 
-    const leftAnchorGroup = layerGrp.append("g")
+    const inputAnchor = layerGrp.append("circle")
       .classed("input-anchor-group", true)
-      .attr("transform", `translate(${circleX}, ${circleY})`);
-
-    leftAnchorGroup.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
       .attr("r", 5)
-      .style("fill", "red")
+      .attr("transform", `translate(${circleX}, ${circleY})`);
+
+    inputAnchor.on("mouseenter", (event: any) => inputAnchor.classed("hovered", true))
+      .on("mouseleave", (event: any) => inputAnchor.classed("hovered", false));
   }
 
   addOutputAnchor(layerGrp: Selection<any, any, any, any>) {
@@ -134,23 +145,33 @@ export class Layer {
     const circleX = layerRect.node().getBBox().width + 10;
     const circleY = layerRect.node().getBBox().height / 2;
 
-    const outputAnchor: Selection<any, any, any, any> = layerGrp.append("g")
+    const outputAnchor: Selection<any, any, any, any> = layerGrp.append("circle")
       .classed("output-anchor-group", true)
-      .attr("transform", `translate(${circleX}, ${circleY})`);
-
-    outputAnchor.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
       .attr("r", 5)
-      .style("fill", "blue")
+      .attr("transform", `translate(${circleX}, ${circleY})`);
 
     outputAnchor.call(d3.drag()
-      .on("start", (event: any) => this.outputAnchor = new Connection(this))
+      .on("start", (event: any) => {
+        this.outputAnchor = new Connection(this);
+        outputAnchor.classed("dragged", true);
+      })
       .on("drag", (event: any) => this.outputAnchor?.moveToMouse(event))
-      .on("end", (event: any) => console.log("drag ended")))
-      .on("click", (event: any) => console.log("create line"))
-      .on("mouseenter", (event: any) => outputAnchor.style("cursor", "crosshair"))
-      .on("mouseleave", (event: any) => outputAnchor.style("cursor", "default"));
+      .on("end", (event: any) => {
+        outputAnchor.classed("dragged", false);
+        this.outputAnchor?.removeConnection();
+      }))
+      // .on("mousedown", (event: any) => {
+      //   this.outputAnchor = new Connection(this);
+      //   outputAnchor.selectChild(".output-anchor-group").style("fill", "yellow");
+      // })
+      // .on("mousemove", (event: any) => {
+      //   console.log(event);
+      //   this.outputAnchor?.moveToMouse(event)
+      // })
+      .on("mouseenter", (event: any) => outputAnchor.classed("hovered", true))
+      .on("mouseleave", (event: any) => outputAnchor.classed("hovered", false));
   }
 
   getSvgPosition() {

@@ -15,11 +15,13 @@ export class Flatten extends Layer {
     const flattenData = { name: "Flatten", neuronCount: Math.min(12, 64) };
 
     const flattenGrp = d3.select("#inner-svg-container").append("g")
-      .classed("layerGroup", true)
+      .classed("layer-group", true)
       .attr("stroke", "black")
       .attr("transform", "translate(500, 160)");
 
     flattenGrp.append("rect")
+      .classed('layer', true)
+      .classed('selectable', true)
       .attr("width", 60)
       .attr("height", 150)
       .attr("rx", 10)
@@ -27,6 +29,8 @@ export class Flatten extends Layer {
       .style("fill", "#33FF57");
 
     flattenGrp.append("text")
+      .classed('layer-title', true)
+      .classed('untouchable', true)
       .attr("x", 30)
       .attr("y", -10)
       .attr("text-anchor", "middle")
@@ -41,6 +45,7 @@ export class Flatten extends Layer {
 
     for (let i = 0; i < numNeurons; i++) {
       flattenGrp.append("circle")
+        .classed('selectable', true)
         .attr("cx", 30)
         .attr("cy", startY + i * (2 * neuronRadius + neuronMargin) + neuronRadius)
         .attr("r", neuronRadius)
@@ -49,6 +54,7 @@ export class Flatten extends Layer {
 
     if (flattenData.neuronCount > 8) {
       flattenGrp.append("text")
+        .classed('untouchable', true)
         .attr("x", 30)
         .attr("y", startY + 7 * (2 * neuronRadius + neuronMargin) + 15)
         .attr("text-anchor", "middle")
@@ -60,7 +66,4 @@ export class Flatten extends Layer {
     return flattenGrp;
   }
 
-  override unselect() {
-    this.svgElement.style("cursor", "default").select("rect").style("fill", "#33FF57");
-  }
 }

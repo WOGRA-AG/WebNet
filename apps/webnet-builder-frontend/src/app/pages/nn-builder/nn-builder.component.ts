@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {Flatten} from "../../shared/layer/flatten";
 import * as d3 from 'd3';
 import {Dense} from "../../shared/layer/dense";
@@ -12,7 +12,8 @@ import {Selection} from "d3";
 @Component({
   selector: 'app-nn-builder',
   templateUrl: './nn-builder.component.html',
-  styleUrls: ['./nn-builder.component.scss']
+  styleUrls: ['./nn-builder.component.scss'],
+  encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
 
@@ -71,7 +72,7 @@ export class NnBuilderComponent {
   }
 
   unselect(event: any) {
-    this.modelBuilderService.selectedLayerSubject.next(null);
     event.stopPropagation();
+    this.modelBuilderService.selectedLayerSubject.next(null);
   }
 }

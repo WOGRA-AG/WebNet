@@ -16,11 +16,13 @@ export class Convolution extends Layer {
     const filterColors = ["#FF5733", "#33FF57", "#5733FF"];
 
     const convGrp = d3.select("#inner-svg-container").append("g")
-      .classed("layerGroup", true)
+      .classed("layer-group", true)
       .attr("stroke", "black")
       .attr("transform", "translate(600, 160)");
 
     convGrp.append("rect")
+      .classed('layer', true)
+      .classed('selectable', true)
       .attr("width", 140)
       .attr("height", 100)
       .attr("rx", 10)
@@ -28,6 +30,8 @@ export class Convolution extends Layer {
       .style("fill", "#33A3FF");
 
     convGrp.append("text")
+      .classed('layer-title', true)
+      .classed('untouchable', true)
       .attr("x", 70)
       .attr("y", -10)
       .attr("text-anchor", "middle")
@@ -42,6 +46,7 @@ export class Convolution extends Layer {
       const y = 20 + i * (filterHeight - filterSpacing);
 
       convGrp.append("rect")
+        .classed('selectable', true)
         .attr("x", x)
         .attr("y", y)
         .attr("width", filterWidth)
@@ -52,9 +57,6 @@ export class Convolution extends Layer {
     this.addInputAnchor(convGrp);
     this.addOutputAnchor(convGrp);
     return convGrp;
-  }
-  override unselect() {
-    this.svgElement.style("cursor", "default").select("rect").style("fill", "#33A3FF");
   }
 
 }
