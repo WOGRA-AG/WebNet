@@ -32,16 +32,7 @@ export class NnBuilderComponent {
   }
 
   ngOnInit() {
-    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
-    svg.on("click", (event: any) => this.unselect(event));
-
-    const svgWidth = svg.node().getBoundingClientRect().width;
-    const svgHeight = svg.node().getBoundingClientRect().height;
-    svg.call(d3.zoom().scaleExtent([0.4, 1.1]).translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]]).on('zoom', (event: any) => {
-      d3.select("#inner-svg-container").attr('transform', event.transform);
-    }));
-    this.createLayer('input');
-    this.createLayer('output');
+    this.modelBuilderService.initialize();
   }
 
   printModelSummary() {
@@ -50,9 +41,6 @@ export class NnBuilderComponent {
 
   createLayer(type: string) {
     switch (type) {
-      case 'input':
-        this.modelBuilderService.addToLayerList((new Input(this.modelBuilderService)));
-        break;
       case 'dense':
         this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService)));
         break;
@@ -62,17 +50,9 @@ export class NnBuilderComponent {
       case 'flatten':
         this.modelBuilderService.addToLayerList((new Flatten(this.modelBuilderService)));
         break;
-      case 'output':
-        this.modelBuilderService.addToLayerList((new Output(this.modelBuilderService)));
-        break;
       default:
         this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService)));
         break;
     }
-  }
-
-  unselect(event: any) {
-    event.stopPropagation();
-    this.modelBuilderService.selectedLayerSubject.next(null);
   }
 }

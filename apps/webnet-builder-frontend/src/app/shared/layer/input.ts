@@ -8,7 +8,7 @@ import {Layer} from "../layer";
 export class Input extends Layer{
 
   constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.dense, layerConfig.dense, modelBuilderService );
+    super(tf.layers.input, layerConfig.dense, modelBuilderService );
   }
 
   override createLayer(): Selection<any, any, any, any> {

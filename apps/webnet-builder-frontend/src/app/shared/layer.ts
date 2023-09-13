@@ -11,7 +11,7 @@ export class Layer {
   protected inputAnchor: Connection | null = null;
   protected mousePositionOnElement: XY = {x: 0, y: 0};
   protected configuration: any;
-  protected tfjsLayer: any;
+  public tfjsLayer: any;
 
   constructor(
     tfjsLayer: any,
@@ -37,10 +37,6 @@ export class Layer {
       .on("click", (event: any) => this.selected(event))
       .on("mouseenter", (event: any) => this.mouseEnter(event))
       .on("mouseleave", (event: any) => this.mouseLeave(event));
-  }
-
-  getLayer() {
-    return this.tfjsLayer;
   }
 
   getParameters() {
@@ -140,7 +136,7 @@ export class Layer {
       .attr("r", 5)
       .attr("transform", `translate(${circleX}, ${circleY})`);
 
-    inputAnchor.on("mouseup", (event: any) => {
+    inputAnchor.on("mouseenter", (event: any) => {
       inputAnchor.classed("hovered", true);
     })
       .on("mouseleave", (event: any) => {inputAnchor.classed("hovered", false);
@@ -217,5 +213,9 @@ export class Layer {
 
   removeInputConnection() {
     this.inputAnchor = null;
+  }
+
+  getNextLayer(): Layer|null|undefined {
+    return this.outputAnchor?.getDestinationLayer();
   }
 }

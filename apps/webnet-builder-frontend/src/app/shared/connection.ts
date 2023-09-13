@@ -51,4 +51,12 @@ export class Connection {
     this.destination?.removeInputConnection();
     this.dashedLine.remove();
   }
+
+  getSourceLayer(): Layer {
+    return this.source;
+  }
+
+  getDestinationLayer(): Layer|null {
+    return this.destination;
+  }
 }
