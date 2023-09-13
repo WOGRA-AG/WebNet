@@ -161,6 +161,7 @@ export class Layer {
       .on("end", (event: any) => {
         outputAnchor.classed("dragged", false);
         this.outputAnchor?.removeConnection();
+
       }))
       // .on("mousedown", (event: any) => {
       //   this.outputAnchor = new Connection(this);
