@@ -1,31 +1,77 @@
-.trainings-container {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-mat-divider {
-  margin: 1rem 0 1rem 0;
-}
-
-.card-wrapper {
-  margin: 5px;
-}
 .testing-content {
-  margin: 1rem 0 1rem 0;
+  display: flex;
+  margin: 0 auto;
+  padding: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+mat-label {
+  font-weight: bold;
+}
+
+mat-card {
+  background-color: #f9f9f9;
 }
 
 .history-container {
-  margin-top: 1rem;
+  margin-top: 20px;
 }
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+.trainings-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.current-training-container {
+  flex: 1;
+  margin-left: 10px;
+
+  .mat-mdc-card-content:first-child {
+    padding: 2px 5px;
+  }
+  .mat-mdc-list-item {
+    height: 24px;
+    padding: 4px;
+  }
+}
+
+.card-wrapper {
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+mat-progress-bar {
+  margin-top: 10px;
+}
+
 .button-container {
-  margin-bottom: 1rem;
+  margin: 15px 0 15px 0;
 }
-
-.mat-mdc-list-item {
-  height: 24px;
-  padding: 4px;
+.section-heading {
+  background-color: #3f51b5;
+  color: white;
+  padding: 5px;
+  margin-bottom: 10px;
 }
-

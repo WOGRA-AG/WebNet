@@ -19,8 +19,8 @@ export class TestingComponent {
     example: new FormControl(TrainingExample.MNIST, Validators.required),
     backend: new FormControl(Backend.WEB_GPU, Validators.required),
     trainDataSize: new FormControl(5000, Validators.required),
-    epochs: new FormControl(10, Validators.required),
-    batchSize: new FormControl(500, Validators.required)
+    epochs: new FormControl(100, Validators.required),
+    batchSize: new FormControl(5000, Validators.required)
   });
   trainingInProgress: boolean = false;
   trainingDone: boolean = false;

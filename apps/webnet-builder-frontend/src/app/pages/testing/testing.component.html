@@ -1,47 +1,52 @@
 <div class="testing-content">
-  <form class="hyperparameter-container" [formGroup]="hyperParameter">
-    <mat-form-field>
-      <mat-label>Select an Example</mat-label>
-      <mat-select formControlName="example">
-        <mat-option value="mnist">MNIST CNN</mat-option>
-        <mat-option value="text">Text?</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Select an Backend</mat-label>
-      <mat-select formControlName="backend">
-        <mat-option value="webgpu">Web GPU</mat-option>
-        <mat-option value="webgl">Web GL</mat-option>
-        <mat-option value="wasm">Web Assembly</mat-option>
-        <mat-option value="cpu">CPU</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Training Data Samples</mat-label>
-      <input matInput formControlName="trainDataSize" placeholder="Training Data Samples" type="number">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Epochs</mat-label>
-      <input matInput formControlName="epochs" placeholder="Epochs" type="number">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Batch Size</mat-label>
-      <input matInput formControlName="batchSize" placeholder="Batch Size" type="number">
-    </mat-form-field>
-  </form>
-  <div class="button-container">
-    <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="startTraining()">Start
-      Training
-    </button>
-    <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training
-    </button>
+  <div>
+    <div class="section-heading">
+      <h2>Training Configuration</h2>
+    </div>
+    <form class="hyperparameter-container" [formGroup]="hyperParameter">
+      <div class="form-row">
+        <mat-form-field class="form-field" subscriptSizing="dynamic">
+          <mat-label>Select an Example</mat-label>
+          <mat-select formControlName="example">
+            <mat-option value="mnist">MNIST CNN</mat-option>
+            <mat-option value="text">Text?</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="form-field" subscriptSizing="dynamic">
+          <mat-label>Select a Backend</mat-label>
+          <mat-select formControlName="backend">
+            <mat-option value="webgpu">Web GPU</mat-option>
+            <mat-option value="webgl">Web GL</mat-option>
+            <mat-option value="wasm">Web Assembly</mat-option>
+            <mat-option value="cpu">CPU</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="form-field" subscriptSizing="dynamic">
+          <mat-label>Training Data Samples</mat-label>
+          <input matInput formControlName="trainDataSize" placeholder="Training Data Samples" type="number">
+        </mat-form-field>
+        <mat-form-field class="form-field" subscriptSizing="dynamic">
+          <mat-label>Epochs</mat-label>
+          <input matInput formControlName="epochs" placeholder="Epochs" type="number">
+        </mat-form-field>
+        <mat-form-field class="form-field" subscriptSizing="dynamic">
+          <mat-label>Batch Size</mat-label>
+          <input matInput formControlName="batchSize" placeholder="Batch Size" type="number">
+        </mat-form-field>
+      </div>
+    </form>
+    <div #modelSummaryContainer></div>
+    <div class="button-container">
+      <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="startTraining()">Start Training
+      </button>
+      <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training</button>
+    </div>
   </div>
-  <div #modelSummaryContainer></div>
-  <div class="current-training-container" *ngIf="trainingInProgress">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Training in Progress</mat-card-title>
-      </mat-card-header>
+  <div class="current-training-container" >
+    <div class="section-heading">
+      <h2>Training in Progress</h2>
+    </div>
+    <mat-card *ngIf="trainingInProgress">
       <mat-card-content>
         <mat-list role="list">
           <mat-list-item role="listitem">Epoch: {{ trainingStats.epoch}}</mat-list-item>
@@ -49,22 +54,23 @@
           <mat-list-item role="listitem">Accuracy: {{ trainingStats.accuracy | number:'1.1-2'}}</mat-list-item>
           <mat-list-item role="listitem">Loss: {{ trainingStats.loss | number:'1.1-2'}}</mat-list-item>
         </mat-list>
-        <mat-divider></mat-divider>
       </mat-card-content>
       <mat-card-footer *ngIf="trainingInProgress">
         <span>{{trainingStats.progress | number:'1.1-1'}}%</span>
-        <mat-progress-bar mode="determinate" value="{{trainingStats.progress}}"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
       </mat-card-footer>
     </mat-card>
   </div>
-  <mat-divider></mat-divider>
-  <div class="history-container" *ngIf="trainingHistory.length > 0">
-    <h2>History:</h2>
-    <div class="trainings-container">
-      <div class="card-wrapper" *ngFor="let stats of trainingHistory.slice().reverse(); let indexOfElement=index;">
-        <app-training-container [stats]="stats"
-                                [historyIndex]="trainingHistory.length - indexOfElement"></app-training-container>
-      </div>
+</div>
+<div class="history-container" *ngIf="trainingHistory.length > 0">
+  <div class="section-heading">
+    <h2>Recent Trainings</h2>
+  </div>
+  <div class="trainings-container">
+    <div class="card-wrapper" *ngFor="let stats of trainingHistory.slice().reverse(); let indexOfElement=index;">
+      <app-training-container [stats]="stats"
+                              [historyIndex]="trainingHistory.length - indexOfElement"></app-training-container>
     </div>
   </div>
 </div>
+
