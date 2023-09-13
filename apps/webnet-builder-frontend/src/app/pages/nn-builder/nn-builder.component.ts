@@ -1,13 +1,9 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, ViewEncapsulation} from '@angular/core';
 import {Flatten} from "../../shared/layer/flatten";
-import * as d3 from 'd3';
 import {Dense} from "../../shared/layer/dense";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {FormBuilder, Validators} from '@angular/forms';
-import {Input} from "../../shared/layer/input";
-import {Output} from "../../shared/layer/output";
 import {Convolution} from "../../shared/layer/convolution";
-import {Selection} from "d3";
 
 @Component({
   selector: 'app-nn-builder',
@@ -30,9 +26,16 @@ export class NnBuilderComponent {
       this.configuration = layer ? layer.getConfiguration() : null;
     })
   }
-
   ngOnInit() {
     this.modelBuilderService.initialize();
+  }
+
+  @HostListener('window:keydown.Escape', ['$event']) unselectLayer(event: KeyboardEvent) {
+    this.modelBuilderService.unselect(event);
+  }
+
+  @HostListener('window:keydown.Delete', ['$event']) deleteLayer(event: KeyboardEvent) {
+    this.modelBuilderService.deleteSelectedLayer(event);
   }
 
   printModelSummary() {

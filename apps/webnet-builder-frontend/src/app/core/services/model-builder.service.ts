@@ -53,6 +53,13 @@ export class ModelBuilderService {
     this.selectedLayerSubject.next(null);
   }
 
+  deleteSelectedLayer(event: any) {
+    event.stopPropagation();
+    if (this.selectedLayer != this.inputLayer && this.selectedLayer != this.outputLayer) {
+      this.selectedLayer?.delete();
+    }
+  }
+
   addToLayerList(layer: Layer) {
     this.layerList.push(layer);
   }
@@ -74,7 +81,7 @@ export class ModelBuilderService {
     await tf.ready();
     const input = this.inputLayer?.tfjsLayer({shape: [32]});
 
-    let layer: Layer|null|undefined = this.inputLayer;
+    let layer: Layer | null | undefined = this.inputLayer;
     let hidden = input;
 
     while (layer?.getNextLayer()) {

@@ -207,6 +207,11 @@ export class Layer {
     return {x: svgPos.x + anchorPos.x, y: svgPos.y + anchorPos.y}
   }
 
+  delete() {
+    this.outputAnchor?.removeConnection();
+    this.inputAnchor?.removeConnection();
+    this.svgElement.remove();
+  }
   removeOutputConnection() {
     this.outputAnchor = null;
   }
