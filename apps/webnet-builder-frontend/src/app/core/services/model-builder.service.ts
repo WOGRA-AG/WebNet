@@ -7,6 +7,7 @@ import {Input} from "../../shared/layer/input";
 import {Output} from "../../shared/layer/output";
 import {Selection} from "d3";
 import * as d3 from "d3";
+import {LayersModel} from "@tensorflow/tfjs";
 
 
 @Injectable({
@@ -76,7 +77,7 @@ export class ModelBuilderService {
     this.layerList.push(layer);
   }
 
-  async printModelSummary(): Promise<void> {
+  async getModel(): Promise<LayersModel> {
     await tf.ready();
     const input = this.inputLayer?.tfjsLayer({shape: [32]});
 
@@ -90,6 +91,6 @@ export class ModelBuilderService {
     }
 
     const model = tf.model({inputs: input, outputs: hidden});
-    console.log(model.summary());
+    return model;
   }
 }
