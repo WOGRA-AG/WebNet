@@ -7,7 +7,7 @@ import {XY} from "../core/interfaces";
 
 export class Layer {
   protected svgElement: Selection<any, any, any, any>;
-  protected outputAnchor: Connection|null = null;
+  protected outputAnchor: Connection | null = null;
   protected inputAnchor: Connection | null = null;
   protected mousePositionOnElement: XY = {x: 0, y: 0};
   protected configuration: any;
@@ -90,8 +90,12 @@ export class Layer {
     const y = Math.max(minY, Math.min(maxY, event.y)) - this.mousePositionOnElement.y;
 
     this.svgElement.attr("transform", `translate(${x},${y})`);
+
     if (this.outputAnchor) {
       this.outputAnchor.updateSourcePosition();
+    }
+    if (this.inputAnchor) {
+      this.inputAnchor.updateDestinationPosition();
     }
   }
 
@@ -136,8 +140,20 @@ export class Layer {
       .attr("r", 5)
       .attr("transform", `translate(${circleX}, ${circleY})`);
 
-    inputAnchor.on("mouseenter", (event: any) => inputAnchor.classed("hovered", true))
-      .on("mouseleave", (event: any) => inputAnchor.classed("hovered", false));
+    inputAnchor.on("mouseup", (event: any) => {
+      inputAnchor.classed("hovered", true);
+    })
+      .on("mouseleave", (event: any) => {inputAnchor.classed("hovered", false);
+        const connection = this.modelBuilderService.activeConnection;
+        if (connection) {
+          if (this.inputAnchor) {
+            this.inputAnchor.removeConnection();
+          }
+          this.inputAnchor = connection;
+          this.inputAnchor = this.inputAnchor?.connectWithDestinationLayer(this)!;
+          this.modelBuilderService.activeConnectionSubject.next(null);
+        }
+      });
   }
 
   addOutputAnchor(layerGrp: Selection<any, any, any, any>) {
@@ -154,23 +170,23 @@ export class Layer {
 
     outputAnchor.call(d3.drag()
       .on("start", (event: any) => {
+        if (this.outputAnchor) {
+          this.outputAnchor.removeConnection()
+        }
         this.outputAnchor = new Connection(this);
         outputAnchor.classed("dragged", true);
       })
       .on("drag", (event: any) => this.outputAnchor?.moveToMouse(event))
       .on("end", (event: any) => {
         outputAnchor.classed("dragged", false);
-        this.outputAnchor?.removeConnection();
-
+        const elementsUnderMouse = document.elementsFromPoint(event.sourceEvent.clientX, event.sourceEvent.clientY);
+        const destinationInputAnchor = elementsUnderMouse.find((element) => element.classList.contains("input-anchor-group"));
+        if (destinationInputAnchor) {
+          this.modelBuilderService.activeConnectionSubject.next(this.outputAnchor);
+        } else {
+          this.outputAnchor?.removeConnection();
+        }
       }))
-      // .on("mousedown", (event: any) => {
-      //   this.outputAnchor = new Connection(this);
-      //   outputAnchor.selectChild(".output-anchor-group").style("fill", "yellow");
-      // })
-      // .on("mousemove", (event: any) => {
-      //   console.log(event);
-      //   this.outputAnchor?.moveToMouse(event)
-      // })
       .on("mouseenter", (event: any) => outputAnchor.classed("hovered", true))
       .on("mouseleave", (event: any) => outputAnchor.classed("hovered", false));
   }
@@ -186,5 +202,20 @@ export class Layer {
     const transformAttr = this.svgElement.selectChild('.output-anchor-group').attr("transform");
     const anchorPos = getTransformPosition(transformAttr);
     return {x: svgPos.x + anchorPos.x, y: svgPos.y + anchorPos.y}
+  }
+
+  getInputAnchorPosition() {
+    const svgPos = this.getSvgPosition();
+    const transformAttr = this.svgElement.selectChild('.input-anchor-group').attr("transform");
+    const anchorPos = getTransformPosition(transformAttr);
+    return {x: svgPos.x + anchorPos.x, y: svgPos.y + anchorPos.y}
+  }
+
+  removeOutputConnection() {
+    this.outputAnchor = null;
+  }
+
+  removeInputConnection() {
+    this.inputAnchor = null;
   }
 }

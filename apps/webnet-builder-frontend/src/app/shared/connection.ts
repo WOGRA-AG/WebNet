@@ -13,7 +13,8 @@ export class Connection {
       .attr("x1", position.x)
       .attr("y1", position.y)
       .attr("x2", position.x)
-      .attr("y2", position.y);
+      .attr("y2", position.y)
+      .lower();
   }
 
   moveToMouse(event: any): void {
@@ -28,13 +29,26 @@ export class Connection {
     this.dashedLine
       .attr("x1", anchorPosition.x)
       .attr("y1", anchorPosition.y)
+      .lower();
   }
 
-  connectWithDestinationLayer(destinationLayer: Layer) {
+  updateDestinationPosition() {
+    if (this.destination) {
+      const anchorPosition = this.destination.getInputAnchorPosition();
+      this.dashedLine
+        .attr("x2", anchorPosition.x)
+        .attr("y2", anchorPosition.y)
+        .lower();
+    }
+  }
+  connectWithDestinationLayer(destinationLayer: Layer): this {
     this.destination = destinationLayer;
+    return this;
   }
 
   removeConnection(): void {
+    this.source.removeOutputConnection();
+    this.destination?.removeInputConnection();
     this.dashedLine.remove();
   }
 }

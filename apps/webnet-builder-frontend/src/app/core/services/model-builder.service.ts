@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Layer} from "../../shared/layer";
 import * as tf from "@tensorflow/tfjs";
 import {BehaviorSubject, Observable} from "rxjs";
+import {Connection} from "../../shared/connection";
 
 
 @Injectable({
@@ -10,12 +11,17 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class ModelBuilderService {
   layerList: Layer[] = [];
   selectedLayer: Layer | null = null;
+  activeConnection: Connection | null = null;
   selectedLayerSubject: BehaviorSubject<Layer | null> = new BehaviorSubject<Layer | null>(null);
+  activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
 
   constructor() {
     this.selectedLayerSubject.subscribe((layer) => {
       this.selectedLayer?.unselect();
       this.selectedLayer = layer;
+    });
+    this.activeConnectionSubject.subscribe((connection) => {
+      this.activeConnection = connection;
     })
   }
 
