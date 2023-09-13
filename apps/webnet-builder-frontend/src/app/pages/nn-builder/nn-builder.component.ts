@@ -26,23 +26,23 @@ export class NnBuilderComponent {
       this.configuration = layer ? layer.getConfiguration() : null;
     })
   }
-  ngOnInit() {
+  ngOnInit(): void {
     this.modelBuilderService.initialize();
   }
 
-  @HostListener('window:keydown.Escape', ['$event']) unselectLayer(event: KeyboardEvent) {
+  @HostListener('window:keydown.Escape', ['$event']) unselectLayer(event: KeyboardEvent): void {
     this.modelBuilderService.unselect(event);
   }
 
-  @HostListener('window:keydown.Delete', ['$event']) deleteLayer(event: KeyboardEvent) {
+  @HostListener('window:keydown.Delete', ['$event']) deleteLayer(event: KeyboardEvent): void {
     this.modelBuilderService.deleteSelectedLayer(event);
   }
 
-  printModelSummary() {
+  printModelSummary(): void {
     this.modelBuilderService.printModelSummary();
   }
 
-  createLayer(type: string) {
+  createLayer(type: string): void {
     switch (type) {
       case 'dense':
         this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService)));

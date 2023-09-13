@@ -17,39 +17,9 @@ export class Connection {
       .lower();
   }
 
-  moveToMouse(event: any): void {
-    const layerPosition = this.source.getSvgPosition();
-    this.dashedLine
-      .attr("x2", layerPosition.x + event.x)
-      .attr("y2", layerPosition.y + event.y);
-  }
-
-  updateSourcePosition() {
-    const anchorPosition = this.source.getOutputAnchorPosition();
-    this.dashedLine
-      .attr("x1", anchorPosition.x)
-      .attr("y1", anchorPosition.y)
-      .lower();
-  }
-
-  updateDestinationPosition() {
-    if (this.destination) {
-      const anchorPosition = this.destination.getInputAnchorPosition();
-      this.dashedLine
-        .attr("x2", anchorPosition.x)
-        .attr("y2", anchorPosition.y)
-        .lower();
-    }
-  }
   connectWithDestinationLayer(destinationLayer: Layer): this {
     this.destination = destinationLayer;
     return this;
-  }
-
-  removeConnection(): void {
-    this.source.removeOutputConnection();
-    this.destination?.removeInputConnection();
-    this.dashedLine.remove();
   }
 
   getSourceLayer(): Layer {
@@ -58,5 +28,36 @@ export class Connection {
 
   getDestinationLayer(): Layer|null {
     return this.destination;
+  }
+
+  moveToMouse(event: any): void {
+    const layerPosition = this.source.getSvgPosition();
+    this.dashedLine
+      .attr("x2", layerPosition.x + event.x)
+      .attr("y2", layerPosition.y + event.y);
+  }
+
+  updateSourcePosition(): void {
+    const anchorPosition = this.source.getOutputAnchorPosition();
+    this.dashedLine
+      .attr("x1", anchorPosition.x)
+      .attr("y1", anchorPosition.y)
+      .lower();
+  }
+
+  updateDestinationPosition(): void {
+    if (this.destination) {
+      const anchorPosition = this.destination.getInputAnchorPosition();
+      this.dashedLine
+        .attr("x2", anchorPosition.x)
+        .attr("y2", anchorPosition.y)
+        .lower();
+    }
+  }
+
+  removeConnection(): void {
+    this.source.removeOutputConnection();
+    this.destination?.removeInputConnection();
+    this.dashedLine.remove();
   }
 }

@@ -32,7 +32,7 @@ export class MnistDataService {
     this.shuffledTestIndex = 0;
   }
 
-  getModel() {
+  getModel(): tf.LayersModel {
     const model = tf.sequential();
 
     const IMAGE_WIDTH = 28;
@@ -85,7 +85,7 @@ export class MnistDataService {
     return model;
   }
 
-  async load() {
+  async load(): Promise<void> {
     // Make a request for the MNIST sprited image.
     const img = new Image();
     const canvas = document.createElement('canvas');
@@ -147,7 +147,7 @@ export class MnistDataService {
       this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
   }
 
-  nextTrainBatch(batchSize: number) {
+  nextTrainBatch(batchSize: number): any {
     return this.nextBatch(
       batchSize, [this.trainImages, this.trainLabels], () => {
         this.shuffledTrainIndex =
@@ -156,7 +156,7 @@ export class MnistDataService {
       });
   }
 
-  nextTestBatch(batchSize: number) {
+  nextTestBatch(batchSize: number): any {
     return this.nextBatch(batchSize, [this.testImages, this.testLabels], () => {
       this.shuffledTestIndex =
         (this.shuffledTestIndex + 1) % this.testIndices.length;
@@ -164,7 +164,7 @@ export class MnistDataService {
     });
   }
 
-  nextBatch(batchSize: number, data: any, index: CallableFunction) {
+  nextBatch(batchSize: number, data: any, index: CallableFunction): any {
     const batchImagesArray = new Float32Array(batchSize * IMAGE_SIZE);
     const batchLabelsArray = new Uint8Array(batchSize * NUM_CLASSES);
 
@@ -186,7 +186,7 @@ export class MnistDataService {
     return {xs, labels};
   }
 
-  prepData(trainDataSize: number) {
+  prepData(trainDataSize: number): any {
     const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
     const TEST_DATA_SIZE = 1000;
 

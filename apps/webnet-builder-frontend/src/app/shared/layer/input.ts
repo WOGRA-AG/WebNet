@@ -11,7 +11,7 @@ export class Input extends Layer{
     super(tf.layers.input, layerConfig.dense, modelBuilderService );
   }
 
-  override createLayer(): Selection<any, any, any, any> {
+  protected override createLayer(): Selection<any, any, any, any> {
     const inputData = { name: "Input", shape: [64, 64, 3] };
 
     const inputGrp = d3.select("#inner-svg-container")

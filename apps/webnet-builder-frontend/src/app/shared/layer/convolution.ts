@@ -10,7 +10,7 @@ export class Convolution extends Layer {
     super(tf.layers.conv3d, layerConfig.convolution, modelBuilderService);
   }
 
-  override createLayer() {
+  protected override createLayer() {
     const convLayerData = { name: "Convolutional", numFilters: 3, filterSize: 30 };
 
     const filterColors = ["#FF5733", "#33FF57", "#5733FF"];

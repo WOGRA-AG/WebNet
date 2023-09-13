@@ -37,7 +37,7 @@ export class TestingComponent {
   constructor(private mnistDataService: MnistDataService, private modelWrapperService: ModelWrapperService) {
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     await this.initBackend()
     const model = this.modelWrapperService.getModel(this.hyperParameter.get('example')?.value!);
     if (model) {
@@ -49,7 +49,7 @@ export class TestingComponent {
     }
   }
 
-  async initBackend() {
+  async initBackend(): Promise<void> {
     const backendControl = this.hyperParameter.get('backend');
     if (backendControl) {
       await tf.setBackend(backendControl.value!.toString());
@@ -57,17 +57,17 @@ export class TestingComponent {
     }
   }
 
-  async startTraining() {
+  async startTraining(): Promise<void> {
     await this.modelWrapperService.load(this.hyperParameter.get('example')?.value!);
     this.trainingStats.trainingTime = await this.train();
     this.trainingHistory.push(cloneObject(this.trainingStats));
   }
 
-  stopTraining() {
+  stopTraining(): void {
     this.stopTrainingFlag = true;
   }
 
-  async train() {
+  async train(): Promise<number> {
     const { example, backend, batchSize, epochs, trainDataSize } = this.hyperParameter.value;
     this.trainingStats.trainingInfo.example = example!;
     this.trainingStats.trainingInfo.backend = backend!;

@@ -31,7 +31,19 @@ export class ModelBuilderService {
     })
   }
 
-  initialize() {
+  getLayers(): Layer[] {
+    return this.layerList;
+  }
+  getSelectedLayer() {
+    return this.selectedLayer;
+  }
+
+  clearLayerList(): Layer[] {
+    this.layerList = [];
+    return this.layerList;
+  }
+
+  initialize(): void {
     const svg: Selection<any, any, any, any> = d3.select("#svg-container");
     const svgWidth = svg.node().getBoundingClientRect().width;
     const svgHeight = svg.node().getBoundingClientRect().height;
@@ -48,36 +60,23 @@ export class ModelBuilderService {
   }
 
 
-  unselect(event: any) {
+  unselect(event: any): void {
     event.stopPropagation();
     this.selectedLayerSubject.next(null);
   }
 
-  deleteSelectedLayer(event: any) {
+  deleteSelectedLayer(event: any): void {
     event.stopPropagation();
     if (this.selectedLayer != this.inputLayer && this.selectedLayer != this.outputLayer) {
       this.selectedLayer?.delete();
     }
   }
 
-  addToLayerList(layer: Layer) {
+  addToLayerList(layer: Layer): void {
     this.layerList.push(layer);
   }
 
-  getLayers() {
-    return this.layerList;
-  }
-
-  clearLayerList() {
-    this.layerList = [];
-    return this.layerList;
-  }
-
-  getSelectedLayer() {
-    return this.selectedLayer;
-  }
-
-  async printModelSummary() {
+  async printModelSummary(): Promise<void> {
     await tf.ready();
     const input = this.inputLayer?.tfjsLayer({shape: [32]});
 

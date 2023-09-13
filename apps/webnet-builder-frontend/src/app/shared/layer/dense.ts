@@ -11,7 +11,7 @@ export class Dense extends Layer {
     super(tf.layers.dense, layerConfig.dense, modelBuilderService);
   }
 
-  override createLayer(): Selection<any, any, any, any> {
+  protected override createLayer(): Selection<any, any, any, any> {
     const denseData = {name: "Dense", neuronCount: Math.min(9, 64)};
 
     const denseGrp: Selection<any, any, any, any> = d3.select("#inner-svg-container").append("g")

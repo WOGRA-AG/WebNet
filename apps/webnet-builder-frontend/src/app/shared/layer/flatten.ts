@@ -11,7 +11,7 @@ export class Flatten extends Layer {
     super(tf.layers.flatten, layerConfig.flatten, modelBuilderService );
   }
 
-  override createLayer(): Selection<any, any, any, any> {
+  protected override createLayer(): Selection<any, any, any, any> {
     const flattenData = { name: "Flatten", neuronCount: Math.min(12, 64) };
 
     const flattenGrp = d3.select("#inner-svg-container").append("g")

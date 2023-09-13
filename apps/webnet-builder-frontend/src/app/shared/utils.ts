@@ -1,6 +1,6 @@
 import {XY} from "../core/interfaces";
 
-export function cloneObject(object: Object) {
+export function cloneObject(object: Object): any {
   return JSON.parse(JSON.stringify(object));
 }
 
