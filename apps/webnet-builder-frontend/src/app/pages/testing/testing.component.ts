@@ -7,6 +7,7 @@ import {TrainingStats} from "../../core/interfaces";
 import * as tf from "@tensorflow/tfjs";
 import * as tfvis from '@tensorflow/tfjs-vis';
 import {cloneObject} from "../../shared/utils";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -33,11 +34,15 @@ export class TestingComponent {
   };
   trainingHistory: TrainingStats[] = [];
   @ViewChild('modelSummaryContainer', { static: false }) modelSummaryContainer!: ElementRef;
-
+  private backendSubscription: Subscription|undefined;
   constructor(private mnistDataService: MnistDataService, private modelWrapperService: ModelWrapperService) {
+    this.backendSubscription = this.hyperParameter?.get('backend')?.valueChanges.subscribe(async (backendValue) => {
+      await this.initBackend();
+    });
   }
 
   async ngOnInit(): Promise<void> {
+
     await this.initBackend()
     const model = this.modelWrapperService.getModel(this.hyperParameter.get('example')?.value!);
     if (model) {
@@ -54,6 +59,7 @@ export class TestingComponent {
     if (backendControl) {
       await tf.setBackend(backendControl.value!.toString());
       await tf.ready();
+      console.log(tf.getBackend());
     }
   }
 
@@ -77,6 +83,7 @@ export class TestingComponent {
 
     const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(example!, batchSize!)!;
     const model = this.modelWrapperService.getModel(example!);
+
     const NumBatchesInEpoch = Math.ceil(trainXs.shape[0] / batchSize!);
     const totalNumBatches = NumBatchesInEpoch * epochs!;
     const fitCallback = {

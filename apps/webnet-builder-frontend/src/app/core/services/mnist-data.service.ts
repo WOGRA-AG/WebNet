@@ -32,7 +32,7 @@ export class MnistDataService {
     this.shuffledTestIndex = 0;
   }
 
-  getModel(): tf.LayersModel {
+  getModel(): tf.Sequential {
     const model = tf.sequential();
 
     const IMAGE_WIDTH = 28;

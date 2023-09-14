@@ -11,7 +11,7 @@ export class ModelWrapperService {
   constructor(private mnistDataService: MnistDataService) {
   }
 
-  getModel(trainingExample: string): tf.LayersModel|void {
+  getModel(trainingExample: string): tf.LayersModel|undefined {
     return this.getService(trainingExample)?.getModel();
   }
 
