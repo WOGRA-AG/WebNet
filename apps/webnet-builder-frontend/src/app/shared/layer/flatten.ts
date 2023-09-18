@@ -3,16 +3,31 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
-import {layerConfig} from "../layerconfig";
+import {FormBuilder} from "@angular/forms";
 
 
 export class Flatten extends Layer {
-  constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.flatten, layerConfig.flatten, modelBuilderService );
+  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+    const config = {
+      name: 'Flatten',
+      title: 'Flatten Layer Parameter',
+      parameters: {
+        shape: [4, 3],
+      },
+      formConfig: [{
+        key: 'shape',
+        label: 'Shape',
+        controlType: 'textbox',
+        required: true,
+        value: 'Shape???',
+        type: 'text'
+      }]
+    };
+    super(tf.layers.flatten, config, modelBuilderService, fb);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
-    const flattenData = { name: "Flatten", neuronCount: Math.min(12, 64) };
+    const flattenData = {name: "Flatten", neuronCount: Math.min(12, 64)};
 
     const flattenGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
@@ -36,7 +51,7 @@ export class Flatten extends Layer {
       .attr("text-anchor", "middle")
       .text(flattenData.name);
 
-    const numNeurons = Math.min(flattenData.neuronCount,7);
+    const numNeurons = Math.min(flattenData.neuronCount, 7);
 
     const neuronRadius = 8;
     const neuronMargin = 4;

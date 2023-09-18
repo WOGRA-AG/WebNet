@@ -8,6 +8,7 @@ import {Output} from "../../shared/layer/output";
 import {Selection} from "d3";
 import * as d3 from "d3";
 import {LayersModel} from "@tensorflow/tfjs";
+import {FormBuilder} from "@angular/forms";
 
 
 @Injectable({
@@ -22,7 +23,7 @@ export class ModelBuilderService {
   selectedLayerSubject: BehaviorSubject<Layer | null> = new BehaviorSubject<Layer | null>(null);
   activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
 
-  constructor() {
+  constructor(protected fb: FormBuilder) {
     this.selectedLayerSubject.subscribe((layer) => {
       this.selectedLayer?.unselect();
       this.selectedLayer = layer;
@@ -55,8 +56,8 @@ export class ModelBuilderService {
         .on('zoom', (event: any) => {
           d3.select("#inner-svg-container").attr('transform', event.transform);
         }));
-    this.inputLayer = new Input(this);
-    this.outputLayer = new Output(this);
+    this.inputLayer = new Input(this, this.fb);
+    this.outputLayer = new Output(this, this.fb);
     this.layerList.push(this.inputLayer, this.outputLayer);
   }
 

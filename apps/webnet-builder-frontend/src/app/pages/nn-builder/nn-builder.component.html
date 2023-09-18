@@ -5,9 +5,9 @@
   <div>
     <div class="layer-components-container box-container">
       <h2>Layer Components</h2>
-      <span>Add Layer Components to your model by clicking on them.</span>
+      <span>Add individual layers to your model by simply clicking on buttons.</span>
       <div class="layer-components">
-        <h3>Basic</h3>
+        <h3>Fully connected</h3>
         <div class="layer-component-buttons">
           <button mat-raised-button color="primary" (click)="createLayer('dense')">
             Dense
@@ -26,8 +26,8 @@
         </div>
       </div>
     </div>
-    <div class="box-container" *ngIf="configuration">
-      <h2>Configuration</h2>
+    <div class="box-container" *ngIf="layerForm">
+      <h2>{{configuration.name }} Configuration</h2>
       <span>{{configuration.title}}</span>
       <app-dynamic-layer-form [parameterConfig]="configuration.formConfig"
                               [form]="layerForm"></app-dynamic-layer-form>

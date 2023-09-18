@@ -14,17 +14,12 @@ import * as tfvis from "@tensorflow/tfjs-vis";
 })
 export class NnBuilderComponent {
   @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
-  layerForm = this.fb.group({
-    shape: [''],
-    units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-    filter: [3],
-    kernelSize: [2]
-  });
+  layerForm: any;
   configuration: any;
-
 
   constructor(private modelBuilderService: ModelBuilderService, private fb: FormBuilder) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
+      this.layerForm = layer ? layer.layerForm : null;
       this.configuration = layer ? layer.getConfiguration() : null;
     })
   }
@@ -65,16 +60,16 @@ export class NnBuilderComponent {
   createLayer(type: string): void {
     switch (type) {
       case 'dense':
-        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService)));
+        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService, this.fb)));
         break;
       case 'convolution':
-        this.modelBuilderService.addToLayerList((new Convolution(this.modelBuilderService)));
+        this.modelBuilderService.addToLayerList((new Convolution(this.modelBuilderService, this.fb)));
         break;
       case 'flatten':
-        this.modelBuilderService.addToLayerList((new Flatten(this.modelBuilderService)));
+        this.modelBuilderService.addToLayerList((new Flatten(this.modelBuilderService, this.fb)));
         break;
       default:
-        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService)));
+        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService, this.fb)));
         break;
     }
   }

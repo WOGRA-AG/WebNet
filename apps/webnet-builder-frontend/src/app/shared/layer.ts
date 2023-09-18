@@ -4,6 +4,7 @@ import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
 import {XY} from "../core/interfaces";
+import {Validators, FormBuilder} from "@angular/forms";
 
 export abstract class Layer {
   protected svgElement: Selection<any, any, any, any>;
@@ -13,10 +14,18 @@ export abstract class Layer {
   protected configuration: any;
   public tfjsLayer: any;
 
+  public layerForm = this.fb.group({
+    shape: [''],
+    units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+    filter: [3],
+    kernelSize: [2]
+  });
+
   protected constructor(
     tfjsLayer: any,
     configuration: any,
-    protected modelBuilderService: ModelBuilderService) {
+    protected modelBuilderService: ModelBuilderService,
+    protected fb: FormBuilder) {
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration
 

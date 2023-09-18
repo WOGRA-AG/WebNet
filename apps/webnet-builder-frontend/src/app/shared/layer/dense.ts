@@ -3,12 +3,29 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {layerConfig} from "../layerconfig";
+import {FormBuilder} from "@angular/forms";
 
 export class Dense extends Layer {
 
-  constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.dense, layerConfig.dense, modelBuilderService);
+  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+    const config = {
+      name: 'Dense',
+      title: 'Dense Layer Parameter',
+      parameters: {
+        units: 5,
+        activation: 'softmax',
+      },
+      formConfig: [{
+        key: 'units',
+        title: 'Dense Layer Parameter',
+        label: 'Units',
+        controlType: 'textbox',
+        required: true,
+        value: 5,
+        type: 'number'
+      }]
+    }
+    super(tf.layers.dense, config, modelBuilderService, fb);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

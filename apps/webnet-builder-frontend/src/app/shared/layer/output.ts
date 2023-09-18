@@ -1,17 +1,34 @@
 import * as d3 from "d3";
-import { Selection } from "d3";
-import { layerConfig } from "../layerconfig";
-import { ModelBuilderService } from "../../core/services/model-builder.service";
+import {Selection} from "d3";
+import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
-import { Layer } from "../layer";
+import {Layer} from "../layer";
+import {FormBuilder} from "@angular/forms";
 
 export class Output extends Layer {
-  constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.dense, layerConfig.dense, modelBuilderService);
+  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+    const config = {
+      name: 'Output',
+      title: 'Dense Layer Parameter',
+      parameters: {
+        units: 5,
+        activation: 'softmax',
+      },
+      formConfig: [{
+        key: 'units',
+        title: 'Dense Layer Parameter',
+        label: 'Units',
+        controlType: 'textbox',
+        required: true,
+        value: 5,
+        type: 'number'
+      }]
+    }
+    super(tf.layers.dense, config, modelBuilderService, fb);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
-    const outputData = { name: "Output", neuronCount: 10 };
+    const outputData = {name: "Output", neuronCount: 10};
 
     const outputGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)

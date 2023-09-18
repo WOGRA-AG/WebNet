@@ -1,14 +1,31 @@
 import * as d3 from "d3";
 import { Selection } from "d3";
-import { layerConfig } from "../layerconfig";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
+import {FormBuilder} from "@angular/forms";
 
 export class Input extends Layer{
 
-  constructor(modelBuilderService: ModelBuilderService) {
-    super(tf.layers.input, layerConfig.dense, modelBuilderService );
+  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+    const config = {
+      name: 'Input',
+      title: 'Dense Layer Parameter',
+      parameters: {
+        units: 5,
+        activation: 'softmax',
+      },
+      formConfig: [{
+        key: 'units',
+        title: 'Dense Layer Parameter',
+        label: 'Units',
+        controlType: 'textbox',
+        required: true,
+        value: 5,
+        type: 'number'
+      }]
+    }
+    super(tf.layers.input, config, modelBuilderService, fb);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
