@@ -5,7 +5,6 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {FormBuilder, Validators} from '@angular/forms';
 import {Convolution} from "../../shared/layer/convolution";
 import * as tfvis from "@tensorflow/tfjs-vis";
-import {FlatTreeControl} from "@angular/cdk/tree";
 
 @Component({
   selector: 'app-nn-builder',
