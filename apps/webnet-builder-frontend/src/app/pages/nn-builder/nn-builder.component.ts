@@ -7,13 +7,6 @@ import {Convolution} from "../../shared/layer/convolution";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import {FlatTreeControl} from "@angular/cdk/tree";
 
-interface ExampleFlatNode {
-  expandable: boolean;
-  name: string;
-  level: number;
-}
-
-
 @Component({
   selector: 'app-nn-builder',
   templateUrl: './nn-builder.component.html',
@@ -21,10 +14,6 @@ interface ExampleFlatNode {
   encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
-  treeControl = new FlatTreeControl<ExampleFlatNode>(
-    node => node.level,
-    node => node.expandable,
-  );
   @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
   layerForm = this.fb.group({
     shape: [''],
