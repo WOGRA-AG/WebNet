@@ -10,6 +10,11 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import { MatInputModule } from '@angular/material/input';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatTreeModule} from "@angular/material/tree";
+
 
 const MaterialComponents =
   [MatButtonModule,
@@ -22,7 +27,11 @@ const MaterialComponents =
     MatTabsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatExpansionModule,
+    MatMenuModule,
+    MatGridListModule,
+    MatTreeModule
   ]
 
 @NgModule({

@@ -93,4 +93,30 @@ export class ModelBuilderService {
     const model = tf.model({inputs: input, outputs: hidden});
     return model;
   }
+
+  async saveModel() {
+    const model = await this.getModel();
+    // const saveResults = await model.save('localstorage://my-model-1');
+    const saveResults = await model.save('downloads://my-model-2');
+    console.log(saveResults);
+    console.log("==SAVED==");
+  }
+
+  async listModels() {
+    // prints all models saved in local storage and indexedDB
+    console.log(JSON.stringify(await tf.io.listModels()));
+  }
+
+  async showAllModels() {
+    // prints all models saved in local storage and indexedDB
+    console.log(JSON.stringify(await tf.io.listModels()));
+  }
+
+  async loadModel() {
+    await tf.ready();
+    // const loadedModel = await tf.loadLayersModel('localstorage://my-model-1');
+    const loadedModel = await tf.loadLayersModel('file://PATH_TO_JSON_FILE');
+    console.log(loadedModel);
+    console.log("==LOADED==");
+  }
 }

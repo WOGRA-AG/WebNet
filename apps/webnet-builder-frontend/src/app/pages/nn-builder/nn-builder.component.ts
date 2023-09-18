@@ -5,6 +5,14 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {FormBuilder, Validators} from '@angular/forms';
 import {Convolution} from "../../shared/layer/convolution";
 import * as tfvis from "@tensorflow/tfjs-vis";
+import {FlatTreeControl} from "@angular/cdk/tree";
+
+interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
+
 
 @Component({
   selector: 'app-nn-builder',
@@ -13,7 +21,11 @@ import * as tfvis from "@tensorflow/tfjs-vis";
   encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
-
+  treeControl = new FlatTreeControl<ExampleFlatNode>(
+    node => node.level,
+    node => node.expandable,
+  );
+  @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
   layerForm = this.fb.group({
     shape: [''],
     units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
@@ -21,7 +33,7 @@ export class NnBuilderComponent {
     kernelSize: [2]
   });
   configuration: any;
-  @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
+
 
   constructor(private modelBuilderService: ModelBuilderService, private fb: FormBuilder) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
@@ -48,6 +60,18 @@ export class NnBuilderComponent {
       console.log(model.summary());
       await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
     }
+  }
+
+  async saveModel(): Promise<void> {
+    await this.modelBuilderService.saveModel();
+  }
+
+  async showAllModels(): Promise<void> {
+    await this.modelBuilderService.showAllModels();
+  }
+
+  async loadModel(): Promise<void> {
+    await this.modelBuilderService.loadModel();
   }
 
   createLayer(type: string): void {

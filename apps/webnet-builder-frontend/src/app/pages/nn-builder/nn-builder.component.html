@@ -1,25 +1,50 @@
-<div>
-  <button mat-raised-button color="primary" (click)="createLayer('flatten')">
-    Flatten Layer
-  </button>
-  <button mat-raised-button color="primary" (click)="createLayer('dense')">
-    Dense Layer
-  </button>
-  <button mat-raised-button color="primary" (click)="createLayer('convolution')">
-    Convolution Layer
-  </button>
-</div>
 <div class="ui-container">
-  <svg id="svg-container">
+  <svg id="svg-container" class="box-container">
     <g id="inner-svg-container"></g>
   </svg>
-  <div *ngIf="configuration">
-    <h2>{{configuration.title}}</h2>
-    <app-dynamic-layer-form [parameterConfig]="configuration.formConfig"
-                            [form]="layerForm"></app-dynamic-layer-form>
+  <div>
+    <div class="layer-components-container box-container">
+      <h2>Layer Components</h2>
+      <span>Add Layer Components to your model by clicking on them.</span>
+      <div class="layer-components">
+        <h3>Basic</h3>
+        <div class="layer-component-buttons">
+          <button mat-raised-button color="primary" (click)="createLayer('dense')">
+            Dense
+          </button>
+        </div>
+        <h3>Convolution</h3>
+        <div class="layer-component-buttons">
+          <button mat-raised-button color="primary" (click)="createLayer('convolution')">
+            Convolution
+          </button>
+          <button mat-raised-button color="primary" (click)="createLayer('flatten')">
+            Flatten
+          </button>
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-container" *ngIf="configuration">
+      <h2>Configuration</h2>
+      <span>{{configuration.title}}</span>
+      <app-dynamic-layer-form [parameterConfig]="configuration.formConfig"
+                              [form]="layerForm"></app-dynamic-layer-form>
+    </div>
   </div>
 </div>
 <button mat-raised-button color="warn" (click)="showModelSummary()">
   Show Model Summary
 </button>
+<button mat-raised-button color="primary" (click)="saveModel()">
+  Save Model
+</button>
+<button mat-raised-button color="secondary" (click)="showAllModels()">
+  Show all saved Models
+</button>
+<button mat-raised-button color="secondary" (click)="loadModel()">
+  Load Model
+</button>
+
 <div #modelSummaryContainer></div>

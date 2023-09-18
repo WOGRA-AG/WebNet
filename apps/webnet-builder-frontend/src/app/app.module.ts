@@ -26,7 +26,7 @@ import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-for
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

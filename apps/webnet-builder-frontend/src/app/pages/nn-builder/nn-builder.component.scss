@@ -1,3 +1,31 @@
+button {
+  margin: 0.5em;
+}
+
+.box-container {
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid black;
+  padding: 20px;
+  margin: 0.5em;
+}
+.layer-components-container {
+  .layer-components {
+    padding: 10px;
+  }
+
+  .layer-component-buttons {
+    border-left: 3px solid black;
+  }
+  h3 {
+    margin: 0.5em 0 0.5em 0;
+    font-weight: bold;
+  }
+  button {
+    border-radius: 25px !important;
+  }
+}
+
 .ui-container {
   display: flex;
   flex-direction: row;
@@ -5,13 +33,14 @@
   #svg-container {
     height: 600px;
     width: 1200px;
-    border: 1px solid black;
-    margin-right: 20px;
 
     #inner-svg-container {
       height: 100%;
       width: 100%;
     }
+  }
+  .layer-components {
+    flex-grow: 1;
   }
 }
 
