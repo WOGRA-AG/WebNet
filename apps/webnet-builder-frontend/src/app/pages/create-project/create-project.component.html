@@ -1,0 +1,18 @@
+<mat-stepper [linear]="false" #stepper>
+  <mat-step label="Dataset">
+    <p>add Dataset and manipulate data.</p>
+  </mat-step>
+  <mat-step label="Modeling">
+    <p>load model or model it yourself.</p>
+  </mat-step>
+  <mat-step label="Training">
+    <p>train your model.</p>
+  </mat-step>
+  <mat-step label="Evaluation">
+    <p>here you can see visualizations....</p>
+    <div>
+<!--      <button mat-button matStepperPrevious>Back</button>-->
+      <button mat-button (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>

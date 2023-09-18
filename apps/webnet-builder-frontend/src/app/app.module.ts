@@ -11,6 +11,9 @@ import { TrainingContainerComponent } from './shared/components/training-contain
 import {ReactiveFormsModule} from "@angular/forms";
 import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
 import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-form/dynamic-layer-form.component';
+import { ProjectsComponent } from './pages/projects/projects.component';
+import { CreateProjectComponent } from './pages/create-project/create-project.component';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +22,9 @@ import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-for
     TestingComponent,
     TrainingContainerComponent,
     NnBuilderComponent,
-    DynamicLayerFormComponent
+    DynamicLayerFormComponent,
+    ProjectsComponent,
+    CreateProjectComponent
   ],
   imports: [
     BrowserModule,
