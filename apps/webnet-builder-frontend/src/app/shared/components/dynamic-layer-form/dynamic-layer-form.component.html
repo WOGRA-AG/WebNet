@@ -2,14 +2,15 @@
   <ng-container *ngFor="let parameter of parameterConfig;">
     <mat-form-field [ngSwitch]="parameter.controlType">
       <mat-label [id]="parameter.key">{{parameter.label}}</mat-label>
+      <!-- input -->
       <input matInput [id]="parameter.key" [type]="parameter.type" [formControlName]="parameter.key"
              *ngSwitchCase="'textbox'">
+      <!-- select -->
+      <mat-select [id]="parameter.key" *ngSwitchCase="'dropdown'" [formControlName]="parameter.key">
+        <mat-option *ngFor="let opt of parameter.options | keyvalue" [value]="opt.key">{{opt.value}}</mat-option>
+      </mat-select>
     </mat-form-field>
   </ng-container>
-  <!--    <select [id]="parameter.key" *ngSwitchCase="'dropdown'" [formControlName]="parameter.key">-->
-  <!--      <option *ngFor="let opt of parameter.options" [value]="opt.key">{{opt.value}}</option>-->
-  <!--    </select>-->
-
 
   <!--  <div class="errorMessage" *ngIf="!isValid">{{parameter.label}} is required</div>-->
 </form>

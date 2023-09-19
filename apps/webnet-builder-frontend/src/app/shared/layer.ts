@@ -4,7 +4,7 @@ import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
 import {XY} from "../core/interfaces";
-import {Validators, FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 export abstract class Layer {
   protected svgElement: Selection<any, any, any, any>;
@@ -12,23 +12,18 @@ export abstract class Layer {
   protected inputConnection: Connection | null = null;
   protected mousePositionOnElement: XY = {x: 0, y: 0};
   protected configuration: any;
+  public layerForm: FormGroup;
   public tfjsLayer: any;
-
-  public layerForm = this.fb.group({
-    shape: [''],
-    units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-    filter: [3],
-    kernelSize: [2]
-  });
 
   protected constructor(
     tfjsLayer: any,
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
-    protected fb: FormBuilder) {
+    protected fb: FormBuilder,
+    layerForm: FormGroup) {
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration
-
+    this.layerForm = layerForm;
     this.svgElement = this.createLayer();
 
     // add dragable events to the svg element
@@ -49,7 +44,10 @@ export abstract class Layer {
   }
 
   getParameters(): any {
-    return this.configuration.parameters;
+    console.log("===");
+    console.log(typeof this.layerForm.get('units')?.getRawValue())
+    console.log(this.layerForm.getRawValue());
+    return this.layerForm.getRawValue();
   }
 
   getConfiguration(): any {

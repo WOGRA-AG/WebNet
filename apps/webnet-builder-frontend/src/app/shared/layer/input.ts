@@ -3,29 +3,25 @@ import { Selection } from "d3";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 
 export class Input extends Layer{
 
   constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
     const config = {
       name: 'Input',
-      title: 'Dense Layer Parameter',
-      parameters: {
-        units: 5,
-        activation: 'softmax',
-      },
+      title: 'Input Layer Parameter',
       formConfig: [{
-        key: 'units',
-        title: 'Dense Layer Parameter',
-        label: 'Units',
+        key: 'shape',
+        label: 'Shape',
         controlType: 'textbox',
-        required: true,
-        value: 5,
         type: 'number'
       }]
-    }
-    super(tf.layers.input, config, modelBuilderService, fb);
+    };
+    const layerForm = fb.group({
+      shape: [16],
+    });
+    super(tf.layers.input, config, modelBuilderService, fb, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

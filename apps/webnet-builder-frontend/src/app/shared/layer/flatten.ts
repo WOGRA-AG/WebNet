@@ -3,7 +3,7 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 
 
 export class Flatten extends Layer {
@@ -23,7 +23,13 @@ export class Flatten extends Layer {
         type: 'text'
       }]
     };
-    super(tf.layers.flatten, config, modelBuilderService, fb);
+    const layerForm = fb.group({
+      shape: [''],
+      units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      filter: [3],
+      kernelSize: [2]
+    });
+    super(tf.layers.flatten, config, modelBuilderService, fb, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

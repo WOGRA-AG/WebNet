@@ -2,7 +2,7 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 
 export class Convolution extends Layer {
 
@@ -15,23 +15,44 @@ export class Convolution extends Layer {
         kernelSize: 2
       },
       formConfig: [{
-        key: 'filter',
+        key: 'filters',
         label: 'Filters',
         controlType: 'textbox',
-        required: true,
-        value: 3,
         type: 'number'
       },
         {
           key: 'kernelSize',
           label: 'Kernel Size',
           controlType: 'textbox',
-          required: true,
-          value: 2,
           type: 'number'
-        }]
+        },
+        {
+          key: 'strides',
+          label: 'Strides',
+          controlType: 'textbox',
+          type: 'number'
+        },
+        {
+          key: 'padding',
+          label: 'Padding',
+          controlType: 'textbox',
+          type: 'number'
+        },
+        {
+          key: 'activation',
+          label: 'Activation Function',
+          controlType: 'dropdown',
+          options: {softmax: 'Softmax', sigmoid: 'Sigmoid', relu: 'Relu'}
+        },]
     };
-    super(tf.layers.conv3d, config, modelBuilderService, fb);
+    const layerForm = fb.group({
+      filters: [3, [Validators.required]],
+      kernelSize: [2, [Validators.required]],
+      strides: [1, [Validators.required]],
+      padding: [2, [Validators.required]],
+      activation: ['relu', [Validators.required]]
+    })
+    super(tf.layers.conv3d, config, modelBuilderService, fb, layerForm);
   }
 
   protected override createLayer() {

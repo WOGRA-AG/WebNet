@@ -71,6 +71,7 @@ export class ModelBuilderService {
     event.stopPropagation();
     if (this.selectedLayer != this.inputLayer && this.selectedLayer != this.outputLayer) {
       this.selectedLayer?.delete();
+      this.selectedLayerSubject.next(null);
     }
   }
 
@@ -80,7 +81,7 @@ export class ModelBuilderService {
 
   async getModel(): Promise<LayersModel> {
     await tf.ready();
-    const input = this.inputLayer?.tfjsLayer({shape: [32]});
+    const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getParameters());
 
     let layer: Layer | null | undefined = this.inputLayer;
     let hidden = input;

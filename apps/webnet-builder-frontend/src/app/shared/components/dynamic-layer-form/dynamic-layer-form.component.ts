@@ -15,7 +15,6 @@ export interface Parameter {
   key: string
   label: string
   controlType: string
-  value: string
-  required: boolean
-  type: string
+  type: string,
+  options: any[]
 }

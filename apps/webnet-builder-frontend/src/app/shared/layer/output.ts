@@ -3,28 +3,32 @@ import {Selection} from "d3";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 
 export class Output extends Layer {
   constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
-      parameters: {
-        units: 5,
-        activation: 'softmax',
-      },
       formConfig: [{
         key: 'units',
-        title: 'Dense Layer Parameter',
         label: 'Units',
         controlType: 'textbox',
-        required: true,
-        value: 5,
         type: 'number'
-      }]
-    }
-    super(tf.layers.dense, config, modelBuilderService, fb);
+      },
+        {
+          key: 'activation',
+          label: 'Activation Function',
+          controlType: 'dropdown',
+          options: {softmax: 'Softmax', sigmoid: 'Sigmoid', relu: 'Relu'}
+        },
+      ]
+    };
+    const layerForm = fb.group({
+      units: [5, [Validators.required, Validators.minLength(1)]],
+      activation: ['sigmoid', [Validators.required]]
+    })
+    super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
