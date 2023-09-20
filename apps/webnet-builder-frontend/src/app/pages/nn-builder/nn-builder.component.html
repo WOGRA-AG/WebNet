@@ -9,7 +9,7 @@
       <div class="layer-components">
         <h3>Fully connected</h3>
         <div class="layer-component-buttons">
-          <button mat-raised-button color="primary" (click)="createLayer('dense')" matTooltip="Info about the action">
+          <button mat-raised-button color="primary" (click)="createLayer('dense')">
             Dense
           </button>
         </div>
@@ -34,16 +34,3 @@
     </div>
   </div>
 </div>
-<button mat-raised-button color="warn" (click)="showModelSummary()">
-  Show Model Summary
-</button>
-<button mat-raised-button color="primary" (click)="saveModel()">
-  Save Model
-</button>
-<button mat-raised-button color="secondary" (click)="showAllModels()">
-  Show all saved Models
-</button>
-<button mat-raised-button color="secondary" (click)="loadModel()">
-  Load Model
-</button>
-<div #modelSummaryContainer></div>

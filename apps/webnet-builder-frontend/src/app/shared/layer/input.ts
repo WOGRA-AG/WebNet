@@ -31,12 +31,13 @@ export class Input extends Layer{
 
   protected override createLayer(): Selection<any, any, any, any> {
     const inputData = { name: "Input", shape: [64, 64, 3] };
-
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    const svgHeight = svg.node().getBoundingClientRect().height;
     const inputGrp = d3.select("#inner-svg-container")
       .append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(30, 200)");
+      .attr("transform", `translate(30, ${svgHeight / 2 - 75})`);
 
     inputGrp.append("rect")
       .classed('layer', true)

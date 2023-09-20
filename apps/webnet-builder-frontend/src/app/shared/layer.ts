@@ -25,8 +25,6 @@ export abstract class Layer {
     this.configuration = configuration
     this.layerForm = layerForm;
     this.svgElement = this.createLayer();
-
-    // add dragable events to the svg element
     this.svgElement.call(d3.drag<SVGElement, any, any>()
       .on("start", (event: any) => this.dragStarted(event))
       .on("drag", (event: any) => this.dragging(event))
@@ -80,6 +78,10 @@ export abstract class Layer {
     this.modelBuilderService.selectedLayerSubject.next(this);
   }
 
+  draw(): void {
+    d3.select("#inner-svg-container").append(() => this.svgElement.node());
+    this.outputConnection?.draw();
+  }
   unselect(): void {
     this.svgElement.classed("selected", false);
   }

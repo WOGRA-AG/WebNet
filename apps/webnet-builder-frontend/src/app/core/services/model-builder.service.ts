@@ -22,6 +22,7 @@ export class ModelBuilderService {
   activeConnection: Connection | null = null;
   selectedLayerSubject: BehaviorSubject<Layer | null> = new BehaviorSubject<Layer | null>(null);
   activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
+  isInitialized = false;
 
   constructor(protected fb: NonNullableFormBuilder) {
     this.selectedLayerSubject.subscribe((layer) => {
@@ -36,6 +37,7 @@ export class ModelBuilderService {
   getLayers(): Layer[] {
     return this.layerList;
   }
+
   getSelectedLayer() {
     return this.selectedLayer;
   }
@@ -46,19 +48,25 @@ export class ModelBuilderService {
   }
 
   initialize(): void {
-    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
-    const svgWidth = svg.node().getBoundingClientRect().width;
-    const svgHeight = svg.node().getBoundingClientRect().height;
+    if (!this.isInitialized) {
+      // todo: make sure that the saved layer list is getting used before initializing new!
+      const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+      const svgWidth = svg.node().getBoundingClientRect().width;
+      const svgHeight = svg.node().getBoundingClientRect().height;
 
-    svg.on("click", (event: any) => this.unselect(event))
-      .call(d3.zoom().scaleExtent([0.4, 1.1])
-        .translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]])
-        .on('zoom', (event: any) => {
-          d3.select("#inner-svg-container").attr('transform', event.transform);
-        }));
-    this.inputLayer = new Input(this, this.fb);
-    this.outputLayer = new Output(this, this.fb);
-    this.layerList.push(this.inputLayer, this.outputLayer);
+      svg.on("click", (event: any) => this.unselect(event))
+        .call(d3.zoom().scaleExtent([0.4, 1.1])
+          .translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]])
+          .on('zoom', (event: any) => {
+            d3.select("#inner-svg-container").attr('transform', event.transform);
+          }));
+      this.inputLayer = new Input(this, this.fb);
+      this.outputLayer = new Output(this, this.fb);
+      this.layerList.push(this.inputLayer, this.outputLayer);
+      this.isInitialized = true;
+    } else {
+      this.layerList.forEach((layer: Layer) => layer.draw());
+    }
   }
 
 

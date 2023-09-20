@@ -19,6 +19,10 @@ export class Connection {
       .lower();
   }
 
+  draw(): void {
+    d3.select("#inner-svg-container").append(() => this.connection.node());
+  }
+
   connectWithDestinationLayer(destinationLayer: Layer): this {
     this.destination = destinationLayer;
     return this;
@@ -44,7 +48,7 @@ export class Connection {
     this.connection
       .attr("x1", anchorPosition.x)
       .attr("y1", anchorPosition.y)
-      // .lower();
+      .lower();
   }
 
   updateDestinationPosition(): void {

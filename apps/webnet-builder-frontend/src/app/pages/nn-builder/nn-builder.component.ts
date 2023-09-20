@@ -4,7 +4,6 @@ import {Dense} from "../../shared/layer/dense";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {NonNullableFormBuilder} from '@angular/forms';
 import {Convolution} from "../../shared/layer/convolution";
-import * as tfvis from "@tensorflow/tfjs-vis";
 
 @Component({
   selector: 'app-nn-builder',
@@ -13,7 +12,6 @@ import * as tfvis from "@tensorflow/tfjs-vis";
   encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
-  @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
   layerForm: any;
   configuration: any;
 
@@ -28,33 +26,14 @@ export class NnBuilderComponent {
     this.modelBuilderService.initialize();
   }
 
-  @HostListener('window:keydown.Escape', ['$event']) unselectLayer(event: KeyboardEvent): void {
+  @HostListener('window:keydown.Escape', ['$event'])
+  unselectLayer(event: KeyboardEvent): void {
     this.modelBuilderService.unselect(event);
   }
 
-  @HostListener('window:keydown.Delete', ['$event']) deleteLayer(event: KeyboardEvent): void {
+  @HostListener('window:keydown.Delete', ['$event'])
+  deleteLayer(event: KeyboardEvent): void {
     this.modelBuilderService.deleteSelectedLayer(event);
-  }
-
-  async showModelSummary(): Promise<void> {
-    const model = await this.modelBuilderService.getModel();
-    if (model) {
-      // tfvis.show.layer(this.modelSummaryContainer.nativeElement, model.getLayer(1));
-      console.log(model.summary());
-      await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
-    }
-  }
-
-  async saveModel(): Promise<void> {
-    await this.modelBuilderService.saveModel();
-  }
-
-  async showAllModels(): Promise<void> {
-    await this.modelBuilderService.showAllModels();
-  }
-
-  async loadModel(): Promise<void> {
-    await this.modelBuilderService.loadModel();
   }
 
   createLayer(type: string): void {

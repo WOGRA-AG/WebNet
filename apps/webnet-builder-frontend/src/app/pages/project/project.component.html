@@ -1,14 +1,26 @@
 <mat-stepper [linear]="false" #stepper>
-  <mat-step label="Dataset">
+  <mat-step label="Dataset" #dataset>
     <p>add Dataset and manipulate data.</p>
   </mat-step>
-  <mat-step label="Modeling">
-    <p>load model or model it yourself.</p>
+  <mat-step label="Modeling" #second_step>
+    <app-nn-builder *ngIf="stepper.selected == second_step"></app-nn-builder>
   </mat-step>
-  <mat-step label="Training">
-    <p>train your model.</p>
+  <mat-step label="Training" #training_step>
+    <button mat-raised-button color="warn" (click)="showModelSummary()">
+      Show Model Summary
+    </button>
+    <button mat-raised-button color="primary" (click)="saveModel()">
+      Save Model
+    </button>
+    <button mat-raised-button color="secondary" (click)="showAllModels()">
+      Show all saved Models
+    </button>
+    <button mat-raised-button color="secondary" (click)="loadModel()">
+      Load Model
+    </button>
+    <div #modelSummaryContainer></div>
   </mat-step>
-  <mat-step label="Evaluation">
+  <mat-step label="Evaluation" #evaluation_step>
     <p>here you can see visualizations....</p>
     <div>
       <!--      <button mat-button matStepperPrevious>Back</button>-->

@@ -38,11 +38,14 @@ export class Output extends Layer {
 
   protected override createLayer(): Selection<any, any, any, any> {
     const outputData = {name: "Output", neuronCount: 10};
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const svgHeight = svg.node().getBoundingClientRect().height;
 
     const outputGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(1100, 200)");
+      .attr("transform", `translate(${svgWidth - 145}, ${svgHeight / 2 - 75})`);
 
     outputGrp.append("rect")
       .classed('layer', true)

@@ -15,7 +15,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatTreeModule} from "@angular/material/tree";
 import {MatStepperModule} from "@angular/material/stepper";
-// import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const MaterialComponents =
   [MatButtonModule,
@@ -34,7 +34,7 @@ const MaterialComponents =
     MatGridListModule,
     MatTreeModule,
     MatStepperModule,
-    // MatTooltipModule
+    MatTooltipModule
   ]
 
 @NgModule({
