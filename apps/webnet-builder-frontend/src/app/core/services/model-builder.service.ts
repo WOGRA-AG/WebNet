@@ -15,7 +15,8 @@ import {NonNullableFormBuilder} from "@angular/forms";
   providedIn: 'root'
 })
 export class ModelBuilderService {
-  layerList: Layer[] = [];
+  private layerMap: Map<string, Layer> = new Map();
+  private nextLayerId = 1;
   inputLayer: Input | null = null;
   outputLayer: Output | null = null;
   selectedLayer: Layer | null = null;
@@ -34,41 +35,42 @@ export class ModelBuilderService {
     })
   }
 
-  getLayers(): Layer[] {
-    return this.layerList;
-  }
-
   getSelectedLayer() {
     return this.selectedLayer;
   }
 
-  clearLayerList(): Layer[] {
-    this.layerList = [];
-    return this.layerList;
+  clearModelBuilder(): void {
+    this.isInitialized = false;
+    this.deleteAllLayers();
+    this.layerMap.clear();
+    this.initialize();
+  }
+
+  setupSvg(): void {
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const svgHeight = svg.node().getBoundingClientRect().height;
+
+    svg
+      .on("click", (event: any) => this.unselect(event))
+      .call(
+        d3.zoom().scaleExtent([0.4, 1.1])
+          .translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]])
+          .on('zoom', (event: any) => {
+            d3.select("#inner-svg-container").attr('transform', event.transform);
+          })
+      );
   }
 
   initialize(): void {
     if (!this.isInitialized) {
-      // todo: make sure that the saved layer list is getting used before initializing new!
-      const svg: Selection<any, any, any, any> = d3.select("#svg-container");
-      const svgWidth = svg.node().getBoundingClientRect().width;
-      const svgHeight = svg.node().getBoundingClientRect().height;
-
-      svg.on("click", (event: any) => this.unselect(event))
-        .call(d3.zoom().scaleExtent([0.4, 1.1])
-          .translateExtent([[-svgWidth, -svgHeight], [2 * svgWidth, 2 * svgHeight]])
-          .on('zoom', (event: any) => {
-            d3.select("#inner-svg-container").attr('transform', event.transform);
-          }));
-      this.inputLayer = new Input(this, this.fb);
-      this.outputLayer = new Output(this, this.fb);
-      this.layerList.push(this.inputLayer, this.outputLayer);
       this.isInitialized = true;
+      this.nextLayerId = 1;
+      this.createInputAndOutputLayer();
     } else {
-      this.layerList.forEach((layer: Layer) => layer.draw());
+      this.redrawLayers();
     }
   }
-
 
   unselect(event: any): void {
     event.stopPropagation();
@@ -78,13 +80,16 @@ export class ModelBuilderService {
   deleteSelectedLayer(event: any): void {
     event.stopPropagation();
     if (this.selectedLayer != this.inputLayer && this.selectedLayer != this.outputLayer) {
+      this.layerMap.delete(this.selectedLayer?.getLayerId()!);
       this.selectedLayer?.delete();
       this.selectedLayerSubject.next(null);
     }
   }
 
+
   addToLayerList(layer: Layer): void {
-    this.layerList.push(layer);
+    const id = layer.getLayerId();
+    this.layerMap.set(id, layer);
   }
 
   async getModel(): Promise<LayersModel> {
@@ -102,6 +107,10 @@ export class ModelBuilderService {
 
     const model = tf.model({inputs: input, outputs: hidden});
     return model;
+  }
+
+  generateLayerId(): string {
+    return `layer-${this.nextLayerId++}`;
   }
 
   async saveModel() {
@@ -128,5 +137,24 @@ export class ModelBuilderService {
     const loadedModel = await tf.loadLayersModel('file://PATH_TO_JSON_FILE');
     console.log(loadedModel);
     console.log("==LOADED==");
+  }
+
+  private createInputAndOutputLayer(): void {
+    this.inputLayer = new Input(this, this.fb);
+    this.outputLayer = new Output(this, this.fb);
+    this.layerMap.set(this.inputLayer.getLayerId(), this.inputLayer);
+    this.layerMap.set(this.outputLayer.getLayerId(), this.outputLayer);
+  }
+
+  private deleteAllLayers(): void {
+    this.layerMap.forEach((layer) => {
+      layer.delete();
+    });
+  }
+
+  private redrawLayers(): void {
+    this.layerMap.forEach((layer) => {
+      layer.draw();
+    });
   }
 }

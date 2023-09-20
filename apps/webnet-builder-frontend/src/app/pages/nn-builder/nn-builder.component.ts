@@ -23,6 +23,7 @@ export class NnBuilderComponent {
   }
 
   ngOnInit(): void {
+    this.modelBuilderService.setupSvg();
     this.modelBuilderService.initialize();
   }
 
@@ -36,6 +37,9 @@ export class NnBuilderComponent {
     this.modelBuilderService.deleteSelectedLayer(event);
   }
 
+  clear(): void {
+    this.modelBuilderService.clearModelBuilder();
+  }
   createLayer(type: string): void {
     switch (type) {
       case 'dense':

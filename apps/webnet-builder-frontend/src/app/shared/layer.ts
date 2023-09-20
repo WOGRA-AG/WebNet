@@ -7,6 +7,7 @@ import {XY} from "../core/interfaces";
 import {FormGroup, NonNullableFormBuilder} from "@angular/forms";
 
 export abstract class Layer {
+  private readonly layerId: string;
   protected svgElement: Selection<any, any, any, any>;
   protected outputConnection: Connection | null = null;
   protected inputConnection: Connection | null = null;
@@ -21,6 +22,7 @@ export abstract class Layer {
     protected modelBuilderService: ModelBuilderService,
     protected fb: NonNullableFormBuilder,
     layerForm: FormGroup) {
+    this.layerId = this.modelBuilderService.generateLayerId();
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration
     this.layerForm = layerForm;
@@ -43,6 +45,9 @@ export abstract class Layer {
 
   abstract getParameters(): any;
 
+  getLayerId(): string {
+    return this.layerId;
+  }
   getConfiguration(): any {
     return this.configuration;
   }

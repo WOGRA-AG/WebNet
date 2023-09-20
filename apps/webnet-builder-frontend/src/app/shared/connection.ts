@@ -20,7 +20,7 @@ export class Connection {
   }
 
   draw(): void {
-    d3.select("#inner-svg-container").append(() => this.connection.node());
+    d3.select("#inner-svg-container").append(() => this.connection.node()).lower();
   }
 
   connectWithDestinationLayer(destinationLayer: Layer): this {
