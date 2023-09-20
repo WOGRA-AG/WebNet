@@ -1,6 +1,6 @@
 <mat-list role="list">
   <mat-list-item role="listitem">Project A</mat-list-item>
   <mat-list-item role="listitem">Project B</mat-list-item>
-  <mat-list-item role="listitem">Template Project</mat-list-item>
+  <mat-list-item role="listitem"  [routerLink]="['/projects/mnist']">Mnist Example</mat-list-item>
 </mat-list>
 <a mat-raised-button color="primary" [routerLink]="['/projects/a']" routerLinkActive="active">New Project</a>

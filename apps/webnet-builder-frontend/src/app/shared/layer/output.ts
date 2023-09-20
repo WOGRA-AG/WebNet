@@ -3,10 +3,10 @@ import {Selection} from "d3";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
-import {FormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
 
 export class Output extends Layer {
-  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
@@ -29,6 +29,11 @@ export class Output extends Layer {
       activation: ['sigmoid', [Validators.required]]
     })
     super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
+  }
+
+  override getParameters(): any {
+    //todo: number values as integer
+    return this.layerForm.getRawValue();
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

@@ -2,7 +2,7 @@ import {Component, ElementRef, HostListener, ViewChild, ViewEncapsulation} from 
 import {Flatten} from "../../shared/layer/flatten";
 import {Dense} from "../../shared/layer/dense";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
-import {FormBuilder, Validators} from '@angular/forms';
+import {NonNullableFormBuilder} from '@angular/forms';
 import {Convolution} from "../../shared/layer/convolution";
 import * as tfvis from "@tensorflow/tfjs-vis";
 
@@ -17,7 +17,7 @@ export class NnBuilderComponent {
   layerForm: any;
   configuration: any;
 
-  constructor(private modelBuilderService: ModelBuilderService, private fb: FormBuilder) {
+  constructor(private modelBuilderService: ModelBuilderService, private fb: NonNullableFormBuilder) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
       this.layerForm = layer ? layer.layerForm : null;
       this.configuration = layer ? layer.getConfiguration() : null;

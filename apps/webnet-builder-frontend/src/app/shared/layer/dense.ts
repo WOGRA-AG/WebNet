@@ -3,11 +3,11 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms";
+import {FormControl, NonNullableFormBuilder, Validators} from "@angular/forms";
 
 export class Dense extends Layer {
 
-  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',
@@ -27,10 +27,16 @@ export class Dense extends Layer {
     };
 
     const layerForm = fb.group({
-      units: new FormControl<number>(25, [Validators.required, Validators.minLength(1)]),
+      units: [25, [Validators.required, Validators.minLength(1)]],
       activation: ['softmax', [Validators.required]]
-    })
+    });
     super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
+  }
+
+  override getParameters(): any {
+    const parameter = this.layerForm.getRawValue();
+    parameter.units = parseInt(parameter.units);
+    return parameter;
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

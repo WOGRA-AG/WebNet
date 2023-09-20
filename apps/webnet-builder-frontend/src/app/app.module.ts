@@ -12,7 +12,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
 import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-form/dynamic-layer-form.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
-import { CreateProjectComponent } from './pages/create-project/create-project.component';
+import { ProjectComponent } from './pages/project/project.component';
 
 
 @NgModule({
@@ -24,7 +24,7 @@ import { CreateProjectComponent } from './pages/create-project/create-project.co
     NnBuilderComponent,
     DynamicLayerFormComponent,
     ProjectsComponent,
-    CreateProjectComponent
+    ProjectComponent
   ],
   imports: [
     BrowserModule,

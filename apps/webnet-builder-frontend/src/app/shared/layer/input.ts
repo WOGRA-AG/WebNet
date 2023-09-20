@@ -3,11 +3,11 @@ import { Selection } from "d3";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
-import {FormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder} from "@angular/forms";
 
 export class Input extends Layer{
 
-  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
@@ -22,6 +22,11 @@ export class Input extends Layer{
       shape: [16],
     });
     super(tf.layers.input, config, modelBuilderService, fb, layerForm);
+  }
+
+  override getParameters(): any {
+    //todo: number values as integer
+    return this.layerForm.getRawValue();
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

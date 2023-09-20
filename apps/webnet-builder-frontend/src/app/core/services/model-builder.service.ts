@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Layer} from "../../shared/layer";
 import * as tf from "@tensorflow/tfjs";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import {Connection} from "../../shared/connection";
 import {Input} from "../../shared/layer/input";
 import {Output} from "../../shared/layer/output";
 import {Selection} from "d3";
 import * as d3 from "d3";
 import {LayersModel} from "@tensorflow/tfjs";
-import {FormBuilder} from "@angular/forms";
+import {NonNullableFormBuilder} from "@angular/forms";
 
 
 @Injectable({
@@ -23,7 +23,7 @@ export class ModelBuilderService {
   selectedLayerSubject: BehaviorSubject<Layer | null> = new BehaviorSubject<Layer | null>(null);
   activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
 
-  constructor(protected fb: FormBuilder) {
+  constructor(protected fb: NonNullableFormBuilder) {
     this.selectedLayerSubject.subscribe((layer) => {
       this.selectedLayer?.unselect();
       this.selectedLayer = layer;

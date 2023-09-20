@@ -4,7 +4,7 @@ import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
 import {XY} from "../core/interfaces";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormGroup, NonNullableFormBuilder} from "@angular/forms";
 
 export abstract class Layer {
   protected svgElement: Selection<any, any, any, any>;
@@ -19,7 +19,7 @@ export abstract class Layer {
     tfjsLayer: any,
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
-    protected fb: FormBuilder,
+    protected fb: NonNullableFormBuilder,
     layerForm: FormGroup) {
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration
@@ -43,12 +43,7 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
   }
 
-  getParameters(): any {
-    console.log("===");
-    console.log(typeof this.layerForm.get('units')?.getRawValue())
-    console.log(this.layerForm.getRawValue());
-    return this.layerForm.getRawValue();
-  }
+  abstract getParameters(): any;
 
   getConfiguration(): any {
     return this.configuration;
@@ -215,6 +210,7 @@ export abstract class Layer {
   }
 
   protected dragEnded(event: any): void {
+    console.log("DRAG ENDED")
   }
 
 }

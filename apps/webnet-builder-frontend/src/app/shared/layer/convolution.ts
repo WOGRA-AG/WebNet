@@ -2,11 +2,11 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
-import {FormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
 
 export class Convolution extends Layer {
 
-  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Convolution',
       title: 'Convolution Layer Parameter',
@@ -53,6 +53,11 @@ export class Convolution extends Layer {
       activation: ['relu', [Validators.required]]
     })
     super(tf.layers.conv3d, config, modelBuilderService, fb, layerForm);
+  }
+
+  override getParameters(): any {
+    //todo: number values as integer
+    return this.layerForm.getRawValue();
   }
 
   protected override createLayer() {

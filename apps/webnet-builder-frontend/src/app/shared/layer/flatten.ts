@@ -3,11 +3,11 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
-import {FormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
 
 
 export class Flatten extends Layer {
-  constructor(modelBuilderService: ModelBuilderService, fb: FormBuilder) {
+  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
@@ -30,6 +30,11 @@ export class Flatten extends Layer {
       kernelSize: [2]
     });
     super(tf.layers.flatten, config, modelBuilderService, fb, layerForm);
+  }
+
+  override getParameters(): any {
+    //todo: number values as integer
+    return this.layerForm.getRawValue();
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
