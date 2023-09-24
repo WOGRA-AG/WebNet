@@ -17,7 +17,7 @@ export class Output extends Layer {
       ]
     };
     const layerForm = fb.group({
-      units: [5, [Validators.required, Validators.minLength(1)]],
+      units: [1, [Validators.required, Validators.minLength(1)]],
       activation: ['sigmoid', [Validators.required]]
     })
     super(tf.layers.dense, config, modelBuilderService, fb, layerForm);

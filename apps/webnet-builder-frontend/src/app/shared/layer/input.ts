@@ -19,7 +19,7 @@ export class Input extends Layer{
       ]
     };
     const layerForm = fb.group({
-      shape: ['16', [validateShapeArray]]
+      shape: ['10', [validateShapeArray]]
     });
     super(tf.input, config, modelBuilderService, fb, layerForm);
   }

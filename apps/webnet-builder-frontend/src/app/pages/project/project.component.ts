@@ -19,6 +19,9 @@ export class ProjectComponent {
       await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
     }
   }
+  async fitModel(): Promise<void> {
+    await this.modelBuilderService.fitModel();
+  }
 
   async saveModel(): Promise<void> {
     await this.modelBuilderService.saveModel();

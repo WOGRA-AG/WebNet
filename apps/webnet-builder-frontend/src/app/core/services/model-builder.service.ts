@@ -109,9 +109,26 @@ export class ModelBuilderService {
     return model;
   }
 
+  async fitModel(): Promise<void> {
+    const model = await this.getModel();
+    model.compile({
+      optimizer: tf.train.sgd(0.0001),
+      loss: 'meanSquaredError'
+    });
+    for (let i = 1; i < 5 ; ++i) {
+      const h = await model.fit(tf.ones([8, 10]), tf.ones([8, 1]), {
+        batchSize: 4,
+        epochs: 3
+      });
+      console.log(h.history);
+      // console.log("Loss after Epoch " + i + " : " + h.history.loss[0]);
+    }
+  }
+
   generateLayerId(): string {
     return `layer-${this.nextLayerId++}`;
   }
+
 
   async saveModel() {
     const model = await this.getModel();
