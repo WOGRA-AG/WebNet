@@ -3,7 +3,8 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {FormControl, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {Activation, Units} from "../configuration";
 
 export class Dense extends Layer {
 
@@ -11,18 +12,9 @@ export class Dense extends Layer {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',
-      formConfig: [{
-        key: 'units',
-        label: 'Units',
-        controlType: 'textbox',
-        type: 'number'
-      },
-        {
-          key: 'activation',
-          label: 'Activation Function',
-          controlType: 'dropdown',
-          options: {softmax: 'Softmax', sigmoid: 'Sigmoid', relu: 'Relu'}
-        },
+      formConfig: [
+        Units,
+        Activation
       ]
     };
 

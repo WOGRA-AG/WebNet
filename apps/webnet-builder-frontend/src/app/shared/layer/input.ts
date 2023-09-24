@@ -6,6 +6,7 @@ import {Layer} from "../layer";
 import {NonNullableFormBuilder} from "@angular/forms";
 import {validateShapeArray} from "../../core/validators";
 import {parseShapeString} from "../utils";
+import {Shape} from "../configuration";
 
 export class Input extends Layer{
 
@@ -13,13 +14,9 @@ export class Input extends Layer{
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
-      formConfig: [{
-        key: 'shape',
-        label: 'Shape',
-        controlType: 'textbox',
-        type: 'text',
-        tooltip: 'A shape, not including the batch size. For instance, shape=[32] indicates that the expected input will be batches of 32-dimensional vectors.',
-      }]
+      formConfig: [
+        Shape
+      ]
     };
     const layerForm = fb.group({
       shape: ['16', [validateShapeArray]]

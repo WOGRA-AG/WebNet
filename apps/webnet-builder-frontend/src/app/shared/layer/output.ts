@@ -4,24 +4,16 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {Activation, Units} from "../configuration";
 
 export class Output extends Layer {
   constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
-      formConfig: [{
-        key: 'units',
-        label: 'Units',
-        controlType: 'textbox',
-        type: 'number'
-      },
-        {
-          key: 'activation',
-          label: 'Activation Function',
-          controlType: 'dropdown',
-          options: {softmax: 'Softmax', sigmoid: 'Sigmoid', relu: 'Relu'}
-        },
+      formConfig: [
+        Units,
+        Activation
       ]
     };
     const layerForm = fb.group({

@@ -3,6 +3,7 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {Activation} from "../configuration";
 
 export class Convolution extends Layer {
 
@@ -38,12 +39,8 @@ export class Convolution extends Layer {
           controlType: 'textbox',
           type: 'number'
         },
-        {
-          key: 'activation',
-          label: 'Activation Function',
-          controlType: 'dropdown',
-          options: {softmax: 'Softmax', sigmoid: 'Sigmoid', relu: 'Relu'}
-        },]
+        Activation
+      ]
     };
     const layerForm = fb.group({
       filters: [3, [Validators.required]],
