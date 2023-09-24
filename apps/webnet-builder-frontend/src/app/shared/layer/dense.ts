@@ -33,12 +33,6 @@ export class Dense extends Layer {
     super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
   }
 
-  override getParameters(): any {
-    const parameter = this.layerForm.getRawValue();
-    parameter.units = parseInt(parameter.units);
-    return parameter;
-  }
-
   protected override createLayer(): Selection<any, any, any, any> {
     const denseData = {name: "Dense", neuronCount: Math.min(9, 64)};
 

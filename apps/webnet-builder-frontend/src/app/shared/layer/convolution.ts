@@ -55,11 +55,6 @@ export class Convolution extends Layer {
     super(tf.layers.conv3d, config, modelBuilderService, fb, layerForm);
   }
 
-  override getParameters(): any {
-    //todo: number values as integer
-    return this.layerForm.getRawValue();
-  }
-
   protected override createLayer() {
     const convLayerData = {name: "Convolutional", numFilters: 3, filterSize: 30};
 

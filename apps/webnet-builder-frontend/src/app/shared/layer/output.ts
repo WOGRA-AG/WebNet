@@ -31,11 +31,6 @@ export class Output extends Layer {
     super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
   }
 
-  override getParameters(): any {
-    //todo: number values as integer
-    return this.layerForm.getRawValue();
-  }
-
   protected override createLayer(): Selection<any, any, any, any> {
     const outputData = {name: "Output", neuronCount: 10};
     const svg: Selection<any, any, any, any> = d3.select("#svg-container");

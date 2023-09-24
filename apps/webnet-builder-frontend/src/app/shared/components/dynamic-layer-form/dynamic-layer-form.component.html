@@ -9,9 +9,11 @@
       <mat-select [id]="parameter.key" *ngSwitchCase="'dropdown'" [formControlName]="parameter.key">
         <mat-option *ngFor="let opt of parameter.options | keyvalue" [value]="opt.key">{{opt.value}}</mat-option>
       </mat-select>
+      <!-- Question mark icon -->
+      <mat-icon *ngIf="parameter.tooltip" class="question-mark-icon" aria-label="Question Mark" [matTooltip]="parameter.tooltip">help</mat-icon>
+      <!-- error message-->
+      <mat-error *ngIf="form.get(parameter.key)?.hasError('invalidShape')">Invalid shape format</mat-error>
     </mat-form-field>
   </ng-container>
-
-  <!--  <div class="errorMessage" *ngIf="!isValid">{{parameter.label}} is required</div>-->
 </form>
 

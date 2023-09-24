@@ -4,6 +4,8 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {NonNullableFormBuilder} from "@angular/forms";
+import {validateShapeArray} from "../../core/validators";
+import {parseShapeString} from "../utils";
 
 export class Input extends Layer{
 
@@ -15,18 +17,20 @@ export class Input extends Layer{
         key: 'shape',
         label: 'Shape',
         controlType: 'textbox',
-        type: 'number'
+        type: 'text',
+        tooltip: 'A shape, not including the batch size. For instance, shape=[32] indicates that the expected input will be batches of 32-dimensional vectors.',
       }]
     };
     const layerForm = fb.group({
-      shape: [16],
+      shape: ['16', [validateShapeArray]]
     });
-    super(tf.layers.input, config, modelBuilderService, fb, layerForm);
+    super(tf.input, config, modelBuilderService, fb, layerForm);
   }
 
   override getParameters(): any {
-    //todo: number values as integer
-    return this.layerForm.getRawValue();
+    const parameter = this.layerForm.getRawValue();
+    parameter.shape = parseShapeString(parameter.shape);
+    return parameter;
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

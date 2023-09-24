@@ -43,7 +43,9 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
   }
 
-  abstract getParameters(): any;
+  getParameters(): any {
+    return this.layerForm.getRawValue();
+  };
 
   getLayerId(): string {
     return this.layerId;

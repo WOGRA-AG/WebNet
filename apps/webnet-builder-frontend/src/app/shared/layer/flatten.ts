@@ -32,11 +32,6 @@ export class Flatten extends Layer {
     super(tf.layers.flatten, config, modelBuilderService, fb, layerForm);
   }
 
-  override getParameters(): any {
-    //todo: number values as integer
-    return this.layerForm.getRawValue();
-  }
-
   protected override createLayer(): Selection<any, any, any, any> {
     const flattenData = {name: "Flatten", neuronCount: Math.min(12, 64)};
 

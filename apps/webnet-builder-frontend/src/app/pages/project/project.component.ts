@@ -15,7 +15,7 @@ export class ProjectComponent {
     const model = await this.modelBuilderService.getModel();
     if (model) {
       // tfvis.show.layer(this.modelSummaryContainer.nativeElement, model.getLayer(1));
-      console.log(model.summary());
+      // console.log(model.summary());
       await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
     }
   }
