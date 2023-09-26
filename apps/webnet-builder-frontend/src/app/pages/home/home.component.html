@@ -1,1 +1,48 @@
-<p>home works!</p>
+<div class="site-content">
+  <section class="home-introduction">
+    <h1>Welcome to WebNet Builder</h1>
+    <p>
+      Build, train, and test neural network models with ease. Whether you're an AI enthusiast or a professional data
+      scientist, we have the tools you need to bring your ideas to life.
+    </p>
+  </section>
+
+  <section class="featured-section">
+    <h2>Featured Tools</h2>
+    <div class="tool-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Playground</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Create and design neural network models through an intuitive drag-and-drop interface.</p>
+          <a mat-button color="primary" [routerLink]="['/builder']">Go to Playground</a>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="tool-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Performance Testing</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Test the performance of predefined models using various backends like Web GPU, WebGL and CPU.</p>
+          <a mat-button color="primary" [routerLink]="['/testing']">Go to Performance Testing</a>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="tool-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Projects</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Manage your machine learning projects, import/export projects or try out some of our templates.</p>
+          <a mat-button color="primary" [routerLink]="['/projects']">Go to Projects</a>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</div>

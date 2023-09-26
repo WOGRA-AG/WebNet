@@ -1,25 +1,54 @@
 <mat-stepper [linear]="false" #stepper>
+  <!--  Dataset  -->
   <mat-step label="Dataset" #dataset>
     <p>add Dataset and manipulate data.</p>
   </mat-step>
+  <!--  Modeling  -->
   <mat-step label="Modeling" #second_step>
     <app-nn-builder *ngIf="stepper.selected == second_step"></app-nn-builder>
   </mat-step>
+  <!--  Training  -->
   <mat-step label="Training" #training_step>
-    <div class="current-training-container" >
+    <div class="current-training-container">
       <div class="section-heading">
-        <h2>Training in Progress</h2>
+        <h2>Training</h2>
       </div>
-      <mat-card *ngIf="trainingStats">
+      <div>
+        <form [formGroup]="trainingParameter">
+          <div class="form-row">
+            <mat-form-field class="form-field" subscriptSizing="dynamic">
+              <mat-label>Select a Optimizer</mat-label>
+              <mat-select formControlName="optimizer">
+                <mat-option value="sgd" [matTooltip]="'Stochastic Gradient Descent'" matTooltipPosition="right">SGD</mat-option>
+                <mat-option value="momentum" [matTooltip]="'Momentum Gradient Descent'" matTooltipPosition="right">Momentum</mat-option>
+                <mat-option value="adagrad" [matTooltip]="'Adagrad Algorithm'" matTooltipPosition="right">Adagrad</mat-option>
+                <mat-option value="adadelta" [matTooltip]="'Adadelta Algorithm'" matTooltipPosition="right">Adadelta</mat-option>
+                <mat-option value="adam" [matTooltip]="'Adam algorithm'" matTooltipPosition="right">Adam</mat-option>
+                <mat-option value="adamax" [matTooltip]="'Adamax algorithm'" matTooltipPosition="right">Adamax</mat-option>
+                <mat-option value="rmsprop" [matTooltip]="'RMSProp Gradient Descent'" matTooltipPosition="right">RMSProp</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </form>
+      </div>
+      <mat-card *ngIf="trainingStats" class="training-stats-container">
         <mat-card-content>
           <mat-list role="list">
-            <mat-list-item role="listitem">Accuracy: {{ trainingStats.accuracy | number:'1.1-2'}}</mat-list-item>
-            <mat-list-item role="listitem">Loss: {{ trainingStats.loss | number:'1.1-2'}}</mat-list-item>
-            <mat-list-item role="listitem">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</mat-list-item>
+            <mat-list-item role="listitem" class="list-item">
+              <span class="label">Accuracy:</span>
+              <span class="value">{{ trainingStats.accuracy | number:'1.1-2'}}</span>
+            </mat-list-item>
+            <mat-list-item role="listitem" class="list-item">
+              <span class="label">Loss:</span>
+              <span class="value">{{ trainingStats.loss | number:'1.1-2'}}</span>
+            </mat-list-item>
           </mat-list>
         </mat-card-content>
         <mat-card-footer>
-          <span>{{trainingStats.progress | number:'1.1-1'}}%</span>
+          <div class="percentage-time-container">
+            <span class="percentage">{{trainingStats.progress | number:'1.1-1'}}%</span>
+            <span class="time">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</span>
+          </div>
           <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
         </mat-card-footer>
       </mat-card>
@@ -32,15 +61,15 @@
         Show Model Summary
       </button>
     </div>
-<!--    <button mat-raised-button color="primary" (click)="saveModel()">-->
-<!--      Save Model-->
-<!--    </button>-->
-<!--    <button mat-raised-button color="secondary" (click)="showAllModels()">-->
-<!--      Show all saved Models-->
-<!--    </button>-->
-<!--    <button mat-raised-button color="secondary" (click)="loadModel()">-->
-<!--      Load Model-->
-<!--    </button>-->
+    <!--    <button mat-raised-button color="primary" (click)="saveModel()">-->
+    <!--      Save Model-->
+    <!--    </button>-->
+    <!--    <button mat-raised-button color="secondary" (click)="showAllModels()">-->
+    <!--      Show all saved Models-->
+    <!--    </button>-->
+    <!--    <button mat-raised-button color="secondary" (click)="loadModel()">-->
+    <!--      Load Model-->
+    <!--    </button>-->
     <div #modelSummaryContainer></div>
   </mat-step>
 </mat-stepper>

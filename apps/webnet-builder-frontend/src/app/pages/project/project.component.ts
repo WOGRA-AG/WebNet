@@ -5,6 +5,9 @@ import {TrainingService} from "../../core/services/training.service";
 import {TrainStats} from "../../core/interfaces";
 import {MatDialog} from "@angular/material/dialog";
 import {CustomDialogComponent} from "../../shared/components/custom-dialog/custom-dialog.component";
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
+import {Backend, TrainingExample} from "../../core/enums";
+import {Activation, Units} from "../../shared/configuration";
 
 @Component({
   selector: 'app-project',
@@ -13,16 +16,21 @@ import {CustomDialogComponent} from "../../shared/components/custom-dialog/custo
 })
 export class ProjectComponent {
   @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
+  trainingParameter : FormGroup;
   trainingStats: TrainStats | null = null;
   trainingInProgress: boolean = false;
 
-  constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService, public dialog: MatDialog) {
+  constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService, public dialog: MatDialog, fb: NonNullableFormBuilder) {
     this.trainingService.trainingInProgressSubject.subscribe((flag: boolean) => {
       console.log(this.trainingInProgress);
       this.trainingInProgress = flag;
     });
     this.trainingService.trainingStatsSubject.subscribe((stats: TrainStats) => {
       this.trainingStats = stats;
+    });
+
+    this.trainingParameter = fb.group({
+      optimizer: new FormControl('sgd', Validators.required),
     });
   }
 
@@ -56,7 +64,8 @@ export class ProjectComponent {
   async train(): Promise<void> {
     const ready = await this.trainingService.trainingReady();
     if (ready.dataset && ready.model) {
-      await this.trainingService.train();
+      const optimizer = this.trainingParameter.get('optimizer')?.value;
+      await this.trainingService.train(optimizer);
     } else {
       this.openDialog(ready);
     }

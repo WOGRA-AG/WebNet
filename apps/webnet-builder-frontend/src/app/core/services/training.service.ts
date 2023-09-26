@@ -39,7 +39,7 @@ export class TrainingService {
     return {dataset: dataset, model: model}
   }
 
-  async train(): Promise<number|null> {
+  async train(optimizer: string): Promise<number|null> {
     const X = tf.ones([8, 10]);
     const Y = tf.ones([8, 1]);
     const EPOCHS = 1000;
