@@ -1,18 +1,19 @@
 <mat-stepper [linear]="false" #stepper>
   <!--  Dataset  -->
   <mat-step label="Dataset" #dataset>
+    <div class="dataset-section">
     <p>add Dataset and manipulate data.</p>
+    </div>
   </mat-step>
   <!--  Modeling  -->
   <mat-step label="Modeling" #second_step>
+    <div class="modeling-section">
     <app-nn-builder *ngIf="stepper.selected == second_step"></app-nn-builder>
+    </div>
   </mat-step>
   <!--  Training  -->
   <mat-step label="Training" #training_step>
-    <div class="current-training-container">
-      <div class="section-heading">
-        <h2>Training</h2>
-      </div>
+    <div class="training-section">
       <div>
         <form [formGroup]="trainingForm">
           <div class="form-row">
@@ -46,6 +47,10 @@
         </form>
       </div>
       <mat-card *ngIf="trainingStats" class="training-stats-container">
+        <mat-card-header>
+          <mat-card-title>Training Stats</mat-card-title>
+          <mat-card-subtitle>Start</mat-card-subtitle>
+        </mat-card-header>
         <mat-card-content>
           <mat-list role="list">
             <mat-list-item role="listitem" class="list-item">
