@@ -20,3 +20,10 @@ export interface XY {
   x: number,
   y: number
 }
+
+export interface TrainStats {
+  loss: number|undefined,
+  accuracy: number|undefined,
+  progress: number,
+  time: number
+}

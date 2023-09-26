@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MnistDataService} from "./mnist-data.service";
+import {MnistDataService} from "./model-data-services/mnist-data.service";
 import {TrainingExample} from "../enums";
 import * as tf from '@tensorflow/tfjs';
 

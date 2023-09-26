@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Preparation Checklist</h1>
+<div mat-dialog-content>
+  <ul>
+    <li *ngFor="let task of data.tasks" class="task-item">
+      <span class="task-status" [ngClass]="{'done': task.done, 'not-done': !task.done}">
+        <ng-container *ngIf="task.done; else notDone">&#10003;</ng-container>
+        <ng-template #notDone>&times;</ng-template>
+      </span>
+      {{ task.message }}
+    </li>
+  </ul>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

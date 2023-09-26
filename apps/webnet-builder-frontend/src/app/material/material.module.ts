@@ -17,6 +17,7 @@ import {MatTreeModule} from "@angular/material/tree";
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatIconModule} from "@angular/material/icon";
+import {MatDialogModule} from "@angular/material/dialog";
 
 const MaterialComponents =
   [MatButtonModule,
@@ -36,7 +37,8 @@ const MaterialComponents =
     MatTreeModule,
     MatStepperModule,
     MatTooltipModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ]
 
 @NgModule({

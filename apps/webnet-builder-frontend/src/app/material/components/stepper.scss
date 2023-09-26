@@ -1,0 +1,12 @@
+@mixin stepper() {
+  .mat-stepper-horizontal {
+    .mat-step-header {
+      height: 40px;
+    }
+    .mat-stepper-horizontal-line {
+      min-width: 100px;
+      flex: none;
+    }
+  }
+}
+

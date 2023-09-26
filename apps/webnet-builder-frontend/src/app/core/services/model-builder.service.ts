@@ -92,50 +92,45 @@ export class ModelBuilderService {
     this.layerMap.set(id, layer);
   }
 
-  async getModel(): Promise<LayersModel> {
-    await tf.ready();
-    const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getParameters());
+  async generateModel(): Promise<LayersModel|null> {
+    try {
+      await tf.ready();
+      const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getParameters());
 
-    let layer: Layer | null | undefined = this.inputLayer;
-    let hidden = input;
+      let layer: Layer | null | undefined = this.inputLayer;
+      let hidden = input;
 
-    while (layer?.getNextLayer()) {
-      const nextLayer = layer?.getNextLayer();
-      hidden = nextLayer?.tfjsLayer(nextLayer?.getParameters()).apply(hidden);
-      layer = nextLayer;
+      while (layer?.getNextLayer()) {
+        const nextLayer = layer?.getNextLayer();
+        hidden = nextLayer?.tfjsLayer(nextLayer?.getParameters()).apply(hidden);
+        layer = nextLayer;
+      }
+
+      const model = tf.model({inputs: input, outputs: hidden});
+      return model;
+    } catch (error) {
+      console.log("Error: Generating Model");
+      return null;
     }
-
-    const model = tf.model({inputs: input, outputs: hidden});
-    return model;
   }
 
-  async fitModel(): Promise<void> {
-    const model = await this.getModel();
-    model.compile({
-      optimizer: tf.train.sgd(0.0001),
-      loss: 'meanSquaredError'
-    });
-    for (let i = 1; i < 5 ; ++i) {
-      const h = await model.fit(tf.ones([8, 10]), tf.ones([8, 1]), {
-        batchSize: 4,
-        epochs: 3
-      });
-      console.log(h.history);
-      // console.log("Loss after Epoch " + i + " : " + h.history.loss[0]);
-    }
+  async isModelReady(): Promise<boolean> {
+    const model = await this.generateModel()
+    return model ? true : false;
   }
 
   generateLayerId(): string {
     return `layer-${this.nextLayerId++}`;
   }
 
-
   async saveModel() {
-    const model = await this.getModel();
+    const model = await this.generateModel();
     // const saveResults = await model.save('localstorage://my-model-1');
-    const saveResults = await model.save('downloads://my-model-2');
-    console.log(saveResults);
-    console.log("==SAVED==");
+    if (model) {
+      const saveResults = await model.save('downloads://my-model-2');
+      console.log(saveResults);
+      console.log("==SAVED==");
+    }
   }
 
   async listModels() {

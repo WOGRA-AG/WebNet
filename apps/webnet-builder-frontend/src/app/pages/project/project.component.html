@@ -6,28 +6,41 @@
     <app-nn-builder *ngIf="stepper.selected == second_step"></app-nn-builder>
   </mat-step>
   <mat-step label="Training" #training_step>
-    <button mat-raised-button color="warn" (click)="showModelSummary()">
-      Show Model Summary
-    </button>
-    <button mat-raised-button color="warn" (click)="fitModel()">
-      Fit Model
-    </button>
-    <button mat-raised-button color="primary" (click)="saveModel()">
-      Save Model
-    </button>
-    <button mat-raised-button color="secondary" (click)="showAllModels()">
-      Show all saved Models
-    </button>
-    <button mat-raised-button color="secondary" (click)="loadModel()">
-      Load Model
-    </button>
-    <div #modelSummaryContainer></div>
-  </mat-step>
-  <mat-step label="Evaluation" #evaluation_step>
-    <p>here you can see visualizations....</p>
-    <div>
-      <!--      <button mat-button matStepperPrevious>Back</button>-->
-      <button mat-button (click)="stepper.reset()">Reset</button>
+    <div class="current-training-container" >
+      <div class="section-heading">
+        <h2>Training in Progress</h2>
+      </div>
+      <mat-card *ngIf="trainingStats">
+        <mat-card-content>
+          <mat-list role="list">
+            <mat-list-item role="listitem">Accuracy: {{ trainingStats.accuracy | number:'1.1-2'}}</mat-list-item>
+            <mat-list-item role="listitem">Loss: {{ trainingStats.loss | number:'1.1-2'}}</mat-list-item>
+            <mat-list-item role="listitem">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</mat-list-item>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-footer>
+          <span>{{trainingStats.progress | number:'1.1-1'}}%</span>
+          <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
+        </mat-card-footer>
+      </mat-card>
     </div>
+    <div class="button-container">
+      <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
+      </button>
+      <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training</button>
+      <button mat-raised-button color="secondary" (click)="showModelSummary()">
+        Show Model Summary
+      </button>
+    </div>
+<!--    <button mat-raised-button color="primary" (click)="saveModel()">-->
+<!--      Save Model-->
+<!--    </button>-->
+<!--    <button mat-raised-button color="secondary" (click)="showAllModels()">-->
+<!--      Show all saved Models-->
+<!--    </button>-->
+<!--    <button mat-raised-button color="secondary" (click)="loadModel()">-->
+<!--      Load Model-->
+<!--    </button>-->
+    <div #modelSummaryContainer></div>
   </mat-step>
 </mat-stepper>

@@ -1,7 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Backend, TrainingExample} from "../../core/enums";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {MnistDataService} from "../../core/services/mnist-data.service";
+import {MnistDataService} from "../../core/services/model-data-services/mnist-data.service";
 import {ModelWrapperService} from "../../core/services/model-wrapper.service";
 import {TrainingStats} from "../../core/interfaces";
 import * as tf from "@tensorflow/tfjs";

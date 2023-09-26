@@ -1,0 +1,18 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.task-status {
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.done {
+  color: green;
+}
+
+.not-done {
+  color: red;
+}
