@@ -6,9 +6,8 @@ import {TrainStats} from "../../core/interfaces";
 import {MatDialog} from "@angular/material/dialog";
 import {CustomDialogComponent} from "../../shared/components/custom-dialog/custom-dialog.component";
 import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {Backend, TrainingExample} from "../../core/enums";
-import {Activation, Units} from "../../shared/configuration";
-
+import {optimizers} from "../../shared/tf_objects/optimizers";
+import {losses} from "../../shared/tf_objects/losses";
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
@@ -16,10 +15,11 @@ import {Activation, Units} from "../../shared/configuration";
 })
 export class ProjectComponent {
   @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
-  trainingParameter : FormGroup;
+  protected readonly optimizers = optimizers;
+  protected readonly losses = losses;
+  trainingForm : FormGroup;
   trainingStats: TrainStats | null = null;
   trainingInProgress: boolean = false;
-
   constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService, public dialog: MatDialog, fb: NonNullableFormBuilder) {
     this.trainingService.trainingInProgressSubject.subscribe((flag: boolean) => {
       console.log(this.trainingInProgress);
@@ -29,8 +29,10 @@ export class ProjectComponent {
       this.trainingStats = stats;
     });
 
-    this.trainingParameter = fb.group({
-      optimizer: new FormControl('sgd', Validators.required),
+    this.trainingForm = fb.group({
+      optimizer: new FormControl(optimizers[0].function, Validators.required),
+      learningRate: new FormControl(0.01, Validators.required),
+      loss: new FormControl(losses[0].function, Validators.required),
     });
   }
 
@@ -64,8 +66,8 @@ export class ProjectComponent {
   async train(): Promise<void> {
     const ready = await this.trainingService.trainingReady();
     if (ready.dataset && ready.model) {
-      const optimizer = this.trainingParameter.get('optimizer')?.value;
-      await this.trainingService.train(optimizer);
+      const trainParameter = this.trainingForm.getRawValue();
+      await this.trainingService.train(trainParameter);
     } else {
       this.openDialog(ready);
     }
@@ -86,5 +88,4 @@ export class ProjectComponent {
   async loadModel(): Promise<void> {
     await this.modelBuilderService.loadModel();
   }
-
 }

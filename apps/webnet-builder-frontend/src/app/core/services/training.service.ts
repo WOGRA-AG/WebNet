@@ -15,8 +15,7 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService) {
-  }
+  constructor(private modelBuilderService: ModelBuilderService) {}
 
   stopTraining(): void {
     this.stopTrainingFlag = true;
@@ -39,7 +38,7 @@ export class TrainingService {
     return {dataset: dataset, model: model}
   }
 
-  async train(optimizer: string): Promise<number|null> {
+  async train(parameter: any): Promise<number|null> {
     const X = tf.ones([8, 10]);
     const Y = tf.ones([8, 1]);
     const EPOCHS = 1000;
@@ -48,19 +47,14 @@ export class TrainingService {
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
-    // const { example, backend, batchSize, epochs, trainDataSize } = this.hyperParameter.value;
 
-    // const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(example!, batchSize!)!;
     const model = await this.modelBuilderService.generateModel();
     if (!model) return null;
 
     model.compile({
-      optimizer: tf.train.sgd(0.0001),
-      loss: 'meanSquaredError'
+      optimizer: parameter.optimizer(parameter.learningRate),
+      loss: parameter.loss
     });
-    // const NumBatchesInEpoch = Math.ceil(trainXs.shape[0] / batchSize!);
-    // const totalNumBatches = NumBatchesInEpoch * epochs!;
-    // const progress = (this.trainingStats.epoch * NumBatchesInEpoch + batch) / totalNumBatches * 100;
 
     const fitCallback = {
       onTrainBegin: async (logs?: tf.Logs) => {
@@ -91,12 +85,7 @@ export class TrainingService {
       shuffle: SHUFFLE,
       yieldEvery: YIELD_EVERY
     });
-    console.log(h.history);
 
-    // const h = await model?.fit(trainXs, trainYs, {
-    //     batchSize: batchSize!, validationData: [testXs, testYs], epochs: epochs!, shuffle: true, callbacks: fitCallback
-    //   }
-    // )
     const endTime = performance.now();
     const totalTimeInMilliseconds = endTime - startTime;
     return totalTimeInMilliseconds;

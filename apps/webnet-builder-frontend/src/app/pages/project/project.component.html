@@ -14,20 +14,34 @@
         <h2>Training</h2>
       </div>
       <div>
-        <form [formGroup]="trainingParameter">
+        <form [formGroup]="trainingForm">
           <div class="form-row">
-            <mat-form-field class="form-field" subscriptSizing="dynamic">
-              <mat-label>Select a Optimizer</mat-label>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Select an Optimizer</mat-label>
               <mat-select formControlName="optimizer">
-                <mat-option value="sgd" [matTooltip]="'Stochastic Gradient Descent'" matTooltipPosition="right">SGD</mat-option>
-                <mat-option value="momentum" [matTooltip]="'Momentum Gradient Descent'" matTooltipPosition="right">Momentum</mat-option>
-                <mat-option value="adagrad" [matTooltip]="'Adagrad Algorithm'" matTooltipPosition="right">Adagrad</mat-option>
-                <mat-option value="adadelta" [matTooltip]="'Adadelta Algorithm'" matTooltipPosition="right">Adadelta</mat-option>
-                <mat-option value="adam" [matTooltip]="'Adam algorithm'" matTooltipPosition="right">Adam</mat-option>
-                <mat-option value="adamax" [matTooltip]="'Adamax algorithm'" matTooltipPosition="right">Adamax</mat-option>
-                <mat-option value="rmsprop" [matTooltip]="'RMSProp Gradient Descent'" matTooltipPosition="right">RMSProp</mat-option>
+                <mat-option *ngFor="let optimizer of optimizers;"
+                            [value]="optimizer.function" [matTooltip]="optimizer.tooltip" matTooltipPosition="right">
+                  {{optimizer.value}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Learning Rate</mat-label>
+              <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Select a Loss Function</mat-label>
+              <mat-select formControlName="loss">
+                <mat-option *ngFor="let loss of losses;"
+                            [value]="loss.function" [matTooltip]="loss.tooltip" matTooltipPosition="right">
+                  {{loss.value}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+<!--            <div *ngIf="trainingForm.get('optimizer')?.value === 'adam'">-->
+<!--              <label for="beta1">Beta1:</label>-->
+<!--              <input type="number" formControlName="beta1" step="0.001">-->
+<!--            </div>-->
           </div>
         </form>
       </div>
