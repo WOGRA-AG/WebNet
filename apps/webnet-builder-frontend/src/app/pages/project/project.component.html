@@ -1,97 +1,20 @@
 <mat-stepper [linear]="false" #stepper>
   <!--  Dataset  -->
-  <mat-step label="Dataset" #dataset>
+  <mat-step label="Dataset" #dataset_step>
     <div class="dataset-section">
-    <p>add Dataset and manipulate data.</p>
+      <p>add Dataset and manipulate data.</p>
     </div>
   </mat-step>
   <!--  Modeling  -->
-  <mat-step label="Modeling" #second_step>
+  <mat-step label="Modeling" #modeling_step>
     <div class="modeling-section">
-    <app-nn-builder *ngIf="stepper.selected == second_step"></app-nn-builder>
+      <app-nn-builder *ngIf="stepper.selected == modeling_step"></app-nn-builder>
     </div>
   </mat-step>
   <!--  Training  -->
   <mat-step label="Training" #training_step>
     <div class="training-section">
-      <div>
-        <form [formGroup]="trainingForm">
-          <div class="form-row">
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Select an Optimizer</mat-label>
-              <mat-select formControlName="optimizer">
-                <mat-option *ngFor="let optimizer of optimizers;"
-                            [value]="optimizer.function" [matTooltip]="optimizer.tooltip" matTooltipPosition="right">
-                  {{optimizer.value}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Learning Rate</mat-label>
-              <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Select a Loss Function</mat-label>
-              <mat-select formControlName="loss">
-                <mat-option *ngFor="let loss of losses;"
-                            [value]="loss.function" [matTooltip]="loss.tooltip" matTooltipPosition="right">
-                  {{loss.value}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-<!--            <div *ngIf="trainingForm.get('optimizer')?.value === 'adam'">-->
-<!--              <label for="beta1">Beta1:</label>-->
-<!--              <input type="number" formControlName="beta1" step="0.001">-->
-<!--            </div>-->
-          </div>
-          <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>
-          <mat-slide-toggle formControlName="lossPlot" color="primary">Enable Loss Plot</mat-slide-toggle>
-        </form>
-      </div>
-      <mat-card *ngIf="trainingStats" class="training-stats-container">
-        <mat-card-header>
-          <mat-card-title>Training Stats</mat-card-title>
-          <mat-card-subtitle>Start</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-list role="list">
-            <mat-list-item role="listitem" class="list-item">
-              <span class="label">Accuracy:</span>
-              <span class="value">{{ trainingStats.accuracy | number:'1.1-2'}}</span>
-            </mat-list-item>
-            <mat-list-item role="listitem" class="list-item">
-              <span class="label">Loss:</span>
-              <span class="value">{{ trainingStats.loss | number:'1.1-2'}}</span>
-            </mat-list-item>
-          </mat-list>
-        </mat-card-content>
-        <mat-card-footer>
-          <div class="percentage-time-container">
-            <span class="percentage">{{trainingStats.progress | number:'1.1-1'}}%</span>
-            <span class="time">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</span>
-          </div>
-          <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
-        </mat-card-footer>
-      </mat-card>
+      <app-training></app-training>
     </div>
-    <div class="button-container">
-      <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
-      </button>
-      <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training</button>
-      <button mat-raised-button color="secondary" (click)="showModelSummary()">
-        Show Model Summary
-      </button>
-    </div>
-    <!--    <button mat-raised-button color="primary" (click)="saveModel()">-->
-    <!--      Save Model-->
-    <!--    </button>-->
-    <!--    <button mat-raised-button color="secondary" (click)="showAllModels()">-->
-    <!--      Show all saved Models-->
-    <!--    </button>-->
-    <!--    <button mat-raised-button color="secondary" (click)="loadModel()">-->
-    <!--      Load Model-->
-    <!--    </button>-->
-    <div #modelSummaryContainer></div>
-    <div #plotContainer></div>
   </mat-step>
 </mat-stepper>

@@ -14,6 +14,7 @@ import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-for
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProjectComponent } from './pages/project/project.component';
 import { CustomDialogComponent } from './shared/components/custom-dialog/custom-dialog.component';
+import { TrainingComponent } from './pages/training/training.component';
 
 
 
@@ -27,7 +28,8 @@ import { CustomDialogComponent } from './shared/components/custom-dialog/custom-
     DynamicLayerFormComponent,
     ProjectsComponent,
     ProjectComponent,
-    CustomDialogComponent
+    CustomDialogComponent,
+    TrainingComponent
   ],
     imports: [
         BrowserModule,
