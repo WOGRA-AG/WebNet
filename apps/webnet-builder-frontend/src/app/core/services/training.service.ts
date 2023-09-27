@@ -35,9 +35,9 @@ export class TrainingService {
   }
 
   async trainingReady(): Promise<{ dataset: boolean, model: boolean }> {
-    const model = await this.modelBuilderService.isModelReady();
-    const dataset = true;
-    return {dataset: dataset, model: model}
+    const modelReady = await this.modelBuilderService.isModelReady();
+    const datasetReady = true;
+    return {dataset: datasetReady, model: modelReady}
   }
 
   async train(parameter: any, plotContainer: HTMLElement): Promise<number | null> {
@@ -86,7 +86,9 @@ export class TrainingService {
       callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['acc'], {
         callbacks: ['onEpochEnd'],
         xLabel: 'Epoch',
-        yLabel: 'Accuracy'
+        yLabel: 'Accuracy',
+        // width: 100,
+        // height: 2000
       }))
     }
     if (parameter.lossPlot) {

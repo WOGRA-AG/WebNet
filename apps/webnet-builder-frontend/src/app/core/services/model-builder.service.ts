@@ -106,8 +106,7 @@ export class ModelBuilderService {
         layer = nextLayer;
       }
 
-      const model = tf.model({inputs: input, outputs: hidden});
-      return model;
+      return layer !== this.outputLayer ? null : tf.model({inputs: input, outputs: hidden});
     } catch (error) {
       console.log("Error: Generating Model");
       return null;
@@ -115,7 +114,8 @@ export class ModelBuilderService {
   }
 
   async isModelReady(): Promise<boolean> {
-    const model = await this.generateModel()
+    const model = await this.generateModel();
+    console.log(model);
     return model ? true : false;
   }
 

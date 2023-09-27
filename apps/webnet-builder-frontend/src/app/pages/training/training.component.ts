@@ -36,8 +36,8 @@ export class TrainingComponent {
       optimizer: [optimizers[0].function, Validators.required],
       learningRate: [0.01, Validators.required],
       loss: [losses[0].function, Validators.required],
-      accuracyPlot: [true],
-      lossPlot: [false],
+      accuracyPlot: true,
+      lossPlot: false,
     });
   }
 
@@ -63,6 +63,7 @@ export class TrainingComponent {
     const model = await this.modelBuilderService.generateModel();
     if (model) {
       await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
+      this.modelSummaryContainer.nativeElement.querySelector('table').style.margin = "0";
     }
   }
 
