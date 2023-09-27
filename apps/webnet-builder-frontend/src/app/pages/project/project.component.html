@@ -44,6 +44,8 @@
 <!--              <input type="number" formControlName="beta1" step="0.001">-->
 <!--            </div>-->
           </div>
+          <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>
+          <mat-slide-toggle formControlName="lossPlot" color="primary">Enable Loss Plot</mat-slide-toggle>
         </form>
       </div>
       <mat-card *ngIf="trainingStats" class="training-stats-container">
@@ -90,5 +92,6 @@
     <!--      Load Model-->
     <!--    </button>-->
     <div #modelSummaryContainer></div>
+    <div #plotContainer></div>
   </mat-step>
 </mat-stepper>

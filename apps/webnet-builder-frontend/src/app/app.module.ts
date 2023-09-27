@@ -16,6 +16,7 @@ import { ProjectComponent } from './pages/project/project.component';
 import { CustomDialogComponent } from './shared/components/custom-dialog/custom-dialog.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,13 +29,13 @@ import { CustomDialogComponent } from './shared/components/custom-dialog/custom-
     ProjectComponent,
     CustomDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        ReactiveFormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

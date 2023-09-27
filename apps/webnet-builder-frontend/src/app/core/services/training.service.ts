@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as tf from "@tensorflow/tfjs";
+import * as tfvis from "@tensorflow/tfjs-vis";
 import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces";
@@ -15,7 +16,8 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService) {}
+  constructor(private modelBuilderService: ModelBuilderService) {
+  }
 
   stopTraining(): void {
     this.stopTrainingFlag = true;
@@ -38,7 +40,7 @@ export class TrainingService {
     return {dataset: dataset, model: model}
   }
 
-  async train(parameter: any): Promise<number|null> {
+  async train(parameter: any, plotContainer: HTMLElement): Promise<number | null> {
     const X = tf.ones([8, 10]);
     const Y = tf.ones([8, 1]);
     const EPOCHS = 1000;
@@ -53,7 +55,8 @@ export class TrainingService {
 
     model.compile({
       optimizer: parameter.optimizer(parameter.learningRate),
-      loss: parameter.loss
+      loss: parameter.loss,
+      metrics: ['accuracy', tf.metrics.binaryAccuracy, tf.metrics.recall]
     });
 
     const fitCallback = {
@@ -77,11 +80,27 @@ export class TrainingService {
         this.stopTrainingFlag = false;
       }
     }
+    const callbacks: any[] = [fitCallback];
+
+    if (parameter.accuracyPlot) {
+      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['acc'], {
+        callbacks: ['onEpochEnd'],
+        xLabel: 'Epoch',
+        yLabel: 'Accuracy'
+      }))
+    }
+    if (parameter.lossPlot) {
+      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['loss'], {
+        callbacks: ['onEpochEnd'],
+        xLabel: 'Epoch',
+        yLabel: 'Loss'
+      }));
+    }
     const startTime = performance.now();
-    const h = await model.fit(X,Y, {
+    const history = await model.fit(X, Y, {
       batchSize: BATCH_SIZE,
       epochs: EPOCHS,
-      callbacks: fitCallback,
+      callbacks: callbacks,
       shuffle: SHUFFLE,
       yieldEvery: YIELD_EVERY
     });
