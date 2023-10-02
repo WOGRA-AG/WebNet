@@ -1,0 +1,21 @@
+<div>
+  <mat-checkbox class="all-checkbox"
+                color="accent"
+                [checked]="allChecked"
+                [indeterminate]="someChecked()"
+                (change)="setAll($event.checked)">
+    {{project.name}}
+  </mat-checkbox>
+</div>
+<div>
+  <ul>
+    <li *ngFor="let subProject of project.subProjects">
+      <mat-checkbox color="primary"
+                    [(ngModel)]="subProject.checked"
+                    (ngModelChange)="updateAllChecked()">
+        {{subProject.name}}
+      </mat-checkbox>
+    </li>
+  </ul>
+</div>
+<button mat-raised-button color="accent" (click)="export()">Export Project</button>

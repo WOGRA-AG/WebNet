@@ -20,4 +20,11 @@
       <app-training *ngIf="stepper.selected == training_step"></app-training>
     </div>
   </mat-step>
+  <!--  Saving/Export  -->
+  <mat-step label="Saving & Export" #export_step>
+    <h2 class="step-title">Saving & Export</h2>
+    <div class="export-section">
+      <app-export *ngIf="stepper.selected == export_step"></app-export>
+    </div>
+  </mat-step>
 </mat-stepper>
