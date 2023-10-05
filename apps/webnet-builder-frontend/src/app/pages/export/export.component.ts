@@ -1,4 +1,10 @@
 import { Component } from '@angular/core';
+import {SerializationService} from "../../core/services/serialization.service";
+
+interface SubProject {
+  name: string;
+  checked: boolean;
+}
 
 @Component({
   selector: 'app-export',
@@ -6,37 +12,44 @@ import { Component } from '@angular/core';
   styleUrls: ['./export.component.scss']
 })
 export class ExportComponent {
-  project: any = {
-    name: 'Everything',
-    checked: true,
-    subProjects: [
-      {name: 'Dataset', checked: true},
-      {name: 'Model', checked: true},
-      {name: 'Trained Weights', checked: true},
-    ],
-  };
+  subProjects: Record<string, SubProject> = {
+    dataset: {name: 'Dataset', checked: true},
+    model: {name: 'Model', checked: true},
+    weights: {name: 'Trained Weights', checked: true}
+  }
   allChecked: boolean = true;
 
+  constructor(private serializationService: SerializationService) {
+  }
   updateAllChecked(): void {
-    this.allChecked = this.project.subProjects != null && this.project.subProjects.every((t: any) => t.checked);
+    const subProjectValues = Object.values(this.subProjects);
+    this.allChecked = subProjectValues.every((subProject: SubProject) => subProject.checked);
   }
 
   someChecked(): boolean {
-    if (this.project.subProjects == null) {
-      return false;
-    }
-    return this.project.subProjects.filter((t: any) => t.checked).length > 0 && !this.allChecked;
+    const subProjectValues = Object.values(this.subProjects);
+    return subProjectValues.filter((t: any) => t.checked).length > 0 && !this.allChecked;
   }
 
   setAll(checked: boolean): void {
     this.allChecked = checked;
-    if (this.project.subProjects == null) {
-      return;
-    }
-    this.project.subProjects.forEach((t: any) => (t.checked = checked));
+    const subProjectValues = Object.values(this.subProjects);
+    subProjectValues.forEach((t: any) => (t.checked = checked));
   }
 
   export(): void {
-    console.log('EXPORT');
+    this.serializationService.exportProject(this.subProjects);
+  }
+
+  async saveModel(): Promise<void> {
+    await this.serializationService.saveModel();
+  }
+
+  async showAllModels(): Promise<void> {
+    await this.serializationService.showAllModels();
+  }
+
+  async loadModel(): Promise<void> {
+    await this.serializationService.loadModel();
   }
 }

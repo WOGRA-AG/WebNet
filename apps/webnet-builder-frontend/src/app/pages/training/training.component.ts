@@ -87,16 +87,4 @@ export class TrainingComponent {
   stopTraining(): void {
     this.trainingService.stopTraining();
   }
-
-  async saveModel(): Promise<void> {
-    await this.modelBuilderService.saveModel();
-  }
-
-  async showAllModels(): Promise<void> {
-    await this.modelBuilderService.showAllModels();
-  }
-
-  async loadModel(): Promise<void> {
-    await this.modelBuilderService.loadModel();
-  }
 }

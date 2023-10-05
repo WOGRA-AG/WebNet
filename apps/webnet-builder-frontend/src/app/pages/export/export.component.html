@@ -4,18 +4,27 @@
                 [checked]="allChecked"
                 [indeterminate]="someChecked()"
                 (change)="setAll($event.checked)">
-    {{project.name}}
+    Everything
   </mat-checkbox>
 </div>
 <div>
   <ul>
-    <li *ngFor="let subProject of project.subProjects">
+    <li *ngFor="let subProject of subProjects|keyvalue">
       <mat-checkbox color="primary"
-                    [(ngModel)]="subProject.checked"
+                    [(ngModel)]="subProject.value.checked"
                     (ngModelChange)="updateAllChecked()">
-        {{subProject.name}}
+        {{subProject.value.name}}
       </mat-checkbox>
     </li>
   </ul>
 </div>
 <button mat-raised-button color="accent" (click)="export()">Export Project</button>
+    <button mat-raised-button color="primary" (click)="saveModel()">
+      Save Model
+    </button>
+    <button mat-raised-button color="secondary" (click)="showAllModels()">
+      Show all saved Models
+    </button>
+    <button mat-raised-button color="secondary" (click)="loadModel()">
+      Load Model
+    </button>

@@ -43,7 +43,7 @@ export class TrainingService {
   async train(parameter: any, plotContainer: HTMLElement): Promise<number | null> {
     const X = tf.ones([8, 10]);
     const Y = tf.ones([8, 1]);
-    const EPOCHS = 1000;
+    const EPOCHS = 10;
     const BATCH_SIZE = 1;
     const SHUFFLE = true;
     const YIELD_EVERY = 'auto';
