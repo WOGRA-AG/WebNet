@@ -1,8 +1,30 @@
-<h2>Projects</h2>
-<mat-list role="list">
-  <mat-list-item role="listitem">Project A</mat-list-item>
-  <mat-list-item role="listitem">Project B</mat-list-item>
-  <mat-list-item role="listitem"  [routerLink]="['/projects/mnist']">Mnist Example</mat-list-item>
-</mat-list>
-<button mat-raised-button color="primary" [routerLink]="['/projects/a']" routerLinkActive="active">New Project</button>
-<button mat-raised-button color="secondary" >Import Project</button>
+<div class="content-container">
+  <mat-card class="projects-card">
+    <mat-card-header>
+      <mat-card-title>Existing Projects</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list role="list">
+        <mat-list-item role="listitem">Project A</mat-list-item>
+        <mat-list-item role="listitem">Project B</mat-list-item>
+        <mat-list-item role="listitem" [routerLink]="['/projects/mnist']">Mnist Example</mat-list-item>
+      </mat-list>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" [routerLink]="['/projects/a']" routerLinkActive="active">New Project
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="projects-card">
+    <mat-card-header>
+      <mat-card-title>Import Project</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-file-upload (fileEvent)="addFile($event)"></app-file-upload>
+    </mat-card-content>
+    <mat-card-actions>
+      <button [disabled]="!file" mat-raised-button color="primary" (click)="importProject()">Import Project</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

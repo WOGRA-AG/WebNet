@@ -16,6 +16,7 @@ import { ProjectComponent } from './pages/project/project.component';
 import { CustomDialogComponent } from './shared/components/custom-dialog/custom-dialog.component';
 import { TrainingComponent } from './pages/training/training.component';
 import { ExportComponent } from './pages/export/export.component';
+import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 
 
 
@@ -32,7 +33,8 @@ import { ExportComponent } from './pages/export/export.component';
     ProjectComponent,
     CustomDialogComponent,
     TrainingComponent,
-    ExportComponent
+    ExportComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,

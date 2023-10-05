@@ -5,3 +5,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 h2 {
   margin: 0 !important;
 }
+
+.section-heading {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  display: inline-block;
+}

@@ -60,12 +60,10 @@ export class SerializationService {
     console.log(JSON.stringify(await tf.io.listModels()));
   }
 
-  async loadModel() {
+  async loadModel(file: File) {
     await tf.ready();
-    // const loadedModel = await tf.loadLayersModel('localstorage://my-model-1');
-    const loadedModel = await tf.loadLayersModel(tf.io.browserFiles([]));
+    const loadedModel = await tf.loadLayersModel(tf.io.browserFiles([file]));
     console.log(loadedModel);
-    console.log("==LOADED==");
   }
 
   async showAllModels() {

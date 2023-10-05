@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {SerializationService} from "../../core/services/serialization.service";
 
 @Component({
   selector: 'app-projects',
@@ -6,8 +7,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent {
+  file: File | undefined;
 
-  createNewProject(): void {
+  constructor(private serializationService: SerializationService) {
+  }
 
+  addFile(file: File): void {
+    this.file = file;
+    // this.serializationService.loadModel()
+  }
+
+  async importProject(): Promise<void> {
+    if (this.file) {
+      await this.serializationService.loadModel(this.file);
+    }
   }
 }

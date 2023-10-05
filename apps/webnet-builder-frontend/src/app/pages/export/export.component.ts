@@ -48,8 +48,4 @@ export class ExportComponent {
   async showAllModels(): Promise<void> {
     await this.serializationService.showAllModels();
   }
-
-  async loadModel(): Promise<void> {
-    await this.serializationService.loadModel();
-  }
 }
