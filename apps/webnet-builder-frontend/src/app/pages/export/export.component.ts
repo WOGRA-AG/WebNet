@@ -38,7 +38,7 @@ export class ExportComponent {
   }
 
   export(): void {
-    this.serializationService.exportProject(this.subProjects);
+    this.serializationService.exportAsZIP(this.subProjects);
   }
 
   async saveModel(): Promise<void> {

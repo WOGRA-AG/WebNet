@@ -12,7 +12,7 @@ export class SerializationService {
   constructor(private modelBuilderService: ModelBuilderService) {
   }
 
-  async exportProject(subProjects: any): Promise<void> {
+  async exportAsZIP(subProjects: any): Promise<void> {
 
     if (subProjects.dataset.checked) {
       this.zip.folder('dataset')?.file("dataset.txt", "D A T A S E T");
@@ -21,14 +21,14 @@ export class SerializationService {
       const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
 
       await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
-        const modelData = {
-          modelTopology: modelArtifacts.modelTopology,
+        const modelData: tf.io.ModelJSON = {
+          modelTopology: modelArtifacts.modelTopology?? {},
           format: modelArtifacts.format,
           generatedBy: modelArtifacts.generatedBy,
           convertedBy: modelArtifacts.convertedBy,
           weightsManifest: [{
             paths: ["./weights.bin"],
-            weights: modelArtifacts.weightSpecs
+            weights: modelArtifacts.weightSpecs as tf.io.WeightsManifestEntry[]
           }],
         };
         this.zip.file("model/model.json", JSON.stringify(modelData), {binary: false});
@@ -43,6 +43,14 @@ export class SerializationService {
       .then((content: Blob) => {
         saveAs(content, "webNet-project.zip")
       });
+  }
+
+  async zipImport(file: any): Promise<void> {
+    const zip = await this.zip.loadAsync(file);
+    const files = zip.files;
+    const model: any = JSON.parse(await files['model/model.json'].async('string'));
+
+    this.modelBuilderService.buildModel(model.modelTopology.config.layers);
   }
 
   async saveModel() {

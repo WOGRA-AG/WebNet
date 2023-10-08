@@ -14,12 +14,13 @@ export class ProjectsComponent {
 
   addFile(file: File): void {
     this.file = file;
-    // this.serializationService.loadModel()
   }
 
   async importProject(): Promise<void> {
+
     if (this.file) {
-      await this.serializationService.loadModel(this.file);
+      await this.serializationService.zipImport(this.file);
+      // await this.serializationService.loadModel(this.file);
     }
   }
 }

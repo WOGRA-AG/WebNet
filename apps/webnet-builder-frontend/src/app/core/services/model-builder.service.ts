@@ -92,6 +92,10 @@ export class ModelBuilderService {
     this.layerMap.set(id, layer);
   }
 
+  buildModel(layers: Object[]): void {
+    console.log(layers);
+  }
+
   async generateModel(): Promise<LayersModel|null> {
     try {
       await tf.ready();
