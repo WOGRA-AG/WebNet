@@ -1,14 +1,18 @@
 import {Injectable} from '@angular/core';
 import {Layer} from "../../shared/layer";
 import * as tf from "@tensorflow/tfjs";
+import {LayersModel} from "@tensorflow/tfjs";
 import {BehaviorSubject} from "rxjs";
 import {Connection} from "../../shared/connection";
 import {Input} from "../../shared/layer/input";
 import {Output} from "../../shared/layer/output";
-import {Selection} from "d3";
 import * as d3 from "d3";
-import {LayersModel} from "@tensorflow/tfjs";
+import {Selection} from "d3";
 import {NonNullableFormBuilder} from "@angular/forms";
+import {LayerType} from "../enums";
+import {Dense} from "../../shared/layer/dense";
+import {Convolution} from "../../shared/layer/convolution";
+import {Flatten} from "../../shared/layer/flatten";
 
 
 @Injectable({
@@ -17,6 +21,7 @@ import {NonNullableFormBuilder} from "@angular/forms";
 export class ModelBuilderService {
   private layerMap: Map<string, Layer> = new Map();
   private nextLayerId = 1;
+  builder: any;
   inputLayer: Input | null = null;
   outputLayer: Output | null = null;
   selectedLayer: Layer | null = null;
@@ -63,7 +68,12 @@ export class ModelBuilderService {
   }
 
   initialize(): void {
-    if (!this.isInitialized) {
+    if (this.builder) {
+      this.buildModel();
+      this.nextLayerId = this.builder.layers.length + 1;
+    }
+    else if (!this.isInitialized) {
+      this.setupSvg();
       this.isInitialized = true;
       this.nextLayerId = 1;
       this.createInputAndOutputLayer();
@@ -87,16 +97,70 @@ export class ModelBuilderService {
   }
 
 
-  addToLayerList(layer: Layer): void {
+  createLayer(layerType: LayerType, options?: any): void {
+    let layer;
+    switch (layerType) {
+      case LayerType.Input:
+        layer = new Input(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        break;
+      case LayerType.Dense:
+        layer = new Dense(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        break;
+      case LayerType.Convolution:
+        layer = new Convolution(options?.position ?? {x: 600, y: 160}, this, this.fb);
+        break;
+      case LayerType.Flatten:
+        layer = new Flatten(options?.position ?? {x: 500, y: 160}, this, this.fb);
+        break;
+      case LayerType.Output:
+        layer = new Output(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        break;
+      default:
+        // todo: throw instead error warning to the user
+        layer = new Dense(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        break;
+    }
     const id = layer.getLayerId();
     this.layerMap.set(id, layer);
   }
 
-  buildModel(layers: Object[]): void {
-    console.log(layers);
+  generateBuilderJSON() {
+    const layers = [];
+    const connections = [];
+    for (const [id, layer] of this.layerMap) {
+      const layerInfo = {
+        id: id,
+        type: layer.getLayerType(),
+        position: layer.getSvgPosition(),
+        parameters: layer.getParameters()
+      };
+      layers.push(layerInfo);
+
+      const connection = layer.getOutputConnection()?.getConnectionIds();
+      if (connection) {
+        connections.push(connection);
+      }
+    }
+    return JSON.stringify({layers: layers, connections: connections});
+    // todo:
+    // training parameter -> other file?
+    // zoom lvl?
   }
 
-  async generateModel(): Promise<LayersModel|null> {
+  loadModel(builderJson: any): void {
+    // todo: create project and stuff, for the moment just create model...
+    // todo: seperate projects at all, load them in the service..
+    console.log('LOADING MODEL')
+    this.builder = builderJson;
+  }
+
+  buildModel(): void {
+    for (const layer of this.builder?.layers) {
+      this.createLayer(layer.type, {position: layer.position})
+    }
+  }
+
+  async generateModel(): Promise<LayersModel | null> {
     try {
       await tf.ready();
       const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getParameters());
@@ -119,7 +183,6 @@ export class ModelBuilderService {
 
   async isModelReady(): Promise<boolean> {
     const model = await this.generateModel();
-    console.log(model);
     return model ? true : false;
   }
 
@@ -127,9 +190,20 @@ export class ModelBuilderService {
     return `layer-${this.nextLayerId++}`;
   }
 
+  private getContainerWidthAndHeight(): { width: number, height: number } {
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const svgHeight = svg.node().getBoundingClientRect().height;
+    return {width: svgWidth, height: svgHeight};
+  }
+
   private createInputAndOutputLayer(): void {
-    this.inputLayer = new Input(this, this.fb);
-    this.outputLayer = new Output(this, this.fb);
+    const {width, height} = this.getContainerWidthAndHeight();
+    const x: number = width - 145;
+    const y: number = height / 2 - 75;
+
+    this.inputLayer = new Input({x: 30, y: y}, this, this.fb);
+    this.outputLayer = new Output({x: x, y: y}, this, this.fb);
     this.layerMap.set(this.inputLayer.getLayerId(), this.inputLayer);
     this.layerMap.set(this.outputLayer.getLayerId(), this.outputLayer);
   }

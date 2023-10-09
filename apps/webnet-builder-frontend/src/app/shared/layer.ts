@@ -4,10 +4,11 @@ import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
 import {XY} from "../core/interfaces";
-import {FormGroup, NonNullableFormBuilder} from "@angular/forms";
+import {FormGroup} from "@angular/forms";
 
 export abstract class Layer {
   private readonly layerId: string;
+  protected abstract layerType: string;
   protected svgElement: Selection<any, any, any, any>;
   protected outputConnection: Connection | null = null;
   protected inputConnection: Connection | null = null;
@@ -15,14 +16,16 @@ export abstract class Layer {
   protected configuration: any;
   public layerForm: FormGroup;
   public tfjsLayer: any;
+  protected position: XY;
 
   protected constructor(
     tfjsLayer: any,
+    position: XY,
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
-    protected fb: NonNullableFormBuilder,
     layerForm: FormGroup) {
     this.layerId = this.modelBuilderService.generateLayerId();
+    this.position = position;
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration
     this.layerForm = layerForm;
@@ -43,13 +46,22 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
   }
 
+  getOutputConnection(): Connection|null {
+    return this.outputConnection;
+  }
+
   getParameters(): any {
     return this.layerForm.getRawValue();
   };
 
+  getLayerType(): string {
+    return this.layerType;
+  }
+
   getLayerId(): string {
     return this.layerId;
   }
+
   getConfiguration(): any {
     return this.configuration;
   }
@@ -89,6 +101,7 @@ export abstract class Layer {
     d3.select("#inner-svg-container").append(() => this.svgElement.node());
     this.outputConnection?.draw();
   }
+
   unselect(): void {
     this.svgElement.classed("selected", false);
   }
@@ -111,6 +124,7 @@ export abstract class Layer {
 
   protected addInputAnchor(layerGrp: Selection<any, any, any, any>): void {
     const layerRect: Selection<any, any, any, any> = layerGrp.selectChild(".layer");
+
     const circleX = -10;
     const circleY = layerRect.node().getBBox().height / 2;
 
@@ -127,7 +141,7 @@ export abstract class Layer {
   }
 
   protected addOutputAnchor(layerGrp: Selection<any, any, any, any>): void {
-    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild("rect");
+    const layerRect: Selection<any, any, any, any> = layerGrp.selectChild(".layer");
     const circleX = layerRect.node().getBBox().width + 10;
     const circleY = layerRect.node().getBBox().height / 2;
 
@@ -150,7 +164,7 @@ export abstract class Layer {
     if (this.outputConnection) {
       this.outputConnection.removeConnection()
     }
-    this.outputConnection = new Connection(this);
+    this.outputConnection = new Connection(this, null);
     outputAnchor.classed("dragged", true);
   }
 
@@ -188,7 +202,6 @@ export abstract class Layer {
   protected dragStarted(event: any): void {
     const position = d3.pointer(event);
     this.mousePositionOnElement = {x: position[0], y: position[1]};
-    // this.svgElement.raise();
   }
 
   protected dragging(event: any): void {

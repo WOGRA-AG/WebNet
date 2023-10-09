@@ -7,10 +7,12 @@ import {NonNullableFormBuilder} from "@angular/forms";
 import {validateShapeArray} from "../../core/validators";
 import {parseShapeString} from "../utils";
 import {Shape} from "../configuration";
+import {XY} from "../../core/interfaces";
+import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
-
-  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  override layerType = LayerType.Input;
+  constructor(position: XY,modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
@@ -21,7 +23,7 @@ export class Input extends Layer{
     const layerForm = fb.group({
       shape: ['10', [validateShapeArray]]
     });
-    super(tf.input, config, modelBuilderService, fb, layerForm);
+    super(tf.input, position, config, modelBuilderService, layerForm);
   }
 
   override getParameters(): any {
@@ -38,7 +40,7 @@ export class Input extends Layer{
       .append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", `translate(30, ${svgHeight / 2 - 75})`);
+      .attr("transform", `translate(${this.position.x}, ${svgHeight / 2 - 75})`);
 
     inputGrp.append("rect")
       .classed('layer', true)

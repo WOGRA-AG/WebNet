@@ -5,10 +5,12 @@ import * as d3 from "d3";
 import {Selection} from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Units} from "../configuration";
+import {XY} from "../../core/interfaces";
+import {LayerType} from "../../core/enums";
 
 export class Dense extends Layer {
-
-  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  override layerType = LayerType.Dense;
+  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',
@@ -22,7 +24,7 @@ export class Dense extends Layer {
       units: [25, [Validators.required, Validators.minLength(1)]],
       activation: ['softmax', [Validators.required]]
     });
-    super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
@@ -31,7 +33,7 @@ export class Dense extends Layer {
     const denseGrp: Selection<any, any, any, any> = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(300, 160)");
+      .attr("transform", `translate(${this.position.x}, ${this.position.y})`);
 
     denseGrp.append("rect")
       .classed('layer', true)

@@ -1,9 +1,7 @@
-import {Component, ElementRef, HostListener, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Flatten} from "../../shared/layer/flatten";
-import {Dense} from "../../shared/layer/dense";
+import {Component, HostListener, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../core/services/model-builder.service";
-import {NonNullableFormBuilder} from '@angular/forms';
-import {Convolution} from "../../shared/layer/convolution";
+import {LayerType} from "../../core/enums";
+import {ProjectService} from "../../core/services/project.service";
 
 @Component({
   selector: 'app-nn-builder',
@@ -15,7 +13,7 @@ export class NnBuilderComponent {
   layerForm: any;
   configuration: any;
 
-  constructor(private modelBuilderService: ModelBuilderService, private fb: NonNullableFormBuilder) {
+  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
       this.layerForm = layer ? layer.layerForm : null;
       this.configuration = layer ? layer.getConfiguration() : null;
@@ -23,7 +21,6 @@ export class NnBuilderComponent {
   }
 
   ngOnInit(): void {
-    this.modelBuilderService.setupSvg();
     this.modelBuilderService.initialize();
   }
 
@@ -40,20 +37,9 @@ export class NnBuilderComponent {
   clear(): void {
     this.modelBuilderService.clearModelBuilder();
   }
-  createLayer(type: string): void {
-    switch (type) {
-      case 'dense':
-        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService, this.fb)));
-        break;
-      case 'convolution':
-        this.modelBuilderService.addToLayerList((new Convolution(this.modelBuilderService, this.fb)));
-        break;
-      case 'flatten':
-        this.modelBuilderService.addToLayerList((new Flatten(this.modelBuilderService, this.fb)));
-        break;
-      default:
-        this.modelBuilderService.addToLayerList((new Dense(this.modelBuilderService, this.fb)));
-        break;
-    }
+  createLayer(type: LayerType): void {
+    this.modelBuilderService.createLayer(type);
   }
+
+  protected readonly LayerType = LayerType;
 }

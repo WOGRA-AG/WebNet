@@ -4,10 +4,13 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {XY} from "../../core/interfaces";
+import {LayerType} from "../../core/enums";
 
 
 export class Flatten extends Layer {
-  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  override layerType = LayerType.Flatten;
+  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
@@ -29,7 +32,7 @@ export class Flatten extends Layer {
       filter: [3],
       kernelSize: [2]
     });
-    super(tf.layers.flatten, config, modelBuilderService, fb, layerForm);
+    super(tf.layers.flatten, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
@@ -38,7 +41,7 @@ export class Flatten extends Layer {
     const flattenGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(500, 160)");
+      .attr("transform", `translate(${this.position.x}, ${this.position.y})`);
 
     flattenGrp.append("rect")
       .classed('layer', true)

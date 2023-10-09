@@ -3,54 +3,59 @@ import * as JSZip from 'jszip';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
+import {ProjectService} from "./project.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SerializationService {
   zip: JSZip = new JSZip();
-  constructor(private modelBuilderService: ModelBuilderService) {
-  }
+  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {}
 
   async exportAsZIP(subProjects: any): Promise<void> {
-
     if (subProjects.dataset.checked) {
       this.zip.folder('dataset')?.file("dataset.txt", "D A T A S E T");
     }
-    if (subProjects.model.checked) {
-      const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
-
-      await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
-        const modelData: tf.io.ModelJSON = {
-          modelTopology: modelArtifacts.modelTopology?? {},
-          format: modelArtifacts.format,
-          generatedBy: modelArtifacts.generatedBy,
-          convertedBy: modelArtifacts.convertedBy,
-          weightsManifest: [{
-            paths: ["./weights.bin"],
-            weights: modelArtifacts.weightSpecs as tf.io.WeightsManifestEntry[]
-          }],
-        };
-        this.zip.file("model/model.json", JSON.stringify(modelData), {binary: false});
-        this.zip.file('model/weights.bin', JSON.stringify(modelArtifacts.weightData), {binary: true});
-      }));
+    if (subProjects.builder.checked) {
+      this.saveWebNetBuilder();
     }
-    if (subProjects.weights.checked) {
-      //   todo
+    if (subProjects.tf_model.checked) {
+      await this.saveTFModel();
     }
-
-    this.zip.generateAsync({type: "blob"})
-      .then((content: Blob) => {
-        saveAs(content, "webNet-project.zip")
-      });
+    const content = await this.zip.generateAsync({type: "blob"});
+    saveAs(content, "webNet-project.zip")
   }
 
-  async zipImport(file: any): Promise<void> {
+  saveWebNetBuilder(): void {
+    const builder: string = this.modelBuilderService.generateBuilderJSON();
+    this.zip.file("builder/model.json", builder, {binary: false})
+  }
+
+  async saveTFModel(): Promise<void> {
+    const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
+
+    await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
+      const modelData: tf.io.ModelJSON = {
+        modelTopology: modelArtifacts.modelTopology?? {},
+        format: modelArtifacts.format,
+        generatedBy: modelArtifacts.generatedBy,
+        convertedBy: modelArtifacts.convertedBy,
+        weightsManifest: [{
+          paths: ["./weights.bin"],
+          weights: modelArtifacts.weightSpecs as tf.io.WeightsManifestEntry[]
+        }],
+      };
+      this.zip.file("tf_model/model.json", JSON.stringify(modelData), {binary: false});
+      this.zip.file('tf_model/weights.bin', JSON.stringify(modelArtifacts.weightData), {binary: true});
+    }));
+  }
+  async importZip(file: any): Promise<void> {
     const zip = await this.zip.loadAsync(file);
     const files = zip.files;
-    const model: any = JSON.parse(await files['model/model.json'].async('string'));
+    const model: any = JSON.parse(await files['tf_model/model.json'].async('string'));
+    const builder: any = JSON.parse(await files['builder/model.json'].async('string'))
+    this.modelBuilderService.loadModel(builder);
 
-    this.modelBuilderService.buildModel(model.modelTopology.config.layers);
   }
 
   async saveModel() {

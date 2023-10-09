@@ -4,10 +4,12 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation} from "../configuration";
+import {XY} from "../../core/interfaces";
+import {LayerType} from "../../core/enums";
 
 export class Convolution extends Layer {
-
-  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  override layerType = LayerType.Convolution;
+  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Convolution',
       title: 'Convolution Layer Parameter',
@@ -49,7 +51,7 @@ export class Convolution extends Layer {
       padding: [2, [Validators.required]],
       activation: ['relu', [Validators.required]]
     })
-    super(tf.layers.conv3d, config, modelBuilderService, fb, layerForm);
+    super(tf.layers.conv3d, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer() {
@@ -60,7 +62,7 @@ export class Convolution extends Layer {
     const convGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", "translate(600, 160)");
+      .attr("transform", `translate(${this.position.x}, ${this.position.y})`);
 
     convGrp.append("rect")
       .classed('layer', true)

@@ -5,9 +5,12 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Units} from "../configuration";
+import {XY} from "../../core/interfaces";
+import {LayerType} from "../../core/enums";
 
 export class Output extends Layer {
-  constructor(modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  override layerType = LayerType.Output;
+  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
@@ -20,19 +23,16 @@ export class Output extends Layer {
       units: [1, [Validators.required, Validators.minLength(1)]],
       activation: ['sigmoid', [Validators.required]]
     })
-    super(tf.layers.dense, config, modelBuilderService, fb, layerForm);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {
     const outputData = {name: "Output", neuronCount: 10};
-    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
-    const svgWidth = svg.node().getBoundingClientRect().width;
-    const svgHeight = svg.node().getBoundingClientRect().height;
 
     const outputGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)
       .attr("stroke", "black")
-      .attr("transform", `translate(${svgWidth - 145}, ${svgHeight / 2 - 75})`);
+      .attr("transform", `translate(${this.position.x}, ${this.position.y})`);
 
     outputGrp.append("rect")
       .classed('layer', true)

@@ -14,8 +14,9 @@ interface SubProject {
 export class ExportComponent {
   subProjects: Record<string, SubProject> = {
     dataset: {name: 'Dataset', checked: true},
-    model: {name: 'Model', checked: true},
-    weights: {name: 'Trained Weights', checked: true}
+    builder: {name: 'WebNet Builder', checked: true},
+    tf_model: {name: 'Tensorflow Model', checked: true},
+    // weights: {name: 'Trained Weights', checked: true}
   }
   allChecked: boolean = true;
 

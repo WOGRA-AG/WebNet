@@ -19,7 +19,7 @@ export class ProjectsComponent {
   async importProject(): Promise<void> {
 
     if (this.file) {
-      await this.serializationService.zipImport(this.file);
+      await this.serializationService.importZip(this.file);
       // await this.serializationService.loadModel(this.file);
     }
   }

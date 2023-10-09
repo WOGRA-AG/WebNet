@@ -9,16 +9,16 @@
       <div class="layer-components">
         <h3>Fully connected</h3>
         <div class="layer-component-buttons">
-          <button mat-raised-button color="primary" (click)="createLayer('dense')">
+          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Dense)">
             Dense
           </button>
         </div>
         <h3>Convolution</h3>
         <div class="layer-component-buttons">
-          <button mat-raised-button color="primary" (click)="createLayer('convolution')">
+          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Convolution)">
             Convolution
           </button>
-          <button mat-raised-button color="primary" (click)="createLayer('flatten')">
+          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Flatten)">
             Flatten
           </button>
           <div>
