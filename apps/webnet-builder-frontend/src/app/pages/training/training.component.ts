@@ -6,7 +6,7 @@ import {TrainStats} from "../../core/interfaces";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {TrainingService} from "../../core/services/training.service";
 import {MatDialog} from "@angular/material/dialog";
-import {CustomDialogComponent} from "../../shared/components/custom-dialog/custom-dialog.component";
+import {TaskDialogComponent} from "../../shared/components/task-dialog/task-dialog.component";
 import * as tfvis from "@tensorflow/tfjs-vis";
 
 @Component({
@@ -42,7 +42,7 @@ export class TrainingComponent {
   }
 
   openDialog(done: { dataset: boolean, model: boolean }) {
-    this.dialog.open(CustomDialogComponent, {
+    this.dialog.open(TaskDialogComponent, {
       data: {
         tasks: [{
           task: "dataset",

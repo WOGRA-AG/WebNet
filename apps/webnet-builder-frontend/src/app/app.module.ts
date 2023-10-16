@@ -13,10 +13,13 @@ import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
 import { DynamicLayerFormComponent } from './shared/components/dynamic-layer-form/dynamic-layer-form.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProjectComponent } from './pages/project/project.component';
-import { CustomDialogComponent } from './shared/components/custom-dialog/custom-dialog.component';
+import { TaskDialogComponent } from './shared/components/task-dialog/task-dialog.component';
 import { TrainingComponent } from './pages/training/training.component';
 import { ExportComponent } from './pages/export/export.component';
 import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
+import { DatasetComponent } from './pages/dataset/dataset.component';
+import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
+
 
 
 
@@ -31,10 +34,12 @@ import { FileUploadComponent } from './shared/components/file-upload/file-upload
     DynamicLayerFormComponent,
     ProjectsComponent,
     ProjectComponent,
-    CustomDialogComponent,
+    TaskDialogComponent,
     TrainingComponent,
     ExportComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    DatasetComponent,
+    InputDialogComponent
   ],
   imports: [
     BrowserModule,

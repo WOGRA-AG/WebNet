@@ -4,6 +4,7 @@ import * as tfvis from "@tensorflow/tfjs-vis";
 import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces";
+import {MnistDataService} from "./model-data-services/mnist-data.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService) {
+  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService) {
   }
 
   stopTraining(): void {
@@ -41,10 +42,15 @@ export class TrainingService {
   }
 
   async train(parameter: any, plotContainer: HTMLElement): Promise<number | null> {
-    const X = tf.ones([8, 10]);
-    const Y = tf.ones([8, 1]);
-    const EPOCHS = 10;
-    const BATCH_SIZE = 1;
+    // const X = tf.ones([8, 10]);
+    // const Y = tf.ones([8, 1]);
+    await this.mnistDataService.load();
+    const {trainXs, trainYs, testXs, testYs} = this.mnistDataService.prepData(5000);
+    const X = trainXs;
+    const Y = trainYs;
+
+    const EPOCHS = 1;
+    const BATCH_SIZE = 5000;
     const SHUFFLE = true;
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
@@ -101,6 +107,7 @@ export class TrainingService {
     const startTime = performance.now();
     const history = await model.fit(X, Y, {
       batchSize: BATCH_SIZE,
+      // validationData: [testXs, testYs],
       epochs: EPOCHS,
       callbacks: callbacks,
       shuffle: SHUFFLE,

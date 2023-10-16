@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Project Creation</h1>
+<div mat-dialog-content>
+  <p>{{data.message}}</p>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Name</mat-label>
+    <input matInput  [(ngModel)]="projectName" type="text">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button color="primary"
+          (click)="createProject()">Create Project</button>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

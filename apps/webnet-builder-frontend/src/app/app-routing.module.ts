@@ -11,8 +11,8 @@ const routes: Routes = [
   {path: 'home', redirectTo: '', pathMatch: 'full'},
   {path: 'testing', component: TestingComponent, pathMatch:'full', data: { pageTitle: 'Performance Tests', desc: 'Measure the performance of different backends for different neural network examples.'}},
   {path: 'builder', component: NnBuilderComponent, pathMatch: 'full', data: { pageTitle: 'Neural Network Builder', desc: 'build a custom neural network'}},
-  {path: 'projects/mnist', component: ProjectComponent},
-  {path: 'projects/:test', component: ProjectComponent},
+  // {path: 'projects/mnist', component: ProjectComponent, pathMatch: 'full'},
+  {path: 'projects/:websiteName', component: ProjectComponent},
   {path: 'projects', component: ProjectsComponent, pathMatch: 'full', data: { pageTitle: 'Neural Network Projects', desc: 'build and train a custom neural network model'}},
   {path: '**', redirectTo:''}
 ];

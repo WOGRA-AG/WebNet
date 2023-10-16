@@ -15,5 +15,6 @@ export enum LayerType {
   Dense = "dense",
   Convolution = "convolution",
   Flatten = "flatten",
+  Maxpooling = "maxpooling",
   Output = "output"
 }

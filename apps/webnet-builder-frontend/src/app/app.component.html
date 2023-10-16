@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="">
   <mat-toolbar-row>
     <a [routerLink]="['/home']">
       <div class="site-logo"><img src="assets/imgs/logo-with-text.png" alt="WebNet Builder logo"></div>
@@ -8,7 +8,8 @@
       <a mat-button [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
       <a mat-button [routerLink]="['/builder']" routerLinkActive="active">Playground</a>
       <a mat-button [routerLink]="['/testing']" routerLinkActive="active">Performance Testing</a>
-      <a mat-button [routerLink]="['/projects']" routerLinkActive="active">Projects</a>
+      <a mat-button [routerLink]="['/projects']" routerLinkActive="active" matBadgeColor="accent"
+         [matBadge]="getNumberOfProjects()" matBadgePosition="after">Projects</a>
     </div>
   </mat-toolbar-row>
 </mat-toolbar>

@@ -1,16 +1,17 @@
+<h1>Project: {{ projectName }}</h1>
 <mat-stepper [linear]="false" #stepper>
   <!--  Dataset  -->
   <mat-step label="Dataset" #dataset_step>
     <h2 class="step-title">Dataset</h2>
     <div class="dataset-section">
-      <p>add Dataset and manipulate data.</p>
+      <app-dataset [dataset]="project.dataset"></app-dataset>
     </div>
   </mat-step>
   <!--  Modeling  -->
   <mat-step label="Modeling" #modeling_step>
     <h2 class="step-title">Modeling</h2>
     <div class="modeling-section">
-      <app-nn-builder *ngIf="stepper.selected == modeling_step"></app-nn-builder>
+      <app-nn-builder *ngIf="stepper.selected == modeling_step" [builder]="project.builder"></app-nn-builder>
     </div>
   </mat-step>
   <!--  Training  -->

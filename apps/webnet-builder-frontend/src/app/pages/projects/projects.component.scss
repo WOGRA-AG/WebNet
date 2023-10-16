@@ -1,7 +1,30 @@
 .content-container {
-  margin-top: 1rem;
-
-  .projects-card {
-    margin: 1rem;
-  }
+  margin: 1rem auto;
+  width: 80%;
 }
+
+.projects-card {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info-message {
+  margin-top: 1rem;
+  color: red;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.template-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+}
+

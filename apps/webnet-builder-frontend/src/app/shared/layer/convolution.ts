@@ -3,7 +3,7 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {Activation} from "../configuration";
+import {Activation, Padding} from "../configuration";
 import {XY} from "../../core/interfaces";
 import {LayerType} from "../../core/enums";
 
@@ -13,10 +13,6 @@ export class Convolution extends Layer {
     const config = {
       name: 'Convolution',
       title: 'Convolution Layer Parameter',
-      parameters: {
-        filters: 3,
-        kernelSize: 2
-      },
       formConfig: [{
         key: 'filters',
         label: 'Filters',
@@ -35,12 +31,7 @@ export class Convolution extends Layer {
           controlType: 'textbox',
           type: 'number'
         },
-        {
-          key: 'padding',
-          label: 'Padding',
-          controlType: 'textbox',
-          type: 'number'
-        },
+        Padding,
         Activation
       ]
     };
@@ -48,10 +39,10 @@ export class Convolution extends Layer {
       filters: [3, [Validators.required]],
       kernelSize: [2, [Validators.required]],
       strides: [1, [Validators.required]],
-      padding: [2, [Validators.required]],
-      activation: ['relu', [Validators.required]]
+      padding: ['valid', [Validators.required]],
+      activation: ['relu', [Validators.required]],
     })
-    super(tf.layers.conv3d, position, config, modelBuilderService, layerForm);
+    super(tf.layers.conv2d, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer() {

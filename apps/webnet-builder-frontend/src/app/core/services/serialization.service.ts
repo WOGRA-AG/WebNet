@@ -14,7 +14,7 @@ export class SerializationService {
 
   async exportAsZIP(subProjects: any): Promise<void> {
     if (subProjects.dataset.checked) {
-      this.zip.folder('dataset')?.file("dataset.txt", "D A T A S E T");
+      this.zip.file("dataset/dataset.txt", "D A T A S E T");
     }
     if (subProjects.builder.checked) {
       this.saveWebNetBuilder();
@@ -22,6 +22,7 @@ export class SerializationService {
     if (subProjects.tf_model.checked) {
       await this.saveTFModel();
     }
+    this.zip.file("project.json", JSON.stringify({name: "WebNet Builder Example"}), {binary: false});
     const content = await this.zip.generateAsync({type: "blob"});
     saveAs(content, "webNet-project.zip")
   }
@@ -49,13 +50,15 @@ export class SerializationService {
       this.zip.file('tf_model/weights.bin', JSON.stringify(modelArtifacts.weightData), {binary: true});
     }));
   }
-  async importZip(file: any): Promise<void> {
+  async importZip(file: any): Promise<any> {
     const zip = await this.zip.loadAsync(file);
     const files = zip.files;
+    // todo: checks, some files may not exist
+    const project: any = JSON.parse(await files['project.json'].async('string'));
+    const dataset: any = await files['dataset/dataset.txt'].async('string');
     const model: any = JSON.parse(await files['tf_model/model.json'].async('string'));
-    const builder: any = JSON.parse(await files['builder/model.json'].async('string'))
-    this.modelBuilderService.loadModel(builder);
-
+    const builder: any = JSON.parse(await files['builder/model.json'].async('string'));
+    return {project, dataset, model, builder};
   }
 
   async saveModel() {

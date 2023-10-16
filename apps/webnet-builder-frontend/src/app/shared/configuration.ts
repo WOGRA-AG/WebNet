@@ -21,3 +21,11 @@ export const Shape = {
   type: 'text',
   tooltip: 'A shape, not including the batch size. For instance, shape=[32] indicates that the expected input will be batches of 32-dimensional vectors.',
 };
+
+export const Padding = {
+  key: 'padding',
+  label: 'Padding',
+  controlType: 'dropdown',
+  options: {valid: 'Valid', same: 'Same', casual: 'Casual'},
+  tooltip: ' Padding mode.'
+};

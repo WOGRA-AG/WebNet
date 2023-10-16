@@ -13,6 +13,7 @@ import {LayerType} from "../enums";
 import {Dense} from "../../shared/layer/dense";
 import {Convolution} from "../../shared/layer/convolution";
 import {Flatten} from "../../shared/layer/flatten";
+import {Maxpooling} from "../../shared/layer/maxpooling";
 
 
 @Injectable({
@@ -21,7 +22,6 @@ import {Flatten} from "../../shared/layer/flatten";
 export class ModelBuilderService {
   private layerMap: Map<string, Layer> = new Map();
   private nextLayerId = 1;
-  builder: any;
   inputLayer: Input | null = null;
   outputLayer: Output | null = null;
   selectedLayer: Layer | null = null;
@@ -67,16 +67,13 @@ export class ModelBuilderService {
       );
   }
 
-  initialize(): void {
-    if (this.builder) {
-      this.buildModel();
-      this.nextLayerId = this.builder.layers.length + 1;
-    }
-    else if (!this.isInitialized) {
+  initialize(builder?: any): void {
+    if (!this.isInitialized) {
       this.setupSvg();
+      this.deleteAllLayers();
       this.isInitialized = true;
       this.nextLayerId = 1;
-      this.createInputAndOutputLayer();
+      builder ? this.loadFromBuilder(builder) : this.createInputAndOutputLayer();
     } else {
       this.redrawLayers();
     }
@@ -96,6 +93,11 @@ export class ModelBuilderService {
     }
   }
 
+  createConnection(source: Layer, destination: Layer): void {
+    const connection = new Connection(source, destination);
+    source.addOutputConnection(connection);
+    destination.addInputConnection(connection)
+  }
 
   createLayer(layerType: LayerType, options?: any): void {
     let layer;
@@ -111,6 +113,9 @@ export class ModelBuilderService {
         break;
       case LayerType.Flatten:
         layer = new Flatten(options?.position ?? {x: 500, y: 160}, this, this.fb);
+        break;
+      case LayerType.Maxpooling:
+        layer = new Maxpooling(options?.position ?? {x: 650, y: 160}, this, this.fb);
         break;
       case LayerType.Output:
         layer = new Output(options?.position ?? {x: 300, y: 160}, this, this.fb);
@@ -147,16 +152,18 @@ export class ModelBuilderService {
     // zoom lvl?
   }
 
-  loadModel(builderJson: any): void {
-    // todo: create project and stuff, for the moment just create model...
-    // todo: seperate projects at all, load them in the service..
-    console.log('LOADING MODEL')
-    this.builder = builderJson;
-  }
-
-  buildModel(): void {
-    for (const layer of this.builder?.layers) {
+  loadFromBuilder(builder: any): void {
+    this.nextLayerId = 1;
+    for (const layer of builder.layers) {
       this.createLayer(layer.type, {position: layer.position})
+    }
+
+    for (const connection of builder.connections) {
+      const source = this.layerMap.get(connection.source);
+      const destination = this.layerMap.get(connection.destination);
+      if (source && destination) {
+        this.createConnection(source, destination);
+      }
     }
   }
 
@@ -170,13 +177,15 @@ export class ModelBuilderService {
 
       while (layer?.getNextLayer()) {
         const nextLayer = layer?.getNextLayer();
-        hidden = nextLayer?.tfjsLayer(nextLayer?.getParameters()).apply(hidden);
+        const parameters = nextLayer?.getParameters();
+        hidden = nextLayer?.tfjsLayer(parameters).apply(hidden);
         layer = nextLayer;
       }
 
       return layer !== this.outputLayer ? null : tf.model({inputs: input, outputs: hidden});
     } catch (error) {
       console.log("Error: Generating Model");
+      console.log(error);
       return null;
     }
   }

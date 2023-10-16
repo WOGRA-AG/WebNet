@@ -51,7 +51,9 @@ export abstract class Layer {
   }
 
   getParameters(): any {
-    return this.layerForm.getRawValue();
+    const parameters = this.layerForm.getRawValue();
+    parameters.name = this.getLayerId();
+    return parameters;
   };
 
   getLayerType(): string {
@@ -137,7 +139,7 @@ export abstract class Layer {
 
     inputAnchor
       .on("mouseenter", (event: any) => inputAnchor.classed("hovered", true))
-      .on("mouseleave", (event: any) => this.addConnection(inputAnchor));
+      .on("mouseleave", (event: any) => this.addConnection());
   }
 
   protected addOutputAnchor(layerGrp: Selection<any, any, any, any>): void {
@@ -153,19 +155,19 @@ export abstract class Layer {
       .attr("transform", `translate(${circleX}, ${circleY})`);
 
     outputAnchor.call(d3.drag()
-      .on("start", (event: any) => this.createConnection(outputAnchor))
+      .on("start", (event: any) => this.createConnection())
       .on("drag", (event: any) => this.outputConnection?.moveToMouse(event))
       .on("end", (event: any) => this.checkConnection(outputAnchor, event)))
       .on("mouseenter", (event: any) => outputAnchor.classed("hovered", true))
       .on("mouseleave", (event: any) => outputAnchor.classed("hovered", false));
   }
 
-  protected createConnection(outputAnchor: Selection<any, any, any, any>): void {
+  createConnection(): void {
     if (this.outputConnection) {
       this.outputConnection.removeConnection()
     }
     this.outputConnection = new Connection(this, null);
-    outputAnchor.classed("dragged", true);
+    this.svgElement.select('.output-anchor-group').classed("dragged", true);
   }
 
   protected checkConnection(outputAnchor: Selection<any, any, any, any>, event: any): void {
@@ -178,8 +180,9 @@ export abstract class Layer {
       this.outputConnection?.removeConnection();
     }
   }
-  protected addConnection(inputAnchor: Selection<any, any, any, any>): void {
-    inputAnchor.classed("hovered", false);
+
+  protected addConnection(): void {
+    this.svgElement.select('.input-anchor-group').classed("hovered", false);
     const connection = this.modelBuilderService.activeConnection;
     if (connection) {
       if (this.inputConnection) {
@@ -190,7 +193,12 @@ export abstract class Layer {
       this.modelBuilderService.activeConnectionSubject.next(null);
     }
   }
-
+  addOutputConnection(connection: Connection): void {
+    this.outputConnection = connection;
+  }
+  addInputConnection(connection: Connection): void {
+    this.inputConnection = connection;
+  }
   protected hoverLayer(event: any): void {
     this.svgElement.classed("hovered", true);
   }

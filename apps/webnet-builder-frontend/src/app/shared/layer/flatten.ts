@@ -6,6 +6,7 @@ import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {XY} from "../../core/interfaces";
 import {LayerType} from "../../core/enums";
+import {Shape} from "../configuration";
 
 
 export class Flatten extends Layer {
@@ -14,17 +15,7 @@ export class Flatten extends Layer {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
-      parameters: {
-        shape: [4, 3],
-      },
-      formConfig: [{
-        key: 'shape',
-        label: 'Shape',
-        controlType: 'textbox',
-        required: true,
-        value: 'Shape???',
-        type: 'text'
-      }]
+      formConfig: [Shape]
     };
     const layerForm = fb.group({
       shape: [''],

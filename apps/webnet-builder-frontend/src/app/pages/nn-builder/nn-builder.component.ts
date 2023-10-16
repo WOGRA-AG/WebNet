@@ -1,4 +1,4 @@
-import {Component, HostListener, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, Input, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {LayerType} from "../../core/enums";
 import {ProjectService} from "../../core/services/project.service";
@@ -10,9 +10,16 @@ import {ProjectService} from "../../core/services/project.service";
   encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
+  private _builder: any;
+  @Input() set builder(value: any) {
+    if (value && Object.keys(value).length > 0) {
+      this._builder = value;
+    } else {
+      this._builder = null;
+    }
+  }
   layerForm: any;
   configuration: any;
-
   constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
       this.layerForm = layer ? layer.layerForm : null;
@@ -21,7 +28,8 @@ export class NnBuilderComponent {
   }
 
   ngOnInit(): void {
-    this.modelBuilderService.initialize();
+    // this.modelBuilderService.initialize()
+    this._builder ? this.modelBuilderService.initialize(this._builder) : this.modelBuilderService.initialize();
   }
 
   @HostListener('window:keydown.Escape', ['$event'])

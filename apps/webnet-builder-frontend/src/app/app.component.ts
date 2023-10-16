@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {Router, ActivatedRoute} from "@angular/router";
+import {ProjectService} from "./core/services/project.service";
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,15 @@ import {Router, ActivatedRoute} from "@angular/router";
 export class AppComponent {
   title = 'webnet-builder-frontend';
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private projectService: ProjectService) {}
+
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification(e: BeforeUnloadEvent): void {
+    if(this.getNumberOfProjects() > 0) {
+      e.returnValue = 'You have open Projects. Are you sure you want to leave?';
+    }
+  }
 
   getPageTitle(): string {
     let route = this.activatedRoute;
@@ -39,5 +48,9 @@ export class AppComponent {
       const pathSegments = route.snapshot.url.map(segment => segment.path);
       return pathSegments.join(' / ');
     }
+  }
+
+  getNumberOfProjects(): number {
+    return this.projectService.getNumberOfProjects();
   }
 }
