@@ -5,6 +5,7 @@
   padding: 20px;
   margin: 0.5em;
 }
+
 .layer-components-container {
   .layer-components {
     padding: 10px;
@@ -13,10 +14,12 @@
   .layer-component-buttons {
     border-left: 3px solid black;
   }
+
   h3 {
     margin: 0.5em 0 0.5em 0;
     font-weight: bold;
   }
+
   button {
     border-radius: 25px !important;
   }
@@ -26,25 +29,32 @@
   display: flex;
   flex-direction: row;
 
-  #svg-container {
+  #modeling-container {
     height: 600px;
     width: 80%;
     min-width: 80%;
+    padding: 0 !important;
 
-    #inner-svg-container {
+    #svg-container {
       height: 100%;
       width: 100%;
+
+      #inner-svg-container {
+        height: 100%;
+        width: 100%;
+      }
     }
-  }
-  .layer-components {
-    flex-grow: 1;
+
+    .layer-components {
+      flex-grow: 1;
+    }
   }
 }
 
 .connection {
   stroke: gray;
   stroke-width: 3;
-  stroke-dasharray: 8,8;
+  stroke-dasharray: 8, 8;
 }
 
 .layer-group {
@@ -68,10 +78,12 @@
     &.hovered {
       cursor: crosshair;
     }
+
     &.dragged {
       fill: yellow;
     }
   }
+
   &.selected {
     .layer {
       fill: lightgray !important;

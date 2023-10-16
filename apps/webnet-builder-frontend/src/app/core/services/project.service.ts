@@ -35,6 +35,9 @@ export class ProjectService {
   clearMyProjects(): void {
     this.myProjects.clear();
   }
+  checkProjectNameTaken(name: string): boolean {
+    return this.myProjects.has(name);
+  }
 
   getTemplateProjectByName(name: string): any {
     const templateProject = this.templateProjects.get(name);
