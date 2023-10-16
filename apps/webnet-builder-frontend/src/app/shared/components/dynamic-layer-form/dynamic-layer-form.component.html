@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <ng-container *ngFor="let parameter of parameterConfig;">
-    <mat-form-field [ngSwitch]="parameter.controlType">
+    <mat-form-field [ngSwitch]="parameter.controlType" subscriptSizing="dynamic">
       <mat-label [id]="parameter.key">{{parameter.label}}</mat-label>
       <!-- input -->
       <input matInput [id]="parameter.key" [type]="parameter.type" [formControlName]="parameter.key"
