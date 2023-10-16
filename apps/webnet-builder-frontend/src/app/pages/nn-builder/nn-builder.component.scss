@@ -105,3 +105,11 @@
 #modelSummaryContainer {
   margin: 0;
 }
+
+.mat-mdc-tab-group {
+  margin: 0 1rem;
+  .mat-mdc-tab-label-container {
+    margin-bottom: 0.5rem;
+  }
+}
+

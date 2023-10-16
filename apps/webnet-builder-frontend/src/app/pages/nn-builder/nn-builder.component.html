@@ -6,38 +6,51 @@
   </div>
 
   <div>
-    <div class="layer-components-container box-container">
-      <h2>Layer Components</h2>
-      <span>Add individual layers to your model by simply clicking on buttons.</span>
-      <div class="layer-components">
-        <h3>Fully connected</h3>
-        <div class="layer-component-buttons">
-          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Dense)">
-            Dense
-          </button>
-        </div>
-        <h3>Convolution</h3>
-        <div class="layer-component-buttons">
-          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Convolution)">
-            Convolution
-          </button>
-          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Flatten)">
-            Flatten
-          </button>
-          <button mat-raised-button color="primary" (click)="createLayer(LayerType.Maxpooling)">
-            Maxpooling
-          </button>
-          <div>
+    <mat-tab-group [selectedIndex]="selectedTab.value">
+      <mat-tab label="Layer">
+        <div class="layer-components-container box-container">
+          <h2>Layer Components</h2>
+          <span>Add individual layers to your model by simply clicking on buttons.</span>
+          <div class="layer-components">
+            <h3>Fully connected</h3>
+            <div class="layer-component-buttons">
+              <button mat-raised-button color="primary" (click)="createLayer(LayerType.Dense)">
+                Dense
+              </button>
+            </div>
+            <h3>Convolution</h3>
+            <div class="layer-component-buttons">
+              <button mat-raised-button color="primary" (click)="createLayer(LayerType.Convolution)">
+                Convolution
+              </button>
+              <button mat-raised-button color="primary" (click)="createLayer(LayerType.Flatten)">
+                Flatten
+              </button>
+              <button mat-raised-button color="primary" (click)="createLayer(LayerType.Maxpooling)">
+                Maxpooling
+              </button>
+              <div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="box-container" *ngIf="layerForm">
-      <h2>{{configuration.name }} Configuration</h2>
-      <span>{{configuration.title}}</span>
-      <app-dynamic-layer-form [parameterConfig]="configuration.formConfig"
-                              [form]="layerForm"></app-dynamic-layer-form>
-    </div>
+      </mat-tab>
+      <mat-tab label="Configuration">
+        <div class="box-container">
+          <div *ngIf="layerForm">
+            <h2>{{configuration.name }} Configuration</h2>
+            <span>{{configuration.title}}</span>
+            <app-dynamic-layer-form [parameterConfig]="configuration.formConfig"
+                                    [form]="layerForm"></app-dynamic-layer-form>
+          </div>
+          <div *ngIf="!layerForm">
+            <h2>Layer Configuration</h2>
+            <span>Select a Layer to change its Configuration.</span>
+          </div>
+
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
 <button mat-raised-button color="secondary" (click)="clear()">

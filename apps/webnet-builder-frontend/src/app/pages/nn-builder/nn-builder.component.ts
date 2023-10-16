@@ -2,6 +2,7 @@ import {Component, HostListener, Input, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {LayerType} from "../../core/enums";
 import {ProjectService} from "../../core/services/project.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-nn-builder',
@@ -20,10 +21,12 @@ export class NnBuilderComponent {
   }
   layerForm: any;
   configuration: any;
+  selectedTab = new FormControl(0);
   constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
       this.layerForm = layer ? layer.layerForm : null;
       this.configuration = layer ? layer.getConfiguration() : null;
+      layer ? this.selectedTab.setValue(1) : this.selectedTab.setValue(0);
     })
   }
 
