@@ -10,7 +10,7 @@ import {LayerType} from "../../core/enums";
 
 export class Dense extends Layer {
   override layerType = LayerType.Dense;
-  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',
@@ -21,8 +21,8 @@ export class Dense extends Layer {
     };
 
     const layerForm = fb.group({
-      units: [25, [Validators.required, Validators.minLength(1)]],
-      activation: ['softmax', [Validators.required]]
+      units: [parameters.units, [Validators.required, Validators.minLength(1)]],
+      activation: [parameters.activation, [Validators.required]]
     });
     super(tf.layers.dense, position, config, modelBuilderService, layerForm);
   }

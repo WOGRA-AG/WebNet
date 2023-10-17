@@ -8,7 +8,7 @@ import {Input} from "../../shared/layer/input";
 import {Output} from "../../shared/layer/output";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {NonNullableFormBuilder} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {LayerType} from "../enums";
 import {Dense} from "../../shared/layer/dense";
 import {Convolution} from "../../shared/layer/convolution";
@@ -46,7 +46,7 @@ export class ModelBuilderService {
 
   clearModelBuilder(): void {
     this.isInitialized = false;
-    this.deleteAllLayers();
+    this.clearLayers();
     this.layerMap.clear();
     this.initialize();
   }
@@ -70,7 +70,7 @@ export class ModelBuilderService {
   initialize(builder?: any): void {
     if (!this.isInitialized) {
       this.setupSvg();
-      this.deleteAllLayers();
+      this.clearLayers();
       this.isInitialized = true;
       this.nextLayerId = 1;
       builder ? this.loadFromBuilder(builder) : this.createInputAndOutputLayer();
@@ -99,30 +99,31 @@ export class ModelBuilderService {
     destination.addInputConnection(connection)
   }
 
-  createLayer(layerType: LayerType, options?: any): void {
+  createLayer(layerType: LayerType, parameters?: any, options?: any): void {
     let layer;
     switch (layerType) {
       case LayerType.Input:
-        layer = new Input(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Input(parameters?? {shape: '10'}, options?.position ?? {x: 300, y: 160}, this, this.fb);
         break;
       case LayerType.Dense:
-        layer = new Dense(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Dense(parameters?? {units: 25, activation: 'softmax'}, options?.position ?? {x: 300, y: 160}, this, this.fb);
         break;
       case LayerType.Convolution:
-        layer = new Convolution(options?.position ?? {x: 600, y: 160}, this, this.fb);
+        layer = new Convolution(parameters?? {filters: 3, kernelSize: 2, strides: 1, padding: 'valid', activation: 'relu'},
+          options?.position ?? {x: 600, y: 160}, this, this.fb);
         break;
       case LayerType.Flatten:
-        layer = new Flatten(options?.position ?? {x: 500, y: 160}, this, this.fb);
+        layer = new Flatten(parameters?? {shape: '', units: 500, filter: 3, kernelSize: 2}, options?.position ?? {x: 500, y: 160}, this, this.fb);
         break;
       case LayerType.Maxpooling:
-        layer = new Maxpooling(options?.position ?? {x: 650, y: 160}, this, this.fb);
+        layer = new Maxpooling(parameters?? {filters: 3, kernelSize: 2}, options?.position ?? {x: 650, y: 160}, this, this.fb);
         break;
       case LayerType.Output:
-        layer = new Output(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Output(parameters?? {units: 1, activation: 'sigmoid'},options?.position ?? {x: 300, y: 160}, this, this.fb);
         break;
       default:
         // todo: throw instead error warning to the user
-        layer = new Dense(options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Dense(parameters?? {units: 25, activation: 'softmax'},options?.position ?? {x: 300, y: 160}, this, this.fb);
         break;
     }
     const id = layer.getLayerId();
@@ -146,7 +147,7 @@ export class ModelBuilderService {
         connections.push(connection);
       }
     }
-    return JSON.stringify({layers: layers, connections: connections});
+    return {layers: layers, connections: connections};
     // todo:
     // training parameter -> other file?
     // zoom lvl?
@@ -155,7 +156,7 @@ export class ModelBuilderService {
   loadFromBuilder(builder: any): void {
     this.nextLayerId = 1;
     for (const layer of builder.layers) {
-      this.createLayer(layer.type, {position: layer.position})
+      this.createLayer(layer.type, layer.parameters, {position: layer.position})
     }
 
     for (const connection of builder.connections) {
@@ -210,17 +211,15 @@ export class ModelBuilderService {
     const {width, height} = this.getContainerWidthAndHeight();
     const x: number = width - 145;
     const y: number = height / 2 - 75;
-
-    this.inputLayer = new Input({x: 30, y: y}, this, this.fb);
-    this.outputLayer = new Output({x: x, y: y}, this, this.fb);
+    // todo: why am i creating them here once again?
+    this.inputLayer = new Input({shape: '10'},{x: 30, y: y}, this, this.fb);
+    this.outputLayer = new Output({units: 1, activation: 'sigmoid'}, {x: x, y: y}, this, this.fb);
     this.layerMap.set(this.inputLayer.getLayerId(), this.inputLayer);
     this.layerMap.set(this.outputLayer.getLayerId(), this.outputLayer);
   }
 
-  private deleteAllLayers(): void {
-    this.layerMap.forEach((layer) => {
-      layer.delete();
-    });
+  private clearLayers(): void {
+    this.layerMap.clear();
   }
 
   private redrawLayers(): void {

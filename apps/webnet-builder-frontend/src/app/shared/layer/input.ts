@@ -12,7 +12,7 @@ import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
   override layerType = LayerType.Input;
-  constructor(position: XY,modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
@@ -21,7 +21,7 @@ export class Input extends Layer{
       ]
     };
     const layerForm = fb.group({
-      shape: ['10', [validateShapeArray]]
+      shape: [parameters.shape, [validateShapeArray]]
     });
     super(tf.input, position, config, modelBuilderService, layerForm);
   }

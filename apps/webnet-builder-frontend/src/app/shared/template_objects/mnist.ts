@@ -5,7 +5,7 @@ export class MnistTemplate {
         "id": "layer-1",
         "type": "input",
         "position": {"x": 30, "y": 246},
-        "parameters": {"shape": [28, 28, 1]}
+        "parameters": {"shape": '28, 28, 1'}
       }, {
         "id": "layer-2",
         "type": "output",

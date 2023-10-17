@@ -28,7 +28,7 @@ export class SerializationService {
   }
 
   saveWebNetBuilder(): void {
-    const builder: string = this.modelBuilderService.generateBuilderJSON();
+    const builder: string = JSON.stringify(this.modelBuilderService.generateBuilderJSON());
     this.zip.file("builder/model.json", builder, {binary: false})
   }
 

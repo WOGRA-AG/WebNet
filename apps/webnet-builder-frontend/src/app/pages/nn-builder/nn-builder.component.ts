@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {LayerType} from "../../core/enums";
 import {ProjectService} from "../../core/services/project.service";
@@ -11,6 +11,8 @@ import {FormControl} from "@angular/forms";
   encapsulation: ViewEncapsulation.None, // Disable encapsulation
 })
 export class NnBuilderComponent {
+  protected readonly LayerType = LayerType;
+  autoSaveInterval: any;
   private _builder: any;
   @Input() set builder(value: any) {
     if (value && Object.keys(value).length > 0) {
@@ -19,6 +21,7 @@ export class NnBuilderComponent {
       this._builder = null;
     }
   }
+  @Output() builderChange = new EventEmitter<any>();
   layerForm: any;
   configuration: any;
   selectedTab = new FormControl(0);
@@ -31,8 +34,25 @@ export class NnBuilderComponent {
   }
 
   ngOnInit(): void {
-    // this.modelBuilderService.initialize()
     this._builder ? this.modelBuilderService.initialize(this._builder) : this.modelBuilderService.initialize();
+    this.startAutoSave();
+  }
+
+  startAutoSave() {
+    this.autoSaveInterval = setInterval(() => {
+      this.updateBuilder();
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval);
+      this.updateBuilder();
+    }
+  }
+
+  updateBuilder(): void {
+    this.builderChange.next(this.modelBuilderService.generateBuilderJSON());
   }
 
   @HostListener('window:keydown.Escape', ['$event'])
@@ -51,6 +71,4 @@ export class NnBuilderComponent {
   createLayer(type: LayerType): void {
     this.modelBuilderService.createLayer(type);
   }
-
-  protected readonly LayerType = LayerType;
 }

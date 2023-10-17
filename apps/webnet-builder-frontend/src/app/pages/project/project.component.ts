@@ -14,14 +14,23 @@ export class ProjectComponent {
   protected readonly losses = losses;
   projectName: string;
   project: any;
+  builder: any;
+  dataset: any;
+
   constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute, private router: Router) {
     this.projectName = activatedRoute.snapshot.params['websiteName'];
-    this.project = this.projectService.getProjectByName(this.projectName);
-
-    if (!this.project) {
+    const project = this.projectService.getProjectByName(this.projectName);
+    if (!project) {
       this.router.navigate(['/'])
     } else {
+      this.project = project.project;
+      this.builder = project.builder;
+      this.dataset = project.dataset;
       this.projectService.initialize();
     }
+  }
+
+  ngOnDestroy() {
+    this.projectService.updateProject(this.projectName, {project: this.project, builder: this.builder, dataset: this.dataset});
   }
 }

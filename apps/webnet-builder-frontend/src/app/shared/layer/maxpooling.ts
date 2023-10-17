@@ -2,25 +2,23 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
-import {NonNullableFormBuilder} from "@angular/forms";
+import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {XY} from "../../core/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Maxpooling extends Layer {
   override layerType = LayerType.Maxpooling;
-  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {filters: number, kernelSize: 2}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',
-      parameters: {
-        filters: 3,
-        kernelSize: 2
-      },
       formConfig: [
       ]
     };
     const layerForm = fb.group({
-  })
+      filters: [parameters.filters, [Validators.required]],
+      kernelSize: [parameters.kernelSize, [Validators.required]],
+    })
     super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm);
   }
 

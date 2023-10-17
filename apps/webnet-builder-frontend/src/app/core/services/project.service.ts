@@ -53,4 +53,8 @@ export class ProjectService {
     }
     return null;
   }
+
+  updateProject(name: string, project: any): void {
+    this.myProjects.set(name, project);
+  }
 }

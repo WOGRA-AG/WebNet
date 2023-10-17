@@ -11,17 +11,17 @@ import {Shape} from "../configuration";
 
 export class Flatten extends Layer {
   override layerType = LayerType.Flatten;
-  constructor(position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string, units: number, filter: number, kernelSize: number}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
       formConfig: [Shape]
     };
     const layerForm = fb.group({
-      shape: [''],
-      units: [500, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
-      filter: [3],
-      kernelSize: [2]
+      shape: [parameters.shape],
+      units: [parameters.units, [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      filter: [parameters.filter],
+      kernelSize: [parameters.kernelSize]
     });
     super(tf.layers.flatten, position, config, modelBuilderService, layerForm);
   }
