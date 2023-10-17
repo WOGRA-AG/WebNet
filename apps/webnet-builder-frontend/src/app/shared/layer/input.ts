@@ -28,7 +28,9 @@ export class Input extends Layer{
 
   override getParameters(): any {
     const parameter = this.layerForm.getRawValue();
-    parameter.shape = parseShapeString(parameter.shape);
+    if (typeof parameter.shape === 'string') {
+      parameter.shape = parseShapeString(parameter.shape);
+    }
     parameter.name = this.getLayerId();
     return parameter;
   }
