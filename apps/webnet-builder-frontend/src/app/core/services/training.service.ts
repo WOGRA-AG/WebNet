@@ -20,6 +20,10 @@ export class TrainingService {
   constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService) {
   }
 
+  getConfiguration(): any {
+    return {};
+  }
+
   stopTraining(): void {
     this.stopTrainingFlag = true;
   }

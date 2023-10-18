@@ -3,7 +3,6 @@ import {SerializationService} from "../../core/services/serialization.service";
 import {Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
 import {MatDialog} from "@angular/material/dialog";
-import {TaskDialogComponent} from "../../shared/components/task-dialog/task-dialog.component";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
 
 @Component({
@@ -40,7 +39,7 @@ export class ProjectsComponent {
     });
     dialogRef.afterClosed().subscribe(async (projectName) => {
       if (projectName) {
-        this.projectService.addProject({project: {name: projectName}, dataset: {}, model: {}, builder: {}});
+        this.projectService.addProject({project: {name: projectName}, dataset: {}, model: {}, training: {}, builder: {}});
         await this.router.navigate([`/projects/${projectName}`])
       }
     });

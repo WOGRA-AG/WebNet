@@ -15,6 +15,7 @@ export class ExportComponent {
   subProjects: Record<string, SubProject> = {
     dataset: {name: 'Dataset', checked: true},
     builder: {name: 'WebNet Builder', checked: true},
+    training: {name: 'Training Configuration', checked: true},
     tf_model: {name: 'Tensorflow Model', checked: true},
     // weights: {name: 'Trained Weights', checked: true}
   }

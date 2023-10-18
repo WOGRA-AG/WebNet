@@ -3,14 +3,14 @@ import * as JSZip from 'jszip';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
-import {ProjectService} from "./project.service";
+import {TrainingService} from "./training.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SerializationService {
   zip: JSZip = new JSZip();
-  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {}
+  constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService) {}
 
   async exportAsZIP(subProjects: any): Promise<void> {
     if (subProjects.dataset.checked) {
@@ -19,12 +19,21 @@ export class SerializationService {
     if (subProjects.builder.checked) {
       this.saveWebNetBuilder();
     }
+    if (subProjects.training.checked) {
+    // todo: training parameter
+      this.saveTrainingConfiguration();
+    }
     if (subProjects.tf_model.checked) {
       await this.saveTFModel();
     }
     this.zip.file("project.json", JSON.stringify({name: "WebNet Builder Example"}), {binary: false});
     const content = await this.zip.generateAsync({type: "blob"});
     saveAs(content, "webNet-project.zip")
+  }
+
+  saveTrainingConfiguration(): void {
+    const configuration: string = JSON.stringify(this.trainingService.getConfiguration());
+    this.zip.file("training/configuration.json", configuration, {binary: false});
   }
 
   saveWebNetBuilder(): void {
@@ -53,12 +62,20 @@ export class SerializationService {
   async importZip(file: any): Promise<any> {
     const zip = await this.zip.loadAsync(file);
     const files = zip.files;
-    // todo: checks, some files may not exist
-    const project: any = JSON.parse(await files['project.json'].async('string'));
-    const dataset: any = await files['dataset/dataset.txt'].async('string');
-    const model: any = JSON.parse(await files['tf_model/model.json'].async('string'));
-    const builder: any = JSON.parse(await files['builder/model.json'].async('string'));
-    return {project, dataset, model, builder};
+
+    const projectFile = files['project.json'];
+    const datasetFile = files['dataset/dataset.txt'];
+    const modelFile = files['tf_model/model.json'];
+    const trainingFile = files['training/configuration.json'];
+    const builderFile = files['builder/model.json'];
+
+    const project = projectFile ? JSON.parse(await projectFile.async('string')) : {};
+    const dataset = datasetFile ? await datasetFile.async('string') : '';
+    const model = modelFile ? JSON.parse(await modelFile.async('string')) : {};
+    const training = trainingFile ? JSON.parse(await trainingFile.async('string')) : {};
+    const builder = builderFile ? JSON.parse(await builderFile.async('string')) : {};
+
+    return { project, dataset, model, training, builder };
   }
 
   async saveModel() {

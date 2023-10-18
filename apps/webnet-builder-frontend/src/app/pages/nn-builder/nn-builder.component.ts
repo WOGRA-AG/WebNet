@@ -52,7 +52,7 @@ export class NnBuilderComponent {
   }
 
   updateBuilder(): void {
-    this.builderChange.next(this.modelBuilderService.generateBuilderJSON());
+    this.builderChange.emit(this.modelBuilderService.generateBuilderJSON());
   }
 
   @HostListener('window:keydown.Escape', ['$event'])

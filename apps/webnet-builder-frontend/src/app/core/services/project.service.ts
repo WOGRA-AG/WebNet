@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {computed, Injectable, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {ModelBuilderService} from "./model-builder.service";
@@ -10,6 +10,7 @@ export class ProjectService {
   private myProjects: Map<string, any> = new Map();
   private templateProjects: Map<string, any> = new Map();
   projectSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
   constructor(private modelBuilderService: ModelBuilderService) {
     const mnist = new MnistTemplate();
     const data = {dataset: mnist.getDataset(), builder: mnist.getBuilder(), model: mnist.getModel()}
@@ -41,17 +42,11 @@ export class ProjectService {
 
   getTemplateProjectByName(name: string): any {
     const templateProject = this.templateProjects.get(name);
-    if (templateProject) {
-      return templateProject;
-    }
-    return null;
+    return templateProject ? templateProject : null;
   }
   getProjectByName(name: string): any {
     const myProject = this.myProjects.get(name);
-    if (myProject) {
-      return myProject;
-    }
-    return null;
+    return myProject ? myProject : null;
   }
 
   updateProject(name: string, project: any): void {

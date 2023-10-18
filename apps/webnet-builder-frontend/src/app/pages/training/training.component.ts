@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {optimizers} from "../../shared/tf_objects/optimizers";
 import {losses} from "../../shared/tf_objects/losses";
 import {AbstractControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
@@ -17,13 +17,18 @@ import * as tfvis from "@tensorflow/tfjs-vis";
 export class TrainingComponent {
   @ViewChild('modelSummaryContainer', {static: false}) modelSummaryContainer!: ElementRef;
   @ViewChild('plotContainer', {static: false}) plotContainer!: ElementRef;
+  @Input()  trainingConfiguration!: { optimizer: Function, learningRate: number, loss: Function, accuracyPlot: boolean, lossPlot: boolean };
+  @Output() trainingConfigurationChange = new EventEmitter<{ optimizer: Function, learningRate: number, loss: Function, accuracyPlot: boolean, lossPlot: boolean }>();
   trainingForm: FormGroup;
   trainingStats: TrainStats | null = null;
   trainingInProgress: boolean = false;
   protected readonly optimizers = optimizers;
   protected readonly losses = losses;
 
-  constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService, public dialog: MatDialog, fb: NonNullableFormBuilder) {
+  constructor(private modelBuilderService: ModelBuilderService,
+              private trainingService: TrainingService,
+              public dialog: MatDialog,
+              fb: NonNullableFormBuilder) {
     this.trainingService.trainingInProgressSubject.subscribe((flag: boolean) => {
       this.trainingInProgress = flag;
       this.updateFormControlState();
@@ -31,13 +36,21 @@ export class TrainingComponent {
     this.trainingService.trainingStatsSubject.subscribe((stats: TrainStats) => {
       this.trainingStats = stats;
     });
-
     this.trainingForm = fb.group({
-      optimizer: [optimizers[0].function, Validators.required],
+      optimizer: [optimizers.adam.function, Validators.required],
       learningRate: [0.01, Validators.required],
-      loss: [losses[0].function, Validators.required],
+      loss: [losses.meanSquaredError.function, Validators.required],
       accuracyPlot: true,
       lossPlot: false,
+    });
+  }
+  ngOnInit() {
+    if (this.trainingConfiguration) {
+      this.trainingForm.patchValue(this.trainingConfiguration);
+    }
+
+    this.trainingForm.valueChanges.subscribe((formValue) => {
+      this.trainingConfigurationChange.emit(formValue);
     });
   }
 
