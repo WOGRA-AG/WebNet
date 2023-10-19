@@ -7,6 +7,7 @@ export interface Project {
   trainConfig: TrainingConfig
 }
 export interface ProjectInfo {
+  id: string,
   name: string
 }
 

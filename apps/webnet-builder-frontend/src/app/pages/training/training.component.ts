@@ -82,8 +82,8 @@ export class TrainingComponent {
     const ready = await this.trainingService.trainingReady();
     if (ready.dataset && ready.model) {
       const trainParameter = this.trainingForm.getRawValue();
-      trainParameter.optimizer = this.optimizers.get(trainParameter.optimizer);
-      trainParameter.loss = this.losses.get(trainParameter.loss);
+      trainParameter.optimizer = this.optimizers.get(trainParameter.optimizer)?.function;
+      trainParameter.loss = this.losses.get(trainParameter.loss)?.function;
       await this.trainingService.train(trainParameter, this.plotContainer.nativeElement);
     } else {
       this.openDialog(ready);

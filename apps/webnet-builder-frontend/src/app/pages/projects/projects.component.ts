@@ -1,12 +1,11 @@
-import {Component, computed, effect, WritableSignal} from '@angular/core';
+import {Component} from '@angular/core';
 import {SerializationService} from "../../core/services/serialization.service";
 import {Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
-import {optimizers} from "../../shared/tf_objects/optimizers";
-import {losses} from "../../shared/tf_objects/losses";
 import {LayerType} from "../../core/enums";
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-projects',
@@ -18,9 +17,12 @@ export class ProjectsComponent {
   projects: Map<string, any> = new Map();
   templateProjects: string[] = ['mnist'];
   selectedTemplateProject: string | undefined;
+  constructor(private serializationService: SerializationService, protected projectService: ProjectService, private router: Router, private dialog: MatDialog) {
+    this.projectService.projectSubject.subscribe((project: any) => {
+      this.projects = this.projectService.getMyProjects();
+    })
 
-  constructor(private serializationService: SerializationService, protected projectService: ProjectService, private router: Router, private dialog: MatDialog) {}
-
+  }
 
   openDialog() {
     this.dialog.open(InputDialogComponent, {
@@ -32,6 +34,9 @@ export class ProjectsComponent {
     this.file = file;
   }
 
+  generateProjectId(): string {
+    return uuidv4();
+  }
   async createNewProject(): Promise<void> {
     const dialogRef = this.dialog.open(InputDialogComponent, {
       data: {message: 'Create a fresh Project.'}
@@ -40,7 +45,7 @@ export class ProjectsComponent {
       if (projectName) {
         this.projectService.addProject(
           {
-            projectInfo: {name: projectName},
+            projectInfo: {id: this.generateProjectId(), name: projectName},
             dataset: {type: 'text', data: 'data'},
             trainConfig: {optimizer: 'adam', learningRate: 0.01, loss: 'meanSquaredError', accuracyPlot: true, lossPlot: false},
             builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}
@@ -57,6 +62,7 @@ export class ProjectsComponent {
     dialogRef.afterClosed().subscribe(async (projectName) => {
       if (projectName) {
         const projectData = this.projectService.getTemplateProjectByName(template);
+        projectData.projectInfo.id = this.generateProjectId();
         projectData.projectInfo.name = projectName;
         this.projectService.addProject(projectData);
         await this.router.navigate([`/projects/${projectName}`])

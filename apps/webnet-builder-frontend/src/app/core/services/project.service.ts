@@ -1,4 +1,4 @@
-import {computed, Injectable, signal} from '@angular/core';
+import {computed, effect, Injectable, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {Builder, Dataset, Project, ProjectInfo, TrainingConfig} from "../interfaces/project";
@@ -11,7 +11,7 @@ export class ProjectService {
   private templateProjects: Map<string, Project> = new Map();
   // Signals
   projectSubject: BehaviorSubject<Project|null> = new BehaviorSubject<Project|null>(null);
-  projectInfo = signal<ProjectInfo>({name: ''})
+  projectInfo = signal<ProjectInfo>({id: '', name: ''})
   dataset = signal<Dataset>({type: 'text', data: 'data'});
   builder = signal<Builder>({layers: [], connections: []});
   model = signal({});
@@ -22,7 +22,6 @@ export class ProjectService {
     accuracyPlot: true,
     lossPlot: false
   });
-
   activeProject = computed(() => {
     return {
       projectInfo: this.projectInfo(),
@@ -37,6 +36,9 @@ export class ProjectService {
     const mnist = new MnistTemplate();
     const data = mnist.getProject();
     this.templateProjects.set('mnist', data);
+    effect(() => {
+      console.log('CHANGES DONE TO PROJECT: ', this.activeProject());
+    })
   }
 
   selectProject(name: string): void {

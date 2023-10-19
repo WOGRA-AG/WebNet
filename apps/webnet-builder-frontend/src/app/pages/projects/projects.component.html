@@ -7,8 +7,13 @@
     <mat-card-content>
       <ng-container *ngIf="projects && projects.size > 0; else noProjects">
         <mat-list role="navigation">
-          <mat-list-item role="listitem" [routerLink]="['/projects/' + project.key]" *ngFor="let project of projects | keyvalue">
-            {{ project.key }}
+          <mat-list-item role="listitem" [routerLink]="['/projects/' + project.key]"
+                         *ngFor="let project of projects | keyvalue">
+            <mat-icon matListItemIcon>folder</mat-icon>
+            <div matListItemTitle>{{ project.value.projectInfo.name | uppercase}}</div>
+            <div matListItemLine>session storage</div>
+            <div matListItemMeta>ID: {{ project.value.projectInfo.id }}</div>
+            <!--            <mat-icon matListItemIcon>delete</mat-icon>-->
           </mat-list-item>
         </mat-list>
       </ng-container>
@@ -17,7 +22,9 @@
       </ng-template>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary" routerLinkActive="active" (click)="createNewProject()">Create New Project</button>
+      <button mat-raised-button color="primary" routerLinkActive="active" (click)="createNewProject()">Create New
+        Project
+      </button>
     </mat-card-actions>
   </mat-card>
 
@@ -35,7 +42,9 @@
         </mat-radio-group>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="primary" (click)="createProjectFromTemplate(selectedTemplateProject!)" [disabled]="!selectedTemplateProject">Create Project from Template</button>
+        <button mat-raised-button color="primary" (click)="createProjectFromTemplate(selectedTemplateProject!)"
+                [disabled]="!selectedTemplateProject">Create Project from Template
+        </button>
       </mat-card-actions>
     </mat-card>
 
@@ -48,7 +57,8 @@
         <app-file-upload (fileEvent)="addFile($event)"></app-file-upload>
       </mat-card-content>
       <mat-card-actions>
-        <button [disabled]="!file" mat-raised-button color="primary" (click)="importProject()">Import existing Project</button>
+        <button [disabled]="!file" mat-raised-button color="primary" (click)="importProject()">Import existing Project
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>

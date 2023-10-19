@@ -1,11 +1,9 @@
 import {Builder, Dataset, Project, TrainingConfig} from "../../core/interfaces/project";
-import {optimizers} from "../tf_objects/optimizers";
-import {losses} from "../tf_objects/losses";
 
 export class MnistTemplate {
   getProject(): Project {
     return {
-      projectInfo: {name: ''},
+      projectInfo: {id: '', name: ''},
       dataset: this.getDataset(),
       builder: this.getBuilder(),
       trainConfig: this.getTrainConfig()

@@ -6,7 +6,6 @@
   }
 
   .mat-mdc-list-item {
-    height: 24px !important;
     background-color: #f0f0f0 !important;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -14,6 +13,10 @@
     padding: 0.5rem;
     cursor: pointer;
     transition: background-color 0.3s;
+
+    .mat-mdc-list-item-title {
+      font-weight: 500;
+    }
   }
 
 }
