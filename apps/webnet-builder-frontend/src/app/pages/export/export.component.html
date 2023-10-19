@@ -9,11 +9,12 @@
 </div>
 <div>
   <ul>
-    <li *ngFor="let subProject of subProjects|keyvalue">
+    <li *ngFor="let section of sections|keyvalue">
       <mat-checkbox color="primary"
-                    [(ngModel)]="subProject.value.checked"
+                    [(ngModel)]="section.value.checked"
+                    [disabled]="section.value.disabled"
                     (ngModelChange)="updateAllChecked()">
-        {{subProject.value.name}}
+        {{section.value.name}}
       </mat-checkbox>
     </li>
   </ul>

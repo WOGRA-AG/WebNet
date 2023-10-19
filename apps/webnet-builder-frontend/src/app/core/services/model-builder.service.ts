@@ -8,12 +8,15 @@ import {Input} from "../../shared/layer/input";
 import {Output} from "../../shared/layer/output";
 import * as d3 from "d3";
 import {Selection} from "d3";
-import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder} from "@angular/forms";
 import {LayerType} from "../enums";
 import {Dense} from "../../shared/layer/dense";
 import {Convolution} from "../../shared/layer/convolution";
 import {Flatten} from "../../shared/layer/flatten";
 import {Maxpooling} from "../../shared/layer/maxpooling";
+import {Builder} from "../interfaces/project";
+import {ProjectService} from "./project.service";
+import {XY} from "../interfaces/interfaces";
 
 
 @Injectable({
@@ -30,7 +33,7 @@ export class ModelBuilderService {
   activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
   isInitialized = false;
 
-  constructor(protected fb: NonNullableFormBuilder) {
+  constructor(protected fb: NonNullableFormBuilder, private projectService: ProjectService) {
     this.selectedLayerSubject.subscribe((layer) => {
       this.selectedLayer?.unselect();
       this.selectedLayer = layer;
@@ -68,12 +71,12 @@ export class ModelBuilderService {
   }
 
   initialize(builder?: any): void {
+    this.setupSvg();
     if (!this.isInitialized) {
-      this.setupSvg();
       this.clearLayers();
       this.isInitialized = true;
       this.nextLayerId = 1;
-      builder ? this.loadFromBuilder(builder) : this.createInputAndOutputLayer();
+      this.loadFromBuilder(builder);
     } else {
       this.redrawLayers();
     }
@@ -99,46 +102,79 @@ export class ModelBuilderService {
     destination.addInputConnection(connection)
   }
 
-  createLayer(layerType: LayerType, parameters?: any, options?: any): void {
+  createLayer(options: {layerType: LayerType, parameters?: any, position?: any}): Layer {
     let layer;
-    switch (layerType) {
+    switch (options.layerType) {
       case LayerType.Input:
-        layer = new Input(parameters?? {shape: '10'}, options?.position ?? {x: 300, y: 160}, this, this.fb);
+        const inputPosition = this.getInputOutputPosition();
+        layer = new Input(options.parameters ?? {shape: '10'},
+          options.position ?? {x: 30, y: inputPosition.y},
+          this, this.fb);
+        this.inputLayer = layer;
         break;
       case LayerType.Dense:
-        layer = new Dense(parameters?? {units: 25, activation: 'softmax'}, options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Dense(options.parameters ?? {units: 25, activation: 'softmax'},
+          options.position ?? {x: 300, y: 160},
+          this, this.fb);
         break;
       case LayerType.Convolution:
-        layer = new Convolution(parameters?? {filters: 3, kernelSize: 2, strides: 1, padding: 'valid', activation: 'relu'},
-          options?.position ?? {x: 600, y: 160}, this, this.fb);
+        layer = new Convolution(options.parameters ??
+          {filters: 3, kernelSize: 2, strides: 1, padding: 'valid', activation: 'relu'},
+          options.position ?? {x: 600, y: 160},
+          this, this.fb);
         break;
       case LayerType.Flatten:
-        layer = new Flatten(parameters?? {shape: '', units: 500, filter: 3, kernelSize: 2}, options?.position ?? {x: 500, y: 160}, this, this.fb);
+        layer = new Flatten(options.parameters ?? {shape: '', units: 500, filter: 3, kernelSize: 2},
+          options.position ?? {x: 500, y: 160},
+          this, this.fb);
         break;
       case LayerType.Maxpooling:
-        layer = new Maxpooling(parameters?? {filters: 3, kernelSize: 2}, options?.position ?? {x: 650, y: 160}, this, this.fb);
+        layer = new Maxpooling(options.parameters ?? {filters: 3, kernelSize: 2},
+          options.position ?? {x: 650, y: 160},
+          this, this.fb);
         break;
       case LayerType.Output:
-        layer = new Output(parameters?? {units: 1, activation: 'sigmoid'},options?.position ?? {x: 300, y: 160}, this, this.fb);
+        const outputPosition = this.getInputOutputPosition();
+        layer = new Output(options.parameters ?? {units: 1, activation: 'sigmoid'},
+          options.position ?? {x: outputPosition.x, y: outputPosition.y},
+          this, this.fb);
+        this.outputLayer = layer;
         break;
       default:
         // todo: throw instead error warning to the user
-        layer = new Dense(parameters?? {units: 25, activation: 'softmax'},options?.position ?? {x: 300, y: 160}, this, this.fb);
+        layer = new Dense(options.parameters ?? {units: 25, activation: 'softmax'},
+          options.position ?? {x: 300, y: 160},
+          this, this.fb);
         break;
     }
     const id = layer.getLayerId();
     this.layerMap.set(id, layer);
+    return layer;
   }
 
-  generateBuilderJSON() {
+  private getContainerWidthAndHeight(): { width: number, height: number } {
+    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
+    const svgWidth = svg.node().getBoundingClientRect().width;
+    const svgHeight = svg.node().getBoundingClientRect().height;
+    return {width: svgWidth, height: svgHeight};
+  }
+
+  private getInputOutputPosition(): XY {
+    const {width, height} = this.getContainerWidthAndHeight();
+    const x: number = width - 145;
+    const y: number = height / 2 - 75;
+    return {x: x, y: y};
+  }
+
+  generateBuilderJSON(): Builder {
     const layers = [];
     const connections = [];
     for (const [id, layer] of this.layerMap) {
       const layerInfo = {
         id: id,
         type: layer.getLayerType(),
-        position: layer.getSvgPosition(),
-        parameters: layer.getParameters()
+        parameters: layer.getParameters(),
+        position: layer.getSvgPosition()
       };
       layers.push(layerInfo);
 
@@ -154,9 +190,8 @@ export class ModelBuilderService {
   }
 
   loadFromBuilder(builder: any): void {
-    this.nextLayerId = 1;
     for (const layer of builder.layers) {
-      this.createLayer(layer.type, layer.parameters, {position: layer.position})
+      this.createLayer({layerType: layer.type, parameters: layer.parameters, position: layer.position})
     }
 
     for (const connection of builder.connections) {
@@ -182,7 +217,6 @@ export class ModelBuilderService {
         hidden = nextLayer?.tfjsLayer(parameters).apply(hidden);
         layer = nextLayer;
       }
-
       return layer !== this.outputLayer ? null : tf.model({inputs: input, outputs: hidden});
     } catch (error) {
       console.log("Error: Generating Model");
@@ -198,24 +232,6 @@ export class ModelBuilderService {
 
   generateLayerId(): string {
     return `layer-${this.nextLayerId++}`;
-  }
-
-  private getContainerWidthAndHeight(): { width: number, height: number } {
-    const svg: Selection<any, any, any, any> = d3.select("#svg-container");
-    const svgWidth = svg.node().getBoundingClientRect().width;
-    const svgHeight = svg.node().getBoundingClientRect().height;
-    return {width: svgWidth, height: svgHeight};
-  }
-
-  private createInputAndOutputLayer(): void {
-    const {width, height} = this.getContainerWidthAndHeight();
-    const x: number = width - 145;
-    const y: number = height / 2 - 75;
-    // todo: why am i creating them here once again?
-    this.inputLayer = new Input({shape: '10'},{x: 30, y: y}, this, this.fb);
-    this.outputLayer = new Output({units: 1, activation: 'sigmoid'}, {x: x, y: y}, this, this.fb);
-    this.layerMap.set(this.inputLayer.getLayerId(), this.inputLayer);
-    this.layerMap.set(this.outputLayer.getLayerId(), this.outputLayer);
   }
 
   private clearLayers(): void {

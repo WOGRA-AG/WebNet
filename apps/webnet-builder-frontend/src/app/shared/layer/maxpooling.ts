@@ -3,7 +3,7 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {XY} from "../../core/interfaces";
+import {XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Maxpooling extends Layer {
@@ -12,8 +12,7 @@ export class Maxpooling extends Layer {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',
-      formConfig: [
-      ]
+      formConfig: []
     };
     const layerForm = fb.group({
       filters: [parameters.filters, [Validators.required]],
@@ -75,6 +74,4 @@ export class Maxpooling extends Layer {
     this.addOutputAnchor(maxPoolGrp);
     return maxPoolGrp;
   }
-
-
 }

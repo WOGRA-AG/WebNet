@@ -3,7 +3,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
-import {TrainStats} from "../interfaces";
+import {TrainStats} from "../interfaces/interfaces";
 import {MnistDataService} from "./model-data-services/mnist-data.service";
 
 @Injectable({
@@ -18,10 +18,6 @@ export class TrainingService {
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService) {
-  }
-
-  getConfiguration(): any {
-    return {};
   }
 
   stopTraining(): void {
@@ -59,8 +55,8 @@ export class TrainingService {
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
-
     const model = await this.modelBuilderService.generateModel();
+
     if (!model) return null;
 
     model.compile({

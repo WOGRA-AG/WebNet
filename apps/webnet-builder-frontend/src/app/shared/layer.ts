@@ -3,7 +3,7 @@ import {Selection} from "d3";
 import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
-import {XY} from "../core/interfaces";
+import {XY} from "../core/interfaces/interfaces";
 import {FormGroup} from "@angular/forms";
 
 export abstract class Layer {

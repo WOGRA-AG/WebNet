@@ -1,6 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, computed, effect} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
+import {ModelBuilderService} from "../../core/services/model-builder.service";
+import {string} from "@tensorflow/tfjs";
 
 @Component({
   selector: 'app-project',
@@ -9,31 +11,25 @@ import {ProjectService} from "../../core/services/project.service";
 })
 export class ProjectComponent {
   projectName: string;
-  project: any;
-  builder: any;
-  dataset: any;
-  training: any;
-
-  constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute, private router: Router) {
+  datasetError = computed(() => {
+    return this.projectService.dataset().data.length < 0 ? true: false;
+  })
+  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService, public activatedRoute: ActivatedRoute, private router: Router) {
     this.projectName = activatedRoute.snapshot.params['websiteName'];
+    this.projectService.selectProject(this.projectName);
     const project = this.projectService.getProjectByName(this.projectName);
     if (!project) {
       this.router.navigate(['/'])
     } else {
-      this.projectService.initialize();
-      this.project = project.project;
-      this.builder = project.builder;
-      this.training = project.training;
-      this.dataset = project.dataset;
+      this.modelBuilderService.isInitialized = false;
+      // todo: add project id. use localstorage.
+      console.log(this.projectService.projectInfo());
     }
   }
 
   ngOnDestroy(): void {
-    this.projectService.updateProject(this.projectName, {
-      project: this.project,
-      builder: this.builder,
-      dataset: this.dataset,
-      training: this.training
-    });
+    this.projectService.updateProject(this.projectName);
   }
+
+  protected readonly string = string;
 }

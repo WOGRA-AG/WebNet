@@ -5,7 +5,7 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Units} from "../configuration";
-import {XY} from "../../core/interfaces";
+import {XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Output extends Layer {
@@ -20,8 +20,8 @@ export class Output extends Layer {
       ]
     };
     const layerForm = fb.group({
-      units: [1, [Validators.required, Validators.minLength(1)]],
-      activation: ['sigmoid', [Validators.required]]
+      units: [parameters.units, [Validators.required, Validators.minLength(1)]],
+      activation: [parameters.activation, [Validators.required]]
     })
     super(tf.layers.dense, position, config, modelBuilderService, layerForm);
   }

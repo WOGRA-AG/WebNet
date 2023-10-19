@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {SerializationService} from "../../core/services/serialization.service";
 
-interface SubProject {
+interface ProjectSections {
   name: string;
   checked: boolean;
+  disabled: boolean
 }
 
 @Component({
@@ -12,35 +13,40 @@ interface SubProject {
   styleUrls: ['./export.component.scss']
 })
 export class ExportComponent {
-  subProjects: Record<string, SubProject> = {
-    dataset: {name: 'Dataset', checked: true},
-    builder: {name: 'WebNet Builder', checked: true},
-    training: {name: 'Training Configuration', checked: true},
-    tf_model: {name: 'Tensorflow Model', checked: true},
+  sections: Record<string, ProjectSections> = {
+    dataset: {name: 'Dataset', checked: true, disabled: true},
+    builder: {name: 'WebNet Builder', checked: true, disabled: true},
+    trainConfig: {name: 'Training Configuration', checked: true, disabled: true},
+    tf_model: {name: 'Tensorflow Model', checked: false, disabled: false},
     // weights: {name: 'Trained Weights', checked: true}
   }
   allChecked: boolean = true;
 
   constructor(private serializationService: SerializationService) {
   }
+
   updateAllChecked(): void {
-    const subProjectValues = Object.values(this.subProjects);
-    this.allChecked = subProjectValues.every((subProject: SubProject) => subProject.checked);
+    const sectionValues = Object.values(this.sections);
+    this.allChecked = sectionValues.every((section: ProjectSections) => section.checked);
   }
 
   someChecked(): boolean {
-    const subProjectValues = Object.values(this.subProjects);
-    return subProjectValues.filter((t: any) => t.checked).length > 0 && !this.allChecked;
+    const sectionValues = Object.values(this.sections);
+    return sectionValues.filter((section: any) => section.checked).length > 0 && !this.allChecked;
   }
 
   setAll(checked: boolean): void {
     this.allChecked = checked;
-    const subProjectValues = Object.values(this.subProjects);
-    subProjectValues.forEach((t: any) => (t.checked = checked));
+    const sectionValues = Object.values(this.sections);
+    sectionValues.forEach((section: any) => {
+      if (!section.disabled) {
+        section.checked = checked
+      }
+    });
   }
 
   export(): void {
-    this.serializationService.exportAsZIP(this.subProjects);
+    this.serializationService.exportAsZIP(this.sections);
   }
 
   async saveModel(): Promise<void> {

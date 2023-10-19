@@ -1,4 +1,6 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ProjectService} from "../../core/services/project.service";
+import {DatasetService} from "../../core/services/dataset.service";
 
 @Component({
   selector: 'app-dataset',
@@ -6,12 +8,12 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
-  _dataset: any;
-  @Input() set dataset(value: any) {
-    if (value && Object.keys(value).length > 0) {
-      this._dataset = value;
-    } else {
-      this._dataset = null;
-    }
+  dataset: string | undefined
+
+  constructor(private datasetService: DatasetService, private projectService: ProjectService) {
+  }
+
+  ngOnInit(): void {
+    this.dataset = this.projectService.dataset().data;
   }
 }

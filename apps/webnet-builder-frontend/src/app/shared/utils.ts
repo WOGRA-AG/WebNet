@@ -1,4 +1,4 @@
-import {XY} from "../core/interfaces";
+import {XY} from "../core/interfaces/interfaces";
 
 export function cloneObject(object: Object): any {
   return JSON.parse(JSON.stringify(object));

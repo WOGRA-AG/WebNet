@@ -3,7 +3,7 @@ import {Backend, TrainingExample} from "../../core/enums";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MnistDataService} from "../../core/services/model-data-services/mnist-data.service";
 import {ModelWrapperService} from "../../core/services/model-wrapper.service";
-import {TrainingStats} from "../../core/interfaces";
+import {TrainingStats} from "../../core/interfaces/interfaces";
 import * as tf from "@tensorflow/tfjs";
 import * as tfvis from '@tensorflow/tfjs-vis';
 import {cloneObject} from "../../shared/utils";
@@ -59,7 +59,6 @@ export class TestingComponent {
     if (backendControl) {
       await tf.setBackend(backendControl.value!.toString());
       await tf.ready();
-      console.log(tf.getBackend());
     }
   }
 

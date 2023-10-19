@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import '@tensorflow/tfjs-backend-webgpu';
 import '@tensorflow/tfjs-backend-wasm';
-import {TrainingStats} from "../../../core/interfaces";
+import {TrainingStats} from "../../../core/interfaces/interfaces";
 
 @Component({
   selector: 'app-training-container',

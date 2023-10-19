@@ -1,5 +1,28 @@
+import {Builder, Dataset, Project, TrainingConfig} from "../../core/interfaces/project";
+import {optimizers} from "../tf_objects/optimizers";
+import {losses} from "../tf_objects/losses";
+
 export class MnistTemplate {
-  getBuilder() {
+  getProject(): Project {
+    return {
+      projectInfo: {name: ''},
+      dataset: this.getDataset(),
+      builder: this.getBuilder(),
+      trainConfig: this.getTrainConfig()
+    }
+  }
+
+  getTrainConfig(): TrainingConfig {
+    return {
+      optimizer: 'adam',
+      learningRate: 0.01,
+      loss: 'meanSquaredError',
+      accuracyPlot: true,
+      lossPlot: false
+    }
+  };
+
+  getBuilder(): Builder {
     return {
       "layers": [{
         "id": "layer-1",
@@ -125,7 +148,8 @@ export class MnistTemplate {
       }]
     }
   }
-  getDataset() {
-    return 'MNIST DATASET'
+
+  getDataset(): Dataset {
+    return {type: 'string', data: 'MNIST DATASET'};
   }
 }

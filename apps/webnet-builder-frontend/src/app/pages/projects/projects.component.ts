@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, computed, effect, WritableSignal} from '@angular/core';
 import {SerializationService} from "../../core/services/serialization.service";
 import {Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
+import {optimizers} from "../../shared/tf_objects/optimizers";
+import {losses} from "../../shared/tf_objects/losses";
+import {LayerType} from "../../core/enums";
 
 @Component({
   selector: 'app-projects',
@@ -16,11 +19,7 @@ export class ProjectsComponent {
   templateProjects: string[] = ['mnist'];
   selectedTemplateProject: string | undefined;
 
-  constructor(private serializationService: SerializationService, protected projectService: ProjectService, private router: Router, private dialog: MatDialog) {
-    this.projectService.projectSubject.subscribe((project: any) => {
-      this.projects = this.projectService.getMyProjects();
-    })
-  }
+  constructor(private serializationService: SerializationService, protected projectService: ProjectService, private router: Router, private dialog: MatDialog) {}
 
 
   openDialog() {
@@ -39,7 +38,13 @@ export class ProjectsComponent {
     });
     dialogRef.afterClosed().subscribe(async (projectName) => {
       if (projectName) {
-        this.projectService.addProject({project: {name: projectName}, dataset: {}, model: {}, training: {}, builder: {}});
+        this.projectService.addProject(
+          {
+            projectInfo: {name: projectName},
+            dataset: {type: 'text', data: 'data'},
+            trainConfig: {optimizer: 'adam', learningRate: 0.01, loss: 'meanSquaredError', accuracyPlot: true, lossPlot: false},
+            builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}
+          });
         await this.router.navigate([`/projects/${projectName}`])
       }
     });
@@ -52,7 +57,8 @@ export class ProjectsComponent {
     dialogRef.afterClosed().subscribe(async (projectName) => {
       if (projectName) {
         const projectData = this.projectService.getTemplateProjectByName(template);
-        this.projectService.addProject({project: {name: projectName}, ...projectData});
+        projectData.projectInfo.name = projectName;
+        this.projectService.addProject(projectData);
         await this.router.navigate([`/projects/${projectName}`])
       }
     });
@@ -62,7 +68,7 @@ export class ProjectsComponent {
     if (this.file) {
       const project = await this.serializationService.importZip(this.file);
       this.projectService.addProject(project);
-      await this.router.navigate([`/projects/${project.project.name}`]);
+      await this.router.navigate([`/projects/${project.projectInfo.name}`]);
     }
   }
 }

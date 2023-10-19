@@ -4,7 +4,7 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Padding} from "../configuration";
-import {XY} from "../../core/interfaces";
+import {XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Convolution extends Layer {

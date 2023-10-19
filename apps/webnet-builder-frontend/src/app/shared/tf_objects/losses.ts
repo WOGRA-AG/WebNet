@@ -1,57 +1,40 @@
 import * as tf from '@tensorflow/tfjs';
 
-type LossFunction = (
-  labels: tf.Tensor | tf.TensorLike,
-  predictions: tf.Tensor | tf.TensorLike,
-  weights?: tf.Tensor | tf.TensorLike,
-  reduction?: tf.Reduction
-) => tf.Tensor;
-
-export const losses: {
-  meanSquaredError: { tooltip: string, function: LossFunction }
-  absoluteDifference: { tooltip: string, function: LossFunction }
-  weightedLoss: { tooltip: string, function: Function }
-  cosineDistance: { tooltip: string, function: Function }
-  hingeLoss: { tooltip: string, function: LossFunction }
-  huberLoss: { tooltip: string, function: LossFunction }
-  logLoss: { tooltip: string, function: LossFunction }
-  sigmoidCrossEntropy: { tooltip: string, function: LossFunction }
-  softmaxCrossEntropy: { tooltip: string, function: LossFunction }
-} = {
-  meanSquaredError: {
+export const losses = new Map<string, { tooltip: string, function: Function }>([
+  ['meanSquaredError', {
     tooltip: 'Mean Squared Error',
     function: tf.losses.meanSquaredError
-  },
-  absoluteDifference: {
+  }],
+  ['absoluteDifference', {
     tooltip: 'Absolute Difference Loss',
     function: tf.losses.absoluteDifference
-  },
-  weightedLoss: {
+  }],
+  ['weightedLoss', {
     tooltip: 'Weighted Loss',
     function: tf.losses.computeWeightedLoss
-  },
-  cosineDistance: {
+  }],
+  ['cosineDistance', {
     tooltip: 'Cosine Distance Loss',
     function: tf.losses.cosineDistance
-  },
-  hingeLoss: {
+  }],
+  ['hingeLoss', {
     tooltip: 'Hinge Loss',
     function: tf.losses.hingeLoss
-  },
-  huberLoss: {
+  }],
+  ['huberLoss', {
     tooltip: 'Huber Loss',
     function: tf.losses.huberLoss
-  },
-  logLoss: {
+  }],
+  ['logLoss', {
     tooltip: 'Log Loss',
     function: tf.losses.logLoss
-  },
-  sigmoidCrossEntropy: {
+  }],
+  ['sigmoidCrossEntropy', {
     tooltip: 'Sigmoid Cross Entropy Loss',
     function: tf.losses.sigmoidCrossEntropy
-  },
-  softmaxCrossEntropy: {
+  }],
+  ['softmaxCrossEntropy', {
     tooltip: 'Softmax Cross Entropy Loss',
     function: tf.losses.softmaxCrossEntropy
-  }
-};
+  }]
+]);

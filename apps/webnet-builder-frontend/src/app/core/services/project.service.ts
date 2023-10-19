@@ -1,41 +1,70 @@
 import {computed, Injectable, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
-import {ModelBuilderService} from "./model-builder.service";
+import {Builder, Dataset, Project, ProjectInfo, TrainingConfig} from "../interfaces/project";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
-  private myProjects: Map<string, any> = new Map();
-  private templateProjects: Map<string, any> = new Map();
-  projectSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private myProjects: Map<string, Project> = new Map();
+  private templateProjects: Map<string, Project> = new Map();
+  // Signals
+  projectSubject: BehaviorSubject<Project|null> = new BehaviorSubject<Project|null>(null);
+  projectInfo = signal<ProjectInfo>({name: ''})
+  dataset = signal<Dataset>({type: 'text', data: 'data'});
+  builder = signal<Builder>({layers: [], connections: []});
+  model = signal({});
+  trainConfig = signal<TrainingConfig>({
+    optimizer: 'adam',
+    learningRate: 0.01,
+    loss: 'meanSquaredError',
+    accuracyPlot: true,
+    lossPlot: false
+  });
 
-  constructor(private modelBuilderService: ModelBuilderService) {
+  activeProject = computed(() => {
+    return {
+      projectInfo: this.projectInfo(),
+      dataset: this.dataset(),
+      builder: this.builder(),
+      model: this.model(),
+      trainConfig: this.trainConfig()
+    }
+  });
+
+  constructor() {
     const mnist = new MnistTemplate();
-    const data = {dataset: mnist.getDataset(), builder: mnist.getBuilder(), model: mnist.getModel()}
+    const data = mnist.getProject();
     this.templateProjects.set('mnist', data);
   }
 
-  initialize() {
-    this.modelBuilderService.isInitialized = false;
+  selectProject(name: string): void {
+    const project = this.getProjectByName(name);
+    this.projectInfo.set(project.projectInfo);
+    this.dataset.set(project.dataset);
+    this.builder.set(project.builder);
+    this.model.set(project.model);
+    this.trainConfig.set(project.trainConfig);
   }
 
   getNumberOfProjects(): number {
     return this.myProjects.size;
   }
+
   getMyProjects(): Map<string, any> {
     return this.myProjects;
   }
 
-  addProject(project: any): void {
-    this.myProjects.set(project.project.name, project);
+  addProject(project: Project): void {
+    this.myProjects.set(project.projectInfo.name, project);
     this.projectSubject.next(project);
   }
 
   clearMyProjects(): void {
     this.myProjects.clear();
   }
+
   checkProjectNameTaken(name: string): boolean {
     return this.myProjects.has(name);
   }
@@ -44,12 +73,13 @@ export class ProjectService {
     const templateProject = this.templateProjects.get(name);
     return templateProject ? templateProject : null;
   }
+
   getProjectByName(name: string): any {
     const myProject = this.myProjects.get(name);
     return myProject ? myProject : null;
   }
 
-  updateProject(name: string, project: any): void {
-    this.myProjects.set(name, project);
+  updateProject(name: string): void {
+    this.myProjects.set(name, this.activeProject());
   }
 }

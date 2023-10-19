@@ -13,15 +13,6 @@ import {FormControl} from "@angular/forms";
 export class NnBuilderComponent {
   protected readonly LayerType = LayerType;
   autoSaveInterval: any;
-  private _builder: any;
-  @Input() set builder(value: any) {
-    if (value && Object.keys(value).length > 0) {
-      this._builder = value;
-    } else {
-      this._builder = null;
-    }
-  }
-  @Output() builderChange = new EventEmitter<any>();
   layerForm: any;
   configuration: any;
   selectedTab = new FormControl(0);
@@ -34,7 +25,7 @@ export class NnBuilderComponent {
   }
 
   ngOnInit(): void {
-    this._builder ? this.modelBuilderService.initialize(this._builder) : this.modelBuilderService.initialize();
+    this.modelBuilderService.initialize(this.projectService.builder());
     this.startAutoSave();
   }
 
@@ -47,12 +38,12 @@ export class NnBuilderComponent {
   ngOnDestroy() {
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
-      this.updateBuilder();
     }
+    this.updateBuilder();
   }
 
   updateBuilder(): void {
-    this.builderChange.emit(this.modelBuilderService.generateBuilderJSON());
+    this.projectService.builder.set(this.modelBuilderService.generateBuilderJSON());
   }
 
   @HostListener('window:keydown.Escape', ['$event'])
@@ -69,6 +60,6 @@ export class NnBuilderComponent {
     this.modelBuilderService.clearModelBuilder();
   }
   createLayer(type: LayerType): void {
-    this.modelBuilderService.createLayer(type);
+    this.modelBuilderService.createLayer({layerType: type});
   }
 }

@@ -7,7 +7,7 @@
         <mat-label>Select an Optimizer</mat-label>
         <mat-select formControlName="optimizer">
           <mat-option *ngFor="let optimizer of optimizers | keyvalue;"
-                      [value]="optimizer.value.function" [matTooltip]="optimizer.value.tooltip" matTooltipPosition="right">
+                      [value]="optimizer.key" [matTooltip]="optimizer.value.tooltip" matTooltipPosition="right">
             {{optimizer.key}}
           </mat-option>
         </mat-select>
@@ -19,8 +19,8 @@
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select a Loss Function</mat-label>
         <mat-select formControlName="loss">
-          <mat-option *ngFor="let loss of losses | keyvalue;"
-                      [value]="loss.value.function" [matTooltip]="loss.value.tooltip" matTooltipPosition="right">
+          <mat-option *ngFor="let loss of losses |keyvalue;"
+                      [value]="loss.key" [matTooltip]="loss.value.tooltip" matTooltipPosition="right">
             {{loss.key}}
           </mat-option>
         </mat-select>

@@ -7,7 +7,7 @@ import {NonNullableFormBuilder} from "@angular/forms";
 import {validateShapeArray} from "../../core/validators";
 import {parseShapeString} from "../utils";
 import {Shape} from "../configuration";
-import {XY} from "../../core/interfaces";
+import {XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
