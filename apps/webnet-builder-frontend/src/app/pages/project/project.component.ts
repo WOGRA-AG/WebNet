@@ -22,8 +22,6 @@ export class ProjectComponent {
       this.router.navigate(['/'])
     } else {
       this.modelBuilderService.isInitialized = false;
-      // todo: add project id. use localstorage.
-      console.log(this.projectService.projectInfo());
     }
   }
 

@@ -15,7 +15,10 @@ export class AppComponent {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification(e: BeforeUnloadEvent): void {
-    if(this.getNumberOfProjects() > 0) {
+    const lastModifiedTime = new Date(this.projectService.projectInfo().lastModified).getTime();
+    const currentTime = new Date().getTime();
+    const timeDifferenceInSeconds = (currentTime - lastModifiedTime) / 1000;
+    if (timeDifferenceInSeconds > 60) {
       e.returnValue = 'You have open Projects. Are you sure you want to leave?';
     }
   }
