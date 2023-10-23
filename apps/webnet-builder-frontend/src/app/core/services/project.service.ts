@@ -93,6 +93,7 @@ export class ProjectService {
   storeProjectInLocalStorage(name: string, project: Project): void {
     this.projectInfo.mutate((project) => {
       project.storeLocation = StorageOption.LocalStorage;
+      project.lastModified = new Date();
     });
     this.localStorageService.saveProjectInLocalStorage(name, project);
   }

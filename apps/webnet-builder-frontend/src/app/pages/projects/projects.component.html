@@ -8,10 +8,12 @@
       <ng-container *ngIf="projects && projects.size > 0; else noProjects">
         <mat-list role="navigation">
           <mat-list-item role="listitem" [routerLink]="['/projects/' + project.key]"
-                         *ngFor="let project of projects | keyvalue">
+                         *ngFor="let project of projects | keyvalue: lastModifiedOrder">
             <mat-icon matListItemIcon>folder</mat-icon>
             <div matListItemTitle>{{ project.value.projectInfo.name | uppercase}}</div>
-            <div matListItemLine>{{project.value.projectInfo.storeLocation}}</div>
+            <div matListItemLine>
+              Stored in {{ project.value.projectInfo.storeLocation }} at {{ project.value.projectInfo.lastModified | date: 'd.MMMM y, h:mm:ss' }}
+            </div>
             <div matListItemMeta>ID: {{ project.value.projectInfo.id }}</div>
             <!--            <mat-icon matListItemIcon>delete</mat-icon>-->
           </mat-list-item>

@@ -44,6 +44,8 @@ export abstract class Layer {
       .on("click", (event: any) => this.selected(event))
       .on("mouseenter", (event: any) => this.hoverLayer(event))
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
+
+    this.configuration.name = this.getLayerId();
   }
 
   getOutputConnection(): Connection|null {

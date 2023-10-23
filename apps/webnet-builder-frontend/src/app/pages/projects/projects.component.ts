@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
 import {LayerType, StorageOption} from "../../core/enums";
 import {v4 as uuidv4} from 'uuid';
+import {KeyValue} from "@angular/common";
 
 @Component({
   selector: 'app-projects',
@@ -22,6 +23,12 @@ export class ProjectsComponent {
       this.projects = this.projectService.getMyProjects();
     })
 
+  }
+
+  lastModifiedOrder = (a: KeyValue<string,any>, b: KeyValue<string,any>): number => {
+    const dateA = new Date(a.value.projectInfo.lastModified);
+    const dateB = new Date(b.value.projectInfo.lastModified);
+    return dateB.getTime() - dateA.getTime();
   }
 
   openDialog() {
