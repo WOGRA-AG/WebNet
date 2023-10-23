@@ -13,7 +13,7 @@ import {Project} from "../interfaces/project";
 export class SerializationService {
   zip: JSZip = new JSZip();
 
-  constructor(private modelBuilderService: ModelBuilderService, private trainingService: TrainingService, private projectService: ProjectService) {
+  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
   }
 
   async exportAsZIP(subProjects: any): Promise<void> {

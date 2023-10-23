@@ -49,9 +49,7 @@ export class ModelBuilderService {
 
   clearModelBuilder(): void {
     this.isInitialized = false;
-    this.clearLayers();
-    this.layerMap.clear();
-    this.initialize();
+    this.initialize({layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []});
   }
 
   setupSvg(): void {
@@ -235,12 +233,11 @@ export class ModelBuilderService {
   }
 
   private clearLayers(): void {
+    this.layerMap.forEach((layer) => layer.delete());
     this.layerMap.clear();
   }
 
   private redrawLayers(): void {
-    this.layerMap.forEach((layer) => {
-      layer.draw();
-    });
+    this.layerMap.forEach((layer) => layer.draw());
   }
 }

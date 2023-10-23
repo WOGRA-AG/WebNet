@@ -18,3 +18,10 @@ export enum LayerType {
   Maxpooling = "maxpooling",
   Output = "output"
 }
+
+export enum StorageOption {
+  LocalStorage = "Local Storage",
+  InMemory = "In Memory",
+  ZipFile = "Zip File",
+  Unknown = "Unknown"
+}

@@ -4,8 +4,8 @@ import {Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
-import {LayerType} from "../../core/enums";
-import { v4 as uuidv4 } from 'uuid';
+import {LayerType, StorageOption} from "../../core/enums";
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
   selector: 'app-projects',
@@ -37,6 +37,7 @@ export class ProjectsComponent {
   generateProjectId(): string {
     return uuidv4();
   }
+
   async createNewProject(): Promise<void> {
     const dialogRef = this.dialog.open(InputDialogComponent, {
       data: {message: 'Create a fresh Project.'}
@@ -45,7 +46,7 @@ export class ProjectsComponent {
       if (projectName) {
         this.projectService.addProject(
           {
-            projectInfo: {id: this.generateProjectId(), name: projectName},
+            projectInfo: {id: this.generateProjectId(), name: projectName, lastModified: new Date(), storeLocation: StorageOption.InMemory},
             dataset: {type: 'text', data: 'data'},
             trainConfig: {optimizer: 'adam', learningRate: 0.01, loss: 'meanSquaredError', accuracyPlot: true, lossPlot: false},
             builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}

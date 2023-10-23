@@ -1,4 +1,5 @@
 import {XY} from "./interfaces";
+import {StorageOption} from "../enums";
 
 export interface Project {
   projectInfo: ProjectInfo,
@@ -8,7 +9,9 @@ export interface Project {
 }
 export interface ProjectInfo {
   id: string,
-  name: string
+  name: string,
+  lastModified: Date,
+  storeLocation: StorageOption
 }
 
 export interface Dataset {

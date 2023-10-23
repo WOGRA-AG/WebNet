@@ -1,9 +1,10 @@
 import {Builder, Dataset, Project, TrainingConfig} from "../../core/interfaces/project";
+import {StorageOption} from "../../core/enums";
 
 export class MnistTemplate {
   getProject(): Project {
     return {
-      projectInfo: {id: '', name: ''},
+      projectInfo: {id: '', name: '', lastModified: new Date(), storeLocation: StorageOption.InMemory},
       dataset: this.getDataset(),
       builder: this.getBuilder(),
       trainConfig: this.getTrainConfig()
