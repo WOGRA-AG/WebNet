@@ -12,7 +12,7 @@ import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
   override layerType = LayerType.Input;
-  constructor(parameters: {shape: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
@@ -23,16 +23,19 @@ export class Input extends Layer{
     const layerForm = fb.group({
       shape: [parameters.shape, [validateShapeArray]]
     });
-    super(tf.input, position, config, modelBuilderService, layerForm);
+    super(tf.input, position, config, modelBuilderService, layerForm, parameters.weights);
   }
 
   override getParameters(): any {
-    const parameter = this.layerForm.getRawValue();
-    if (typeof parameter.shape === 'string') {
-      parameter.shape = parseShapeString(parameter.shape);
+    const parameters = this.layerForm.getRawValue();
+    if (typeof parameters.shape === 'string') {
+      parameters.shape = parseShapeString(parameters.shape);
     }
-    parameter.name = this.getLayerId();
-    return parameter;
+    if (this.weights) {
+      parameters.weights = this.weights;
+    }
+    parameters.name = this.getLayerId();
+    return parameters;
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

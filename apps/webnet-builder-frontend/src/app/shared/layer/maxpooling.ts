@@ -8,7 +8,7 @@ import {LayerType} from "../../core/enums";
 
 export class Maxpooling extends Layer {
   override layerType = LayerType.Maxpooling;
-  constructor(parameters: {filters: number, kernelSize: 2}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {filters: number, kernelSize: number, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',
@@ -18,7 +18,7 @@ export class Maxpooling extends Layer {
       filters: [parameters.filters, [Validators.required]],
       kernelSize: [parameters.kernelSize, [Validators.required]],
     })
-    super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm);
+    super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters.weights);
   }
 
   protected override createLayer() {

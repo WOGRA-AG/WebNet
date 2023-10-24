@@ -10,7 +10,7 @@ import {LayerType} from "../../core/enums";
 
 export class Output extends Layer {
   override layerType = LayerType.Output;
-  constructor(parameters: {units: number, activation: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
@@ -23,7 +23,7 @@ export class Output extends Layer {
       units: [parameters.units, [Validators.required, Validators.minLength(1)]],
       activation: [parameters.activation, [Validators.required]]
     })
-    super(tf.layers.dense, position, config, modelBuilderService, layerForm);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

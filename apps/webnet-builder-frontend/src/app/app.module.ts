@@ -21,9 +21,6 @@ import { DatasetComponent } from './pages/dataset/dataset.component';
 import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
 
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +44,7 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
     BrowserAnimationsModule,
     MaterialModule,
     ReactiveFormsModule,
-    FormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -10,7 +10,7 @@ import {LayerType} from "../../core/enums";
 
 export class Dense extends Layer {
   override layerType = LayerType.Dense;
-  constructor(parameters: {units: number, activation: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',
@@ -22,9 +22,10 @@ export class Dense extends Layer {
 
     const layerForm = fb.group({
       units: [parameters.units, [Validators.required, Validators.minLength(1)]],
-      activation: [parameters.activation, [Validators.required]]
+      activation: [parameters.activation, [Validators.required]],
+    //   todo: make weights also manually changeable?
     });
-    super(tf.layers.dense, position, config, modelBuilderService, layerForm);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

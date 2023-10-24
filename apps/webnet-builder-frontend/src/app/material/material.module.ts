@@ -22,6 +22,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatBadgeModule} from '@angular/material/badge'
+import {MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 const MaterialComponents =
   [MatButtonModule,
@@ -46,7 +48,9 @@ const MaterialComponents =
     MatSlideToggleModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatTableModule,
+    MatPaginatorModule
   ]
 
 @NgModule({

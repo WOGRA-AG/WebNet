@@ -24,8 +24,8 @@ export class NnBuilderComponent {
     })
   }
 
-  ngOnInit(): void {
-    this.modelBuilderService.initialize(this.projectService.builder());
+  async ngOnInit(): Promise<void> {
+    await this.modelBuilderService.initialize(this.projectService.builder());
     this.startAutoSave();
   }
 
@@ -56,8 +56,8 @@ export class NnBuilderComponent {
     this.modelBuilderService.deleteSelectedLayer(event);
   }
 
-  clear(): void {
-    this.modelBuilderService.clearModelBuilder();
+  async clear(): Promise<void> {
+    await this.modelBuilderService.clearModelBuilder();
   }
   createLayer(type: LayerType): void {
     this.modelBuilderService.createLayer({layerType: type});

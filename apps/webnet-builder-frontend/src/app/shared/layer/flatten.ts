@@ -11,7 +11,7 @@ import {Shape} from "../configuration";
 
 export class Flatten extends Layer {
   override layerType = LayerType.Flatten;
-  constructor(parameters: {shape: string, units: number, filter: number, kernelSize: number}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string, units: number, filter: number, kernelSize: number, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
@@ -23,7 +23,7 @@ export class Flatten extends Layer {
       filter: [parameters.filter],
       kernelSize: [parameters.kernelSize]
     });
-    super(tf.layers.flatten, position, config, modelBuilderService, layerForm);
+    super(tf.layers.flatten, position, config, modelBuilderService, layerForm, parameters.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

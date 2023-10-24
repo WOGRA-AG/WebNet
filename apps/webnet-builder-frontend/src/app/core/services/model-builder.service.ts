@@ -47,9 +47,9 @@ export class ModelBuilderService {
     return this.selectedLayer;
   }
 
-  clearModelBuilder(): void {
+  async clearModelBuilder(): Promise<void> {
     this.isInitialized = false;
-    this.initialize({layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []});
+    await this.initialize({layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []});
   }
 
   setupSvg(): void {
@@ -68,8 +68,10 @@ export class ModelBuilderService {
       );
   }
 
-  initialize(builder?: any): void {
+  async initialize(builder?: any): Promise<void> {
     this.setupSvg();
+    // todo: set different backends?
+    await tf.ready();
     if (!this.isInitialized) {
       this.clearLayers();
       this.isInitialized = true;
@@ -100,7 +102,7 @@ export class ModelBuilderService {
     destination.addInputConnection(connection)
   }
 
-  createLayer(options: {layerType: LayerType, parameters?: any, position?: any}): Layer {
+  createLayer(options: { layerType: LayerType, parameters?: any, position?: any }): Layer {
     let layer;
     switch (options.layerType) {
       case LayerType.Input:
@@ -111,7 +113,11 @@ export class ModelBuilderService {
         this.inputLayer = layer;
         break;
       case LayerType.Dense:
-        layer = new Dense(options.parameters ?? {units: 25, activation: 'softmax'},
+        // todo: testing weights initialization
+        const customKernelWeight = tf.tensor([[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0]]); // Custom kernel weight
+        const customBiasWeight = tf.tensor([1.0]); // Custom bias weight
+        const customWeights = [customKernelWeight, customBiasWeight];
+        layer = new Dense(options.parameters ?? {units: 1, activation: 'softmax', weights: customWeights},
           options.position ?? {x: 300, y: 160},
           this, this.fb);
         break;

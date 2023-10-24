@@ -5,6 +5,7 @@ import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
 import {XY} from "../core/interfaces/interfaces";
 import {FormGroup} from "@angular/forms";
+import * as tf from "@tensorflow/tfjs";
 
 export abstract class Layer {
   private readonly layerId: string;
@@ -17,13 +18,15 @@ export abstract class Layer {
   public layerForm: FormGroup;
   public tfjsLayer: any;
   protected position: XY;
+  protected weights: tf.Tensor[]|null;
 
   protected constructor(
     tfjsLayer: any,
     position: XY,
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
-    layerForm: FormGroup) {
+    layerForm: FormGroup,
+    weights: tf.Tensor[]) {
     this.layerId = this.modelBuilderService.generateLayerId();
     this.position = position;
     this.tfjsLayer = tfjsLayer;
@@ -46,6 +49,8 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
 
     this.configuration.name = this.getLayerId();
+    console.log(weights);
+    this.weights = weights;
   }
 
   getOutputConnection(): Connection|null {
@@ -55,6 +60,9 @@ export abstract class Layer {
   getParameters(): any {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
+    if (this.weights) {
+      parameters.weights = this.weights;
+    }
     return parameters;
   };
 
