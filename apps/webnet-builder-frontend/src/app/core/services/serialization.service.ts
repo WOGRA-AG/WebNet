@@ -16,7 +16,7 @@ export class SerializationService {
   constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
   }
 
-  async exportAsZIP(subProjects: any): Promise<void> {
+  async exportProjectAsZIP(subProjects: any): Promise<void> {
     const project = this.projectService.activeProject();
     const projectInfo = project.projectInfo;
     if (subProjects.dataset.checked) {
@@ -79,11 +79,8 @@ export class SerializationService {
 
   async saveModel() {
     const model = await this.modelBuilderService.generateModel();
-    // const saveResults = await model.save('localstorage://my-model-1');
     if (model) {
-      const saveResults = await model.save('downloads://my-model-2');
-      console.log(saveResults);
-      console.log("==SAVED==");
+      const saveResults = await model.save('downloads://model');
     }
   }
 

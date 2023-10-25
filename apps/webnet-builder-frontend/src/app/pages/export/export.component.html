@@ -1,26 +1,29 @@
-<div>
-  <mat-checkbox class="all-checkbox"
-                color="accent"
-                [checked]="allChecked"
-                [indeterminate]="someChecked()"
-                (change)="setAll($event.checked)">
-    Everything
-  </mat-checkbox>
-  <ul>
-    <li *ngFor="let section of sections|keyvalue">
-      <mat-checkbox color="primary"
-                    [(ngModel)]="section.value.checked"
-                    [disabled]="section.value.disabled"
-                    (ngModelChange)="updateAllChecked()">
-        {{section.value.name}}
-      </mat-checkbox>
-    </li>
-  </ul>
+<div class="project-export-section">
+  <h3 class="section-heading">Project Export</h3>
+  <p>Export your project files as a ZIP archive, enabling you to import them later for future use.</p>
+  <div>
+    <mat-checkbox class="all-checkbox"
+                  color="accent"
+                  [checked]="allChecked"
+                  [indeterminate]="someChecked()"
+                  (change)="setAll($event.checked)">
+      Everything
+    </mat-checkbox>
+    <ul>
+      <li *ngFor="let section of sections|keyvalue: fixedOrder">
+        <mat-checkbox color="primary"
+                      [(ngModel)]="section.value.checked"
+                      [disabled]="section.value.disabled"
+                      (ngModelChange)="updateAllChecked()">
+          {{section.value.name}}
+        </mat-checkbox>
+      </li>
+    </ul>
+    <button mat-raised-button color="primary" (click)="export()">Export Project</button>
+  </div>
 </div>
-<button mat-raised-button color="primary" (click)="export()">Export Project</button>
-<!--<button mat-raised-button color="primary" (click)="saveModel()">-->
-<!--  Save Model-->
-<!--</button>-->
-<!--<button mat-raised-button color="secondary" (click)="showAllModels()">-->
-<!--  Show all saved Models-->
-<!--</button>-->
+<div class="tf-export-section">
+  <h3 class="section-heading">Tensorflow Model Export</h3>
+  <p>Export your trained model with 'weights.bin' and 'model.JSON' for Python Tensorflow projects.</p>
+  <button mat-raised-button color="primary" (click)="saveModel()">Export TF Model</button>
+</div>

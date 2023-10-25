@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
 import {SerializationService} from "../../core/services/serialization.service";
+import {KeyValue} from "@angular/common";
 
 interface ProjectSections {
   name: string;
   checked: boolean;
-  disabled: boolean
+  disabled: boolean;
+  order: number;
 }
 
 @Component({
@@ -14,15 +16,19 @@ interface ProjectSections {
 })
 export class ExportComponent {
   sections: Record<string, ProjectSections> = {
-    dataset: {name: 'Dataset', checked: true, disabled: true},
-    builder: {name: 'WebNet Builder', checked: true, disabled: true},
-    trainConfig: {name: 'Training Configuration', checked: true, disabled: true},
-    tf_model: {name: 'Tensorflow Model', checked: false, disabled: false},
+    dataset: {name: '1) Dataset', checked: true, disabled: true, order: 1},
+    builder: {name: '2) Modeling Builder', checked: true, disabled: true, order: 2},
+    trainConfig: {name: '3) Training Configuration', checked: true, disabled: true, order: 3},
+    tf_model: {name: '4) Tensorflow Model', checked: false, disabled: false, order: 4},
     // weights: {name: 'Trained Weights', checked: true}
   }
-  allChecked: boolean = true;
+  allChecked: boolean = false;
 
   constructor(private serializationService: SerializationService) {
+  }
+
+  fixedOrder = (a: KeyValue<string,any>, b: KeyValue<string,any>): number => {
+    return a.value.order - b.value.order;
   }
 
   updateAllChecked(): void {
@@ -46,7 +52,7 @@ export class ExportComponent {
   }
 
   export(): void {
-    this.serializationService.exportAsZIP(this.sections);
+    this.serializationService.exportProjectAsZIP(this.sections);
   }
 
   async saveModel(): Promise<void> {
