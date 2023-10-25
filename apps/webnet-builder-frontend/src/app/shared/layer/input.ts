@@ -7,12 +7,12 @@ import {NonNullableFormBuilder} from "@angular/forms";
 import {validateShapeArray} from "../../core/validators";
 import {parseShapeString} from "../utils";
 import {Shape} from "../configuration";
-import {XY} from "../../core/interfaces/interfaces";
+import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
   override layerType = LayerType.Input;
-  constructor(parameters: {shape: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',

@@ -3,12 +3,12 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {XY} from "../../core/interfaces/interfaces";
+import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Maxpooling extends Layer {
   override layerType = LayerType.Maxpooling;
-  constructor(parameters: {filters: number, kernelSize: number, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {filters: number, kernelSize: number, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',

@@ -5,12 +5,12 @@ import * as tf from "@tensorflow/tfjs";
 import {Layer} from "../layer";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Units} from "../configuration";
-import {XY} from "../../core/interfaces/interfaces";
+import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Output extends Layer {
   override layerType = LayerType.Output;
-  constructor(parameters: {units: number, activation: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',

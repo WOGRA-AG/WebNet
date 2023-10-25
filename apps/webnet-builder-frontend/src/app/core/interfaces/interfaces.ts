@@ -23,8 +23,18 @@ export interface XY {
 
 export interface TrainStats {
   epoch: number,
-  loss: number|undefined,
-  accuracy: number|undefined,
+  loss: number | undefined,
+  accuracy: number | undefined,
   progress: number,
   time: number
+}
+
+export interface Weight {
+  values: number[],
+  shape: number[]
+};
+
+export interface Weights {
+  weights: Weight,
+  bias: Weight
 }

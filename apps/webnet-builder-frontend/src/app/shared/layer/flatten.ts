@@ -4,14 +4,14 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {XY} from "../../core/interfaces/interfaces";
+import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 import {Shape} from "../configuration";
 
 
 export class Flatten extends Layer {
   override layerType = LayerType.Flatten;
-  constructor(parameters: {shape: string, units: number, filter: number, kernelSize: number, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string, units: number, filter: number, kernelSize: number, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',

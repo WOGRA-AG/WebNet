@@ -3,7 +3,7 @@ import {Selection} from "d3";
 import {ModelBuilderService} from "../core/services/model-builder.service";
 import {Connection} from "./connection";
 import {getTransformPosition} from "./utils";
-import {XY} from "../core/interfaces/interfaces";
+import {Weights, XY} from "../core/interfaces/interfaces";
 import {FormGroup} from "@angular/forms";
 import * as tf from "@tensorflow/tfjs";
 
@@ -18,7 +18,7 @@ export abstract class Layer {
   public layerForm: FormGroup;
   public tfjsLayer: any;
   protected position: XY;
-  protected weights: tf.Tensor[]|null;
+  protected weights: Weights | null;
 
   protected constructor(
     tfjsLayer: any,
@@ -26,7 +26,7 @@ export abstract class Layer {
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
     layerForm: FormGroup,
-    weights: tf.Tensor[]) {
+    weights: Weights) {
     this.layerId = this.modelBuilderService.generateLayerId();
     this.position = position;
     this.tfjsLayer = tfjsLayer;
@@ -52,7 +52,7 @@ export abstract class Layer {
     this.weights = weights;
   }
 
-  getOutputConnection(): Connection|null {
+  getOutputConnection(): Connection | null {
     return this.outputConnection;
   }
 
@@ -60,7 +60,13 @@ export abstract class Layer {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
     if (this.weights) {
-      parameters.weights = this.weights;
+      const weights = this.weights.weights;
+      const bias = this.weights.bias;
+      parameters.weights = [
+        tf.tensor(weights.values, weights.shape),
+        tf.tensor(bias.values, bias.shape)
+      ]
+      console.log(parameters.weights);
     }
     return parameters;
   };
@@ -202,12 +208,15 @@ export abstract class Layer {
       this.modelBuilderService.activeConnectionSubject.next(null);
     }
   }
+
   addOutputConnection(connection: Connection): void {
     this.outputConnection = connection;
   }
+
   addInputConnection(connection: Connection): void {
     this.inputConnection = connection;
   }
+
   protected hoverLayer(event: any): void {
     this.svgElement.classed("hovered", true);
   }

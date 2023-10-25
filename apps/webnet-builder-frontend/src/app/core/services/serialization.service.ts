@@ -3,7 +3,6 @@ import * as JSZip from 'jszip';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
-import {TrainingService} from "./training.service";
 import {ProjectService} from "./project.service";
 import {Project} from "../interfaces/project";
 
@@ -24,8 +23,22 @@ export class SerializationService {
       this.zip.file("dataset/dataset.json", dataset, {binary: false});
     }
     if (subProjects.builder.checked) {
-      const builder = JSON.stringify(project.builder);
-      this.zip.file("builder/model.json", builder, {binary: false})
+      const builder = project.builder;
+      const model = this.projectService.model();
+
+      builder.layers.forEach(layerObject => {
+        const layer = model?.getLayer(layerObject.id as string);
+        const layerWeights = layer?.getWeights();
+
+        if (layerWeights) {
+          const [weights, bias] =
+            layerWeights.map(weight => {
+              return {values: Object.values(weight.dataSync()), shape: weight.shape}
+            });
+          layerObject.parameters.weights = {weights: weights, bias: bias};
+        }
+      })
+      this.zip.file("builder/model.json", JSON.stringify(builder), {binary: false})
     }
     if (subProjects.trainConfig.checked) {
       const trainConfig = JSON.stringify(project.trainConfig);

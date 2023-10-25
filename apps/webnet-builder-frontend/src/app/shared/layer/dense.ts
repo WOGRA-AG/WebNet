@@ -5,12 +5,12 @@ import * as d3 from "d3";
 import {Selection} from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Activation, Units} from "../configuration";
-import {XY} from "../../core/interfaces/interfaces";
+import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Dense extends Layer {
   override layerType = LayerType.Dense;
-  constructor(parameters: {units: number, activation: string, weights: tf.Tensor[]}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dense',
       title: 'Dense Layer Parameter',

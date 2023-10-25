@@ -113,10 +113,6 @@ export class ModelBuilderService {
         this.inputLayer = layer;
         break;
       case LayerType.Dense:
-        // todo: testing weights initialization
-        // const customKernelWeight = tf.tensor([[0.5], [0.4], [0.3]]);
-        // const customBiasWeight = tf.tensor([1.0]); // Custom bias weight
-        // const customWeights = [customKernelWeight, customBiasWeight];
         layer = new Dense(options.parameters ?? {units: 1, activation: 'relu'},
           options.position ?? {x: 300, y: 160},
           this, this.fb);

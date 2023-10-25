@@ -5,6 +5,7 @@ import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces/interfaces";
 import {MnistDataService} from "./model-data-services/mnist-data.service";
+import {ProjectService} from "./project.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService) {
+  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService, private projectService: ProjectService) {
   }
 
   stopTraining(): void {
@@ -48,6 +49,7 @@ export class TrainingService {
     // const {trainXs, trainYs, testXs, testYs} = this.mnistDataService.prepData(5000);
     // const X = trainXs;
     // const Y = trainYs;
+    this.projectService.model.set(await this.modelBuilderService.generateModel());
     const X = tf.tensor2d(trainXs);
     const Y = tf.tensor1d(trainYs);
 
@@ -57,8 +59,8 @@ export class TrainingService {
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
-    const model = await this.modelBuilderService.generateModel();
-    // model?.layers.forEach((layer, index) => {
+
+    // this.projectService.model()?.layers.forEach((layer, index) => {
     //   const weights = layer.getWeights();
     //   console.log(`Layer ${index + 1}: ${layer.name}`);
     //   console.log(weights);
@@ -67,12 +69,12 @@ export class TrainingService {
     //     console.log(weight.dataSync()); // Print the weight data
     //   });
     // });
-    model?.compile({
+
+    this.projectService.model()?.compile({
       optimizer: parameter.optimizer(parameter.learningRate),
       loss: parameter.loss,
       metrics: ['accuracy', tf.metrics.binaryAccuracy, tf.metrics.recall]
     });
-
     const fitCallback = {
       onTrainBegin: async (logs?: tf.Logs) => {
         this.startTimer();
@@ -90,7 +92,7 @@ export class TrainingService {
         const progress = (epoch * BATCHES_PER_EPOCH + batch) / TOTAL_NUM_BATCHES * 100;
         this.trainingStats = {epoch: epoch, accuracy: logs!['acc'], loss: logs!['loss'], progress: progress, time: this.trainingTime}
         this.trainingStatsSubject.next(this.trainingStats);
-        model!.stopTraining = this.stopTrainingFlag;
+        this.projectService.model()!.stopTraining = this.stopTrainingFlag;
         this.stopTrainingFlag = false;
       }
     }
@@ -112,7 +114,7 @@ export class TrainingService {
         yLabel: 'Loss'
       }));
     }
-    const history = await model?.fit(X, Y, {
+    const history = await this.projectService.model()?.fit(X, Y, {
       batchSize: BATCH_SIZE,
       // validationData: [testXs, testYs],
       epochs: EPOCHS,

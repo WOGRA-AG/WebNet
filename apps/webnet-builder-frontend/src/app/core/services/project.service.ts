@@ -4,6 +4,7 @@ import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {Builder, Dataset, Project, ProjectInfo, TrainingConfig} from "../interfaces/project";
 import {LocalstorageService} from "./localstorage.service";
 import {StorageOption} from "../enums";
+import * as tf from "@tensorflow/tfjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class ProjectService {
   projectInfo = signal<ProjectInfo>({id: '', name: '', lastModified: new Date(), storeLocation: StorageOption.Unknown})
   dataset = signal<Dataset>({type: 'text', data: [{'text': 'Das ist ein Test und nur ein Test!'}]});
   builder = signal<Builder>({layers: [], connections: []});
-  model = signal({});
+  model = signal<tf.LayersModel|null>(null);
   trainConfig = signal<TrainingConfig>({
     optimizer: 'adam',
     learningRate: 0.01,
