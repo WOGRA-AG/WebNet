@@ -107,17 +107,17 @@ export class ModelBuilderService {
     switch (options.layerType) {
       case LayerType.Input:
         const inputPosition = this.getInputOutputPosition();
-        layer = new Input(options.parameters ?? {shape: '10'},
+        layer = new Input(options.parameters ?? {shape: '3'},
           options.position ?? {x: 30, y: inputPosition.y},
           this, this.fb);
         this.inputLayer = layer;
         break;
       case LayerType.Dense:
         // todo: testing weights initialization
-        const customKernelWeight = tf.tensor([[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0],[2.0]]); // Custom kernel weight
-        const customBiasWeight = tf.tensor([1.0]); // Custom bias weight
-        const customWeights = [customKernelWeight, customBiasWeight];
-        layer = new Dense(options.parameters ?? {units: 1, activation: 'softmax', weights: customWeights},
+        // const customKernelWeight = tf.tensor([[0.5], [0.4], [0.3]]);
+        // const customBiasWeight = tf.tensor([1.0]); // Custom bias weight
+        // const customWeights = [customKernelWeight, customBiasWeight];
+        layer = new Dense(options.parameters ?? {units: 1, activation: 'relu'},
           options.position ?? {x: 300, y: 160},
           this, this.fb);
         break;

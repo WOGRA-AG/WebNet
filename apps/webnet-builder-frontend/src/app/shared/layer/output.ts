@@ -23,7 +23,7 @@ export class Output extends Layer {
       units: [parameters.units, [Validators.required, Validators.minLength(1)]],
       activation: [parameters.activation, [Validators.required]]
     })
-    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

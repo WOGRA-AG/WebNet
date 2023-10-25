@@ -25,7 +25,7 @@ export class Dense extends Layer {
       activation: [parameters.activation, [Validators.required]],
     //   todo: make weights also manually changeable?
     });
-    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.layers.dense, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

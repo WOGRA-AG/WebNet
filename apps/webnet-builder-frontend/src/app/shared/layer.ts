@@ -49,7 +49,6 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
 
     this.configuration.name = this.getLayerId();
-    console.log(weights);
     this.weights = weights;
   }
 

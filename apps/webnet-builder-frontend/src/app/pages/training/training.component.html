@@ -40,6 +40,7 @@
     <!--  </mat-card-header>-->
     <mat-card-content>
       <mat-list role="list">
+        <span class="epoch-display">Epoch: {{trainingStats.epoch }}</span>
         <mat-list-item role="listitem" class="list-item">
           <span class="label">Accuracy:</span>
           <span class="value">{{ trainingStats.accuracy | number:'1.1-2'}}</span>

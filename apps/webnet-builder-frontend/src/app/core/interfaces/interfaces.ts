@@ -22,6 +22,7 @@ export interface XY {
 }
 
 export interface TrainStats {
+  epoch: number,
   loss: number|undefined,
   accuracy: number|undefined,
   progress: number,

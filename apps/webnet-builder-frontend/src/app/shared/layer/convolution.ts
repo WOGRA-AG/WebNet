@@ -43,7 +43,7 @@ export class Convolution extends Layer {
       padding: [parameters.padding, [Validators.required]],
       activation: [parameters.activation, [Validators.required]],
     })
-    super(tf.layers.conv2d, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.layers.conv2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer() {

@@ -23,7 +23,7 @@ export class Flatten extends Layer {
       filter: [parameters.filter],
       kernelSize: [parameters.kernelSize]
     });
-    super(tf.layers.flatten, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.layers.flatten, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

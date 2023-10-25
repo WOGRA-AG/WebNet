@@ -23,7 +23,7 @@ export class Input extends Layer{
     const layerForm = fb.group({
       shape: [parameters.shape, [validateShapeArray]]
     });
-    super(tf.input, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.input, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   override getParameters(): any {

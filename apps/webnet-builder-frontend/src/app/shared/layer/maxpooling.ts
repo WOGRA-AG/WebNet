@@ -18,7 +18,7 @@ export class Maxpooling extends Layer {
       filters: [parameters.filters, [Validators.required]],
       kernelSize: [parameters.kernelSize, [Validators.required]],
     })
-    super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters.weights);
+    super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer() {
