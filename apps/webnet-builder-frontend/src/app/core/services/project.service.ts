@@ -14,7 +14,7 @@ export class ProjectService {
   // Signals
   projectSubject: BehaviorSubject<Project | null> = new BehaviorSubject<Project | null>(null);
   projectInfo = signal<ProjectInfo>({id: '', name: '', lastModified: new Date(), storeLocation: StorageOption.Unknown})
-  dataset = signal<Dataset>({type: 'text', data: 'data'});
+  dataset = signal<Dataset>({type: 'text', data: [{'text': 'Das ist ein Test und nur ein Test!'}]});
   builder = signal<Builder>({layers: [], connections: []});
   model = signal({});
   trainConfig = signal<TrainingConfig>({

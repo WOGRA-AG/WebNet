@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ProjectService} from "../../core/services/project.service";
-import {DatasetService} from "../../core/services/dataset.service";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-dataset',
@@ -8,12 +9,25 @@ import {DatasetService} from "../../core/services/dataset.service";
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
-  dataset: string | undefined
+  dataset: { [key: string]: any; }[] | undefined;
+  displayedColumns: string[] | undefined;
+  dataSource: MatTableDataSource<any> | undefined;
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
-  constructor(private datasetService: DatasetService, private projectService: ProjectService) {
+  constructor(private projectService: ProjectService) {
+  }
+
+  ngAfterViewInit() {
+    if (this.dataSource && this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   ngOnInit(): void {
-    this.dataset = this.projectService.dataset().data;
+    const data = this.projectService.dataset().data;
+    this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(data);
+    this.dataset = data;
+    this.displayedColumns = Object.keys(data[0]);
   }
 }
+

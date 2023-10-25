@@ -149,6 +149,6 @@ export class MnistTemplate {
   }
 
   getDataset(): Dataset {
-    return {type: 'string', data: 'MNIST DATASET'};
+    return {type: 'string', data: [{'text': 'MNIST DATASET!'}]};
   }
 }

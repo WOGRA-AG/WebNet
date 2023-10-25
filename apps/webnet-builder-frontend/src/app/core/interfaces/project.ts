@@ -16,7 +16,7 @@ export interface ProjectInfo {
 
 export interface Dataset {
   type: string,
-  data: string
+  data: { [key: string]: any }[];
 }
 
 export interface Builder {

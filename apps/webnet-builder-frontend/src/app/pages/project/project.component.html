@@ -22,8 +22,8 @@
     </div>
   </mat-step>
   <!--  Saving/Export  -->
-  <mat-step label="Saving & Export" [completed]="false" #export_step>
-    <h2 class="step-title">Saving & Export</h2>
+  <mat-step label="Export" [completed]="false" #export_step>
+    <h2 class="step-title">Export</h2>
     <div class="export-section">
       <app-export *ngIf="stepper.selected == export_step"></app-export>
     </div>
