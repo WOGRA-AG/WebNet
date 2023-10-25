@@ -84,7 +84,18 @@ export class TrainingComponent {
       const trainParameter = this.trainingForm.getRawValue();
       trainParameter.optimizer = this.optimizers.get(trainParameter.optimizer)?.function;
       trainParameter.loss = this.losses.get(trainParameter.loss)?.function;
-      await this.trainingService.train(trainParameter, this.plotContainer.nativeElement);
+      const dataset = this.projectService.dataset().data;
+      // todo: change mapping
+      const X = dataset.map((item: any) => {
+        return [
+          item.CRIM, item.ZN, item.INDUS, item.CHAS, item.NOX,
+          item.RM, item.AGE, item.DIS, item.RAD, item.TAX,
+          item.PTRATIO, item.B, item.LSTAT,
+        ];
+      });
+
+      const Y = dataset.map((item: any) => item.MEDV);
+      await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
     } else {
       this.openDialog(ready);
     }
