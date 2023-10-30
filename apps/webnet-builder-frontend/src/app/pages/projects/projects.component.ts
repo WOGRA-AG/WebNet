@@ -43,6 +43,7 @@ export class ProjectsComponent {
 
   async createNewProject(): Promise<void> {
     const dialogRef = this.dialog.open(InputDialogComponent, {
+      autoFocus: false,
       data: {message: 'Create a fresh Project.'}
     });
     dialogRef.afterClosed().subscribe(async (projectName) => {

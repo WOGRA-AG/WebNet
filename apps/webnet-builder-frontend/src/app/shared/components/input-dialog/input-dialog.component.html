@@ -1,15 +1,22 @@
 <h1 mat-dialog-title>Project Creation</h1>
 <div mat-dialog-content>
   <p>{{data.message}}</p>
+  <div>
+    <mat-radio-group aria-label="Machine Learning Method" color="primary">
+      <mat-radio-button value="1" checked>Supervised Learning</mat-radio-button>
+    </mat-radio-group>
+  </div>
   <mat-form-field>
-    <mat-label>Name</mat-label>
+    <mat-label>ProjectName</mat-label>
     <input matInput [formControl]="projectNameControl" type="text">
     <mat-error *ngIf="projectNameControl.hasError('required')">Project name is required</mat-error>
     <mat-error *ngIf="projectNameControl.hasError('taken')">Project name is already used</mat-error>
+    <mat-error *ngIf="projectNameControl.hasError('invalid')">Project name is invalid</mat-error>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button color="primary"
-          (click)="createProject()">Create Project</button>
+          (click)="createProject()">Create Project
+  </button>
   <button mat-button mat-dialog-close>Close</button>
 </div>

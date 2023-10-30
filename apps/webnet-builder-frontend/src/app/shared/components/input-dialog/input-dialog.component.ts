@@ -15,6 +15,9 @@ export class InputDialogComponent {
       Validators.required,
       (control: AbstractControl) => {
         const projectName = control.value;
+        if (projectName && projectName.trim() === '') {
+          return { invalid: true };
+        }
         if (projectName && this.projectService.checkProjectNameTaken(projectName)) {
           return { taken: true };
         }
