@@ -64,7 +64,4 @@ export class ExportComponent {
     await this.serializationService.saveModel();
   }
 
-  async showAllModels(): Promise<void> {
-    await this.serializationService.showAllModels();
-  }
 }

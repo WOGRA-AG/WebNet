@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as JSZip from 'jszip';
+import { Papa } from 'ngx-papaparse';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
@@ -12,7 +13,24 @@ import {Project} from "../interfaces/project";
 export class SerializationService {
   zip: JSZip = new JSZip();
 
-  constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
+  constructor(private modelBuilderService: ModelBuilderService,
+              private projectService: ProjectService,
+              private papa: Papa) {}
+
+  async parseCSV(file: File): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.papa.parse(file, {
+        header: true, // Assumes the first row contains column headers
+        dynamicTyping: true, // Automatically convert data types
+        complete: (result) => {
+          resolve(result.data);
+        },
+        error: (error) => {
+          reject(error);
+          console.log(error);
+        }
+      });
+    });
   }
 
   async exportProjectAsZIP(subProjects: any): Promise<void> {
@@ -52,25 +70,6 @@ export class SerializationService {
     saveAs(content, `${projectInfo.name}.zip`)
   }
 
-  async saveTFModel(): Promise<void> {
-    const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
-
-    await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
-      const modelData: tf.io.ModelJSON = {
-        modelTopology: modelArtifacts.modelTopology ?? {},
-        format: modelArtifacts.format,
-        generatedBy: modelArtifacts.generatedBy,
-        convertedBy: modelArtifacts.convertedBy,
-        weightsManifest: [{
-          paths: ["./weights.bin"],
-          weights: modelArtifacts.weightSpecs as tf.io.WeightsManifestEntry[]
-        }],
-      };
-      this.zip.file("tf_model/model.json", JSON.stringify(modelData), {binary: false});
-      this.zip.file('tf_model/weights.bin', JSON.stringify(modelArtifacts.weightData), {binary: true});
-    }));
-  }
-
   async importZip(file: any): Promise<Project> {
     const zip = await this.zip.loadAsync(file);
     const files = zip.files;
@@ -90,6 +89,25 @@ export class SerializationService {
     return {projectInfo: project, dataset: dataset, trainConfig: trainConfig, builder: builder};
   }
 
+  async saveTFModel(): Promise<void> {
+    const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
+
+    await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
+      const modelData: tf.io.ModelJSON = {
+        modelTopology: modelArtifacts.modelTopology ?? {},
+        format: modelArtifacts.format,
+        generatedBy: modelArtifacts.generatedBy,
+        convertedBy: modelArtifacts.convertedBy,
+        weightsManifest: [{
+          paths: ["./weights.bin"],
+          weights: modelArtifacts.weightSpecs as tf.io.WeightsManifestEntry[]
+        }],
+      };
+      this.zip.file("tf_model/model.json", JSON.stringify(modelData), {binary: false});
+      this.zip.file('tf_model/weights.bin', JSON.stringify(modelArtifacts.weightData), {binary: true});
+    }));
+  }
+
   async saveModel() {
     const model = await this.modelBuilderService.generateModel();
     if (model) {
@@ -97,19 +115,19 @@ export class SerializationService {
     }
   }
 
-  async listModels() {
-    // prints all models saved in local storage and indexedDB
-    console.log(JSON.stringify(await tf.io.listModels()));
-  }
-
-  async loadModel(file: File) {
-    await tf.ready();
-    const loadedModel = await tf.loadLayersModel(tf.io.browserFiles([file]));
-    console.log(loadedModel);
-  }
-
-  async showAllModels() {
-    // prints all models saved in local storage and indexedDB
-    console.log(JSON.stringify(await tf.io.listModels()));
-  }
+  // async listModels() {
+  //   // prints all models saved in local storage and indexedDB
+  //   console.log(JSON.stringify(await tf.io.listModels()));
+  // }
+  //
+  // async loadModel(file: File) {
+  //   await tf.ready();
+  //   const loadedModel = await tf.loadLayersModel(tf.io.browserFiles([file]));
+  //   console.log(loadedModel);
+  // }
+  //
+  // async showAllModels() {
+  //   // prints all models saved in local storage and indexedDB
+  //   console.log(JSON.stringify(await tf.io.listModels()));
+  // }
 }

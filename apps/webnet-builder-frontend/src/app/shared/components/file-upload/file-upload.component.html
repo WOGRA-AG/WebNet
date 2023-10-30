@@ -1,4 +1,4 @@
-<input type="file" hidden (change)="onFileSelected($event)" #fileUpload>
+<input type="file" hidden (change)="onFileSelected($event)" [accept]="fileType" #fileUpload>
 
 <div class="file-upload">
   {{fileName || "No file uploaded yet."}}

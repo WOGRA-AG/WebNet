@@ -125,6 +125,7 @@ export class TrainingService {
     }
 
     try {
+      // todo: use fitDataset instead for more memory-efficiency?
       const history = await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
         // validationData: [testXs, testYs],

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-file-upload',
@@ -7,9 +7,11 @@ import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/c
 })
 export class FileUploadComponent {
   @Output() fileEvent = new EventEmitter<File>();
+  @Input() fileType: string = '';
   fileName: string = '';
 
-  constructor() {}
+  constructor() {
+  }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
