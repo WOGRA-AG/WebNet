@@ -6,6 +6,8 @@ import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces/interfaces";
 import {MnistDataService} from "./model-data-services/mnist-data.service";
 import {ProjectService} from "./project.service";
+import {MatDialog} from "@angular/material/dialog";
+import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,7 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService, private projectService: ProjectService) {
+  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService, private projectService: ProjectService, public dialog: MatDialog) {
   }
 
   stopTraining(): void {
@@ -42,7 +44,7 @@ export class TrainingService {
     return {dataset: datasetReady, model: modelReady}
   }
 
-  async train(trainXs: any,trainYs: any, parameter: any, plotContainer: HTMLElement): Promise<void> {
+  async train(trainXs: any, trainYs: any, parameter: any, plotContainer: HTMLElement): Promise<void> {
     // const X = tf.ones([8, 10]);
     // const Y = tf.ones([8, 1]);
     // await this.mnistDataService.load();
@@ -90,7 +92,13 @@ export class TrainingService {
       },
       onYield: async (epoch: number, batch: number, logs?: tf.Logs) => {
         const progress = (epoch * BATCHES_PER_EPOCH + batch) / TOTAL_NUM_BATCHES * 100;
-        this.trainingStats = {epoch: epoch, accuracy: logs!['acc'], loss: logs!['loss'], progress: progress, time: this.trainingTime}
+        this.trainingStats = {
+          epoch: epoch,
+          accuracy: logs!['acc'],
+          loss: logs!['loss'],
+          progress: progress,
+          time: this.trainingTime
+        }
         this.trainingStatsSubject.next(this.trainingStats);
         this.projectService.model()!.stopTraining = this.stopTrainingFlag;
         this.stopTrainingFlag = false;
@@ -114,14 +122,25 @@ export class TrainingService {
         yLabel: 'Loss'
       }));
     }
-    const history = await this.projectService.model()?.fit(X, Y, {
-      batchSize: BATCH_SIZE,
-      // validationData: [testXs, testYs],
-      epochs: EPOCHS,
-      callbacks: callbacks,
-      shuffle: SHUFFLE,
-      yieldEvery: YIELD_EVERY
-    });
+
+    try {
+      const history = await this.projectService.model()?.fit(X, Y, {
+        batchSize: BATCH_SIZE,
+        // validationData: [testXs, testYs],
+        epochs: EPOCHS,
+        callbacks: callbacks,
+        shuffle: SHUFFLE,
+        yieldEvery: YIELD_EVERY
+      });
+    } catch (e: any) {
+      console.log(e.message);
+      this.dialog.open(MessageDialogComponent, {
+        maxWidth: '600px',
+        data: {
+          title: 'Training Failed',
+          message: e.message}
+      });
+    }
   }
 
 }

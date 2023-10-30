@@ -19,6 +19,7 @@ import { ExportComponent } from './pages/export/export.component';
 import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 import { DatasetComponent } from './pages/dataset/dataset.component';
 import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
+import { MessageDialogComponent } from './shared/components/message-dialog/message-dialog.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
     ExportComponent,
     FileUploadComponent,
     DatasetComponent,
-    InputDialogComponent
+    InputDialogComponent,
+    MessageDialogComponent
   ],
   imports: [
     BrowserModule,
