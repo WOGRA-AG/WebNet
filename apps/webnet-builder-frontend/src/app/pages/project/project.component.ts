@@ -26,7 +26,7 @@ export class ProjectComponent {
   }
 
   ngOnDestroy(): void {
-    this.projectService.updateProject(this.projectName);
+    this.projectService.updateProject();
   }
 
   protected readonly string = string;

@@ -4,7 +4,6 @@ import * as tfvis from "@tensorflow/tfjs-vis";
 import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces/interfaces";
-import {MnistDataService} from "./model-data-services/mnist-data.service";
 import {ProjectService} from "./project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
@@ -20,7 +19,9 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService, private mnistDataService: MnistDataService, private projectService: ProjectService, public dialog: MatDialog) {
+  constructor(private modelBuilderService: ModelBuilderService,
+              private projectService: ProjectService,
+              public dialog: MatDialog) {
   }
 
   stopTraining(): void {
@@ -40,7 +41,7 @@ export class TrainingService {
 
   async trainingReady(): Promise<{ dataset: boolean, model: boolean }> {
     const modelReady = await this.modelBuilderService.isModelReady();
-    const datasetReady = true;
+    const datasetReady = this.projectService.isDatasetReady();
     return {dataset: datasetReady, model: modelReady}
   }
 

@@ -85,10 +85,15 @@ export class ProjectService {
     return myProject ? myProject : null;
   }
 
-  updateProject(name: string): void {
+  isDatasetReady(): boolean {
+    const data = this.dataset().data;
+    return data ? true : false;
+  }
+
+  updateProject(): void {
     const project = this.activeProject();
-    this.myProjects.set(name, project);
-    this.storeProjectInLocalStorage(name, project);
+    this.myProjects.set(project.projectInfo.name, project);
+    this.storeProjectInLocalStorage(project.projectInfo.name, project);
   }
 
   storeProjectInLocalStorage(name: string, project: Project): void {

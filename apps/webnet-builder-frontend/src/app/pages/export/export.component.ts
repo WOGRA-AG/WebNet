@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {SerializationService} from "../../core/services/serialization.service";
 import {KeyValue} from "@angular/common";
+import {ProjectService} from "../../core/services/project.service";
 
 interface ProjectSections {
   name: string;
@@ -24,7 +25,7 @@ export class ExportComponent {
   }
   allChecked: boolean = false;
 
-  constructor(private serializationService: SerializationService) {
+  constructor(private serializationService: SerializationService, private projectService: ProjectService) {
   }
 
   fixedOrder = (a: KeyValue<string,any>, b: KeyValue<string,any>): number => {
@@ -53,6 +54,10 @@ export class ExportComponent {
 
   export(): void {
     this.serializationService.exportProjectAsZIP(this.sections);
+  }
+
+  saveInLocalStorage(): void {
+    this.projectService.updateProject();
   }
 
   async saveModel(): Promise<void> {
