@@ -22,6 +22,7 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
 import { MessageDialogComponent } from './shared/components/message-dialog/message-dialog.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,14 +41,14 @@ import { MessageDialogComponent } from './shared/components/message-dialog/messa
     InputDialogComponent,
     MessageDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

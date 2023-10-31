@@ -1,8 +1,8 @@
 <h3 class="section-heading">Dataset Import</h3>
 <div class="dataset-upload-content">
   <app-file-upload (fileEvent)="addFile($event)" [fileType]="'.csv'"></app-file-upload>
-  <button [disabled]="!file" mat-raised-button color="primary" (click)="parseCSV()" class="import-button">Import
-    existing Project
+  <button [disabled]="!file" mat-raised-button color="primary" (click)="parseCSV()" class="import-button">
+    Import Dataset
   </button>
 </div>
 <h3 class="section-heading">Dataset</h3>
@@ -25,5 +25,26 @@
                    showFirstLastButtons
                    aria-label="Select page of periodic elements">
     </mat-paginator>
+  </div>
+</div>
+<h3 class="section-heading">Configuration</h3>
+<div class="dataset-config-content">
+  <h4 class="bold-section-title">Splitting</h4>
+  <mat-form-field>
+    <mat-label>Training</mat-label>
+    <input matInput type="number" [(ngModel)]="splitValue" readonly>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Validation</mat-label>
+    <input matInput type="number" [(ngModel)]="100 - splitValue" readonly>
+  </mat-form-field>
+  <div class="slider-container">
+    <mat-slider
+      class="always-show-thumb-value"
+      step="1"
+      discrete
+      [displayWith]="formatLabel">
+      <input matSliderThumb [(ngModel)]="splitValue" (ngModelChange)="updateSplitValue($event)">
+    </mat-slider>
   </div>
 </div>

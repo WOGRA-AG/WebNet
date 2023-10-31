@@ -56,22 +56,23 @@ export class TrainingService {
     const X = tf.tensor2d(trainXs);
     const Y = tf.tensor1d(trainYs);
 
-    const EPOCHS = 100;
-    const BATCH_SIZE = 1;
-    const SHUFFLE = true;
+    const EPOCHS = parameter.epochs;
+    const BATCH_SIZE = parameter.batchSize;
+    const VALIDATION_SPLIT = parameter.validationSplit;
+    const SHUFFLE = parameter.shuffle;
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
 
-    // this.projectService.model()?.layers.forEach((layer, index) => {
-    //   const weights = layer.getWeights();
-    //   console.log(`Layer ${index + 1}: ${layer.name}`);
-    //   console.log(weights);
-    //   weights.forEach((weight, weightIndex) => {
-    //     console.log(`  Weight ${weightIndex + 1}:`);
-    //     console.log(weight.dataSync()); // Print the weight data
-    //   });
-    // });
+    console.log("#### 1")
+    this.projectService.model()?.layers.forEach((layer, index) => {
+      if (layer.name === 'layer-3') {
+        const weights = layer.getWeights();
+        weights.forEach((weight, weightIndex) => {
+          console.log(weight.dataSync()); // Print the weight data
+        });
+      }
+    });
 
     this.projectService.model()?.compile({
       optimizer: parameter.optimizer(parameter.learningRate),
@@ -128,7 +129,7 @@ export class TrainingService {
       // todo: use fitDataset instead for more memory-efficiency?
       const history = await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
-        // validationData: [testXs, testYs],
+        validationSplit: VALIDATION_SPLIT,
         epochs: EPOCHS,
         callbacks: callbacks,
         shuffle: SHUFFLE,
@@ -143,6 +144,15 @@ export class TrainingService {
           message: e.message}
       });
     }
+    console.log("#### 2")
+    this.projectService.model()?.layers.forEach((layer, index) => {
+      if (layer.name === 'layer-3') {
+        const weights = layer.getWeights();
+        weights.forEach((weight, weightIndex) => {
+          console.log(weight.dataSync()); // Print the weight data
+        });
+      }
+    });
   }
 
 }

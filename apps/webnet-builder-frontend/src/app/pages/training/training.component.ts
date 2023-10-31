@@ -37,11 +37,15 @@ export class TrainingComponent {
       this.trainingStats = stats;
     });
     this.trainingForm = fb.group({
+      epochs: [100, Validators.required],
+      batchSize: [32, Validators.required],
       optimizer: ['adam', Validators.required],
       learningRate: [0.01, Validators.required],
       loss: ['meanSquaredError', Validators.required],
       accuracyPlot: true,
       lossPlot: false,
+      shuffle: true,
+      validationSplit: 0.2,
     });
   }
 

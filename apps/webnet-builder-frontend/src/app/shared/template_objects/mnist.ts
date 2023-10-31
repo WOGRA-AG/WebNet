@@ -13,11 +13,15 @@ export class MnistTemplate {
 
   getTrainConfig(): TrainingConfig {
     return {
+      epochs: 100,
+      batchSize:32,
       optimizer: 'adam',
       learningRate: 0.01,
       loss: 'meanSquaredError',
       accuracyPlot: true,
-      lossPlot: false
+      lossPlot: false,
+      shuffle: true,
+      validationSplit: 0.2
     }
   };
 

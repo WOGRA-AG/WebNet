@@ -4,6 +4,18 @@
     <h3 class="section-heading">Training Parameters</h3>
     <div class="form-row">
       <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Epochs</mat-label>
+        <input matInput formControlName="epochs" placeholder="Epochs" type="number" step="1">
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Batch Size</mat-label>
+        <input matInput formControlName="batchSize" placeholder="Batch Size" type="number" step="1">
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Learning Rate</mat-label>
+        <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
+      </mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select an Optimizer</mat-label>
         <mat-select formControlName="optimizer">
           <mat-option *ngFor="let optimizer of optimizers | keyvalue;"
@@ -11,10 +23,6 @@
             {{optimizer.key}}
           </mat-option>
         </mat-select>
-      </mat-form-field>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Learning Rate</mat-label>
-        <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
       </mat-form-field>
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select a Loss Function</mat-label>
@@ -26,6 +34,7 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <mat-slide-toggle formControlName="shuffle" color="primary">Enable Data Shuffle</mat-slide-toggle>
     <h3 class="section-heading">Plot Settings</h3>
     <p class="warning-message">Enabling these plots will slow down the training.</p>
     <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>

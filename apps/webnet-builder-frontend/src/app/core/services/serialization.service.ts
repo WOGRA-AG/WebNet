@@ -22,10 +22,10 @@ export class SerializationService {
       this.papa.parse(file, {
         header: true, // Assumes the first row contains column headers
         dynamicTyping: true, // Automatically convert data types
-        complete: (result) => {
+        complete: (result: any) => {
           resolve(result.data);
         },
-        error: (error) => {
+        error: (error: any) => {
           reject(error);
           console.log(error);
         }
@@ -76,13 +76,11 @@ export class SerializationService {
 
     const projectFile = files['project.json'];
     const datasetFile = files['dataset/dataset.json'];
-    // const modelFile = files['tf_model/model.json'];
     const trainingFile = files['training/configuration.json'];
     const builderFile = files['builder/model.json'];
 
     const project = projectFile ? JSON.parse(await projectFile.async('string')) : {};
     const dataset = datasetFile ? JSON.parse(await datasetFile.async('string')) : {};
-    // const model = modelFile ? JSON.parse(await modelFile.async('string')) : {};
     const trainConfig = trainingFile ? JSON.parse(await trainingFile.async('string')) : {};
     const builder = builderFile ? JSON.parse(await builderFile.async('string')) : {};
 

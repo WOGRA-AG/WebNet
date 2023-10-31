@@ -24,6 +24,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatBadgeModule} from '@angular/material/badge'
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSliderModule} from "@angular/material/slider";
 
 const MaterialComponents =
   [MatButtonModule,
@@ -50,7 +51,8 @@ const MaterialComponents =
     MatRadioModule,
     MatBadgeModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSliderModule
   ]
 
 @NgModule({

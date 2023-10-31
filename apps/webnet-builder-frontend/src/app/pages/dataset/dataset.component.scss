@@ -2,11 +2,25 @@
   border-right: 1px solid black;
 }
 
-.dataset-upload-content, .dataset-view-content {
+.dataset-upload-content, .dataset-view-content, .dataset-config-content {
   margin-left: 0.5em;
+  margin-bottom: 1rem;
 }
 
 .import-button {
   margin-left: 0;
   margin-bottom: 1rem;
+}
+
+.slider-container {
+  margin: 1rem;
+
+  .mat-mdc-slider {
+    width: 410px;
+  }
+}
+
+.bold-section-title {
+  font-weight: 500;
+  margin-left: 0.5rem;
 }

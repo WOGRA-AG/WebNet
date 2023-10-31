@@ -3,7 +3,8 @@ import {ProjectService} from "../../core/services/project.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {SerializationService} from "../../core/services/serialization.service";
-import {Dataset} from "../../core/interfaces/project";
+import {Dataset, TrainingConfig} from "../../core/interfaces/project";
+import {DatasetService} from "../../core/services/dataset.service";
 
 @Component({
   selector: 'app-dataset',
@@ -11,13 +12,19 @@ import {Dataset} from "../../core/interfaces/project";
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
+  splitValue = 80;
+  formatLabel(value: number): string {
+    return `${value}%`;
+  }
+
   file: File | undefined;
   dataset: Dataset | undefined;
   displayedColumns: string[] | undefined;
   dataSource: MatTableDataSource<any> | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
-  constructor(private projectService: ProjectService, private serializationService: SerializationService) {
+  constructor(private projectService: ProjectService,
+              private serializationService: SerializationService) {
     effect(() => {
       const dataset = this.projectService.dataset();
       if (dataset.data.length > 0) {
@@ -26,6 +33,16 @@ export class DatasetComponent {
         this.initPaginator();
       }
     })
+  }
+
+  updateSplitValue(percentSplit: number): void {
+    const splitValue: number = (100 - percentSplit) / 100;
+    this.projectService.trainConfig.mutate((trainConfig: TrainingConfig) => {
+      trainConfig.validationSplit = splitValue;
+    })
+  }
+  ngAfterViewInit() {
+    this.initPaginator();
   }
 
   updateDataSource(): void {

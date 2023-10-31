@@ -58,11 +58,15 @@ export class ProjectsComponent {
             },
             dataset: {type: 'text', data: [], fileName: ''},
             trainConfig: {
+              epochs: 100,
+              batchSize: 32,
               optimizer: 'adam',
               learningRate: 0.01,
               loss: 'meanSquaredError',
               accuracyPlot: true,
-              lossPlot: false
+              lossPlot: false,
+              shuffle: true,
+              validationSplit: 0.2
             },
             builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}
           });

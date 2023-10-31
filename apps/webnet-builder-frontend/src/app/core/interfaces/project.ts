@@ -27,9 +27,13 @@ export interface Builder {
 }
 
 export interface TrainingConfig {
+  epochs: number,
+  batchSize: number,
   optimizer: string,
   learningRate: number,
   loss: string,
   accuracyPlot: boolean,
-  lossPlot: boolean
+  lossPlot: boolean,
+  shuffle: boolean,
+  validationSplit: number
 }

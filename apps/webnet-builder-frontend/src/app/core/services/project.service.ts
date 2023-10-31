@@ -19,11 +19,15 @@ export class ProjectService {
   builder = signal<Builder>({layers: [], connections: []});
   model = signal<tf.LayersModel|null>(null);
   trainConfig = signal<TrainingConfig>({
+    epochs: 100,
+    batchSize: 32,
     optimizer: 'adam',
     learningRate: 0.01,
     loss: 'meanSquaredError',
     accuracyPlot: true,
-    lossPlot: false
+    lossPlot: false,
+    shuffle: true,
+    validationSplit: 0.2
   });
   activeProject = computed(() => {
     return {
