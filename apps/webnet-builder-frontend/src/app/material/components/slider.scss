@@ -1,0 +1,6 @@
+@mixin slider() {
+  .mdc-slider__value-indicator {
+    transform: scale(1) !important;
+  }
+}
+
