@@ -56,7 +56,7 @@ export class ProjectsComponent {
               lastModified: new Date(),
               storeLocation: StorageOption.InMemory
             },
-            dataset: {type: 'text', data: [], fileName: ''},
+            dataset: {type: '', data: [], fileName: '', columns: [], inputColumns: [], targetColumns: []},
             trainConfig: {
               epochs: 100,
               batchSize: 32,

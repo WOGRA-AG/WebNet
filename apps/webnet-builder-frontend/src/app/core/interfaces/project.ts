@@ -18,7 +18,10 @@ export interface ProjectInfo {
 export interface Dataset {
   type: string,
   fileName: string,
-  data: { [key: string]: any }[]
+  data: { [key: string]: any }[],
+  columns: string[],
+  inputColumns: string[],
+  targetColumns: string[]
 }
 
 export interface Builder {

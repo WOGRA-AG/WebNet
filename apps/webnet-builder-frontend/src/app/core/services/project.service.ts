@@ -14,10 +14,25 @@ export class ProjectService {
   private templateProjects: Map<string, Project> = new Map();
   // Signals
   projectSubject: BehaviorSubject<Project | null> = new BehaviorSubject<Project | null>(null);
-  projectInfo = signal<ProjectInfo>({id: '', name: '', lastModified: new Date(), storeLocation: StorageOption.Unknown})
-  dataset = signal<Dataset>({type: 'text', data: [{'text': 'Das ist ein Test und nur ein Test!'}], fileName: ''});
-  builder = signal<Builder>({layers: [], connections: []});
-  model = signal<tf.LayersModel|null>(null);
+  projectInfo = signal<ProjectInfo>({
+    id: '',
+    name: '',
+    lastModified: new Date(),
+    storeLocation: StorageOption.Unknown
+  })
+  dataset = signal<Dataset>({
+    type: 'text',
+    data: [{'text': 'Das ist ein Test und nur ein Test!'}],
+    fileName: '',
+    columns: [],
+    inputColumns: [],
+    targetColumns: []
+  });
+  builder = signal<Builder>({
+    layers: [],
+    connections: []
+  });
+  model = signal<tf.LayersModel | null>(null);
   trainConfig = signal<TrainingConfig>({
     epochs: 100,
     batchSize: 32,

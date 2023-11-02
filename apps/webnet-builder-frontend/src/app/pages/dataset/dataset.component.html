@@ -7,7 +7,7 @@
 </div>
 <h3 class="section-heading">Dataset</h3>
 <div class="dataset-view-content">
-  <p *ngIf="!dataset"> No Dataset provided</p>
+  <p *ngIf="dataset.data.length === 0"> No Dataset provided</p>
   <p *ngIf="dataset">{{dataset.fileName}}</p>
   <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" *ngIf="dataSource">
@@ -28,28 +28,30 @@
 </div>
 <h3 class="section-heading">Configuration</h3>
 <div class="dataset-config-content">
-  <h4 class="bold-section-title">Input / Target Values</h4>
-  <mat-form-field>
-    <mat-label>Input(s)</mat-label>
-    <mat-select [formControl]="inputs" multiple>
-      <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Target(s)</mat-label>
-    <mat-select [formControl]="targets" multiple>
-      <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <h4 class="bold-section-title">Splitting</h4>
-  <mat-form-field>
-    <mat-label>Training</mat-label>
-    <input matInput type="number" [(ngModel)]="splitValue" readonly>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Validation</mat-label>
-    <input matInput type="number" [(ngModel)]="100 - splitValue" readonly>
-  </mat-form-field>
+  <h4 class="bold-section-title">Choose Model Input & Target Columns</h4>
+  <form [formGroup]="datasetForm">
+    <mat-form-field>
+      <mat-label>Input(s)</mat-label>
+      <mat-select formControlName="input" multiple>
+        <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Target(s)</mat-label>
+      <mat-select formControlName="target" multiple>
+        <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h4 class="bold-section-title">Split your Data into Training and Validation Data</h4>
+    <mat-form-field>
+      <mat-label>Training Ratio</mat-label>
+      <input matInput type="text" formControlName="trainingRatio" readonly>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Validation Ratio</mat-label>
+      <input matInput type="text" formControlName="validationRatio" readonly>
+    </mat-form-field>
+  </form>
   <div class="slider-container">
     <mat-slider
       class="always-show-thumb-value"

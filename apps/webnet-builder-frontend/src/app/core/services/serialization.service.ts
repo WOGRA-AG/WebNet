@@ -23,7 +23,7 @@ export class SerializationService {
         header: true, // Assumes the first row contains column headers
         dynamicTyping: true, // Automatically convert data types
         complete: (result: any) => {
-          resolve(result.data);
+          resolve(result);
         },
         error: (error: any) => {
           reject(error);
