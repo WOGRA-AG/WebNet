@@ -5,6 +5,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {SerializationService} from "../../core/services/serialization.service";
 import {Dataset, TrainingConfig} from "../../core/interfaces/project";
 import {DatasetService} from "../../core/services/dataset.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-dataset',
@@ -12,11 +13,9 @@ import {DatasetService} from "../../core/services/dataset.service";
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
+  inputs = new FormControl();
+  targets = new FormControl();
   splitValue = 80;
-  formatLabel(value: number): string {
-    return `${value}%`;
-  }
-
   file: File | undefined;
   dataset: Dataset | undefined;
   displayedColumns: string[] | undefined;
@@ -35,12 +34,17 @@ export class DatasetComponent {
     })
   }
 
+  formatLabel(value: number): string {
+    return `${value}%`;
+  }
+
   updateSplitValue(percentSplit: number): void {
     const splitValue: number = (100 - percentSplit) / 100;
     this.projectService.trainConfig.mutate((trainConfig: TrainingConfig) => {
       trainConfig.validationSplit = splitValue;
     })
   }
+
   ngAfterViewInit() {
     this.initPaginator();
   }
@@ -49,6 +53,7 @@ export class DatasetComponent {
     if (this.dataset) {
       this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.dataset.data);
       this.displayedColumns = Object.keys(this.dataset.data[0]);
+      this.inputs.setValue(this.displayedColumns);
     }
   }
 
