@@ -1,7 +1,7 @@
 import {Component, EventEmitter, HostListener, Input, Output, ViewEncapsulation} from '@angular/core';
-import {ModelBuilderService} from "../../core/services/model-builder.service";
-import {LayerType} from "../../core/enums";
-import {ProjectService} from "../../core/services/project.service";
+import {ModelBuilderService} from "../../../core/services/model-builder.service";
+import {LayerType} from "../../../core/enums";
+import {ProjectService} from "../../../core/services/project.service";
 import {FormControl} from "@angular/forms";
 
 @Component({
@@ -30,20 +30,20 @@ export class NnBuilderComponent {
   }
 
   startAutoSave() {
-    this.autoSaveInterval = setInterval(() => {
-      this.updateBuilder();
+    this.autoSaveInterval = setInterval(async () => {
+      await this.updateBuilder();
     }, 5000);
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
     }
-    this.updateBuilder();
+    await this.updateBuilder();
   }
 
-  updateBuilder(): void {
-    this.projectService.builder.set(this.modelBuilderService.generateBuilderJSON());
+  async updateBuilder(): Promise<void> {
+    this.projectService.builder.set(await this.modelBuilderService.generateBuilderJSON());
   }
 
   @HostListener('window:keydown.Escape', ['$event'])

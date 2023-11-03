@@ -45,7 +45,14 @@ export class TrainingService {
     return {dataset: datasetReady, model: modelReady}
   }
 
+  // normalize(data: tf.Tensor) {
+  //   const dataMax = data.max();
+  //   const dataMin = data.min();
+  //   return data.sub(dataMin).div(dataMax.sub(dataMin));
+  // }
+
   async train(trainXs: any, trainYs: any, parameter: any, plotContainer: HTMLElement): Promise<void> {
+
     // const X = tf.ones([8, 10]);
     // const Y = tf.ones([8, 1]);
     // await this.mnistDataService.load();

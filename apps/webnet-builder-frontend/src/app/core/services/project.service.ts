@@ -30,7 +30,8 @@ export class ProjectService {
   });
   builder = signal<Builder>({
     layers: [],
-    connections: []
+    connections: [],
+    compiled: false
   });
   model = signal<tf.LayersModel | null>(null);
   trainConfig = signal<TrainingConfig>({

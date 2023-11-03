@@ -1,9 +1,9 @@
 import {Component, ViewChild} from '@angular/core';
-import {ProjectService} from "../../core/services/project.service";
+import {ProjectService} from "../../../core/services/project.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
-import {SerializationService} from "../../core/services/serialization.service";
-import {Dataset, TrainingConfig} from "../../core/interfaces/project";
+import {SerializationService} from "../../../core/services/serialization.service";
+import {Dataset, TrainingConfig} from "../../../core/interfaces/project";
 import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({

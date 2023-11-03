@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {SerializationService} from "../../core/services/serialization.service";
+import {SerializationService} from "../../../core/services/serialization.service";
 import {KeyValue} from "@angular/common";
-import {ProjectService} from "../../core/services/project.service";
+import {ProjectService} from "../../../core/services/project.service";
 
 interface ProjectSections {
   name: string;

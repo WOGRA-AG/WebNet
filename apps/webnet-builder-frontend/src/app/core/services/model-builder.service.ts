@@ -166,7 +166,7 @@ export class ModelBuilderService {
     return {x: x, y: y};
   }
 
-  generateBuilderJSON(): Builder {
+  async generateBuilderJSON(): Promise<Builder> {
     const layers = [];
     const connections = [];
     for (const [id, layer] of this.layerMap) {
@@ -183,7 +183,8 @@ export class ModelBuilderService {
         connections.push(connection);
       }
     }
-    return {layers: layers, connections: connections};
+    const compiled = await this.isModelReady();
+    return {layers: layers, connections: connections, compiled: compiled};
     // todo:
     // training parameter -> other file?
     // zoom lvl?

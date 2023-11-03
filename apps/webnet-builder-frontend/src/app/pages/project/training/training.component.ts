@@ -1,14 +1,14 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {optimizers} from "../../shared/tf_objects/optimizers";
-import {losses} from "../../shared/tf_objects/losses";
+import {optimizers} from "../../../shared/tf_objects/optimizers";
+import {losses} from "../../../shared/tf_objects/losses";
 import {AbstractControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
-import {TrainStats} from "../../core/interfaces/interfaces";
-import {ModelBuilderService} from "../../core/services/model-builder.service";
-import {TrainingService} from "../../core/services/training.service";
+import {TrainStats} from "../../../core/interfaces/interfaces";
+import {ModelBuilderService} from "../../../core/services/model-builder.service";
+import {TrainingService} from "../../../core/services/training.service";
 import {MatDialog} from "@angular/material/dialog";
-import {TaskDialogComponent} from "../../shared/components/task-dialog/task-dialog.component";
+import {TaskDialogComponent} from "../../../shared/components/task-dialog/task-dialog.component";
 import * as tfvis from "@tensorflow/tfjs-vis";
-import {ProjectService} from "../../core/services/project.service";
+import {ProjectService} from "../../../core/services/project.service";
 
 @Component({
   selector: 'app-training',
@@ -88,17 +88,25 @@ export class TrainingComponent {
       const trainParameter = this.trainingForm.getRawValue();
       trainParameter.optimizer = this.optimizers.get(trainParameter.optimizer)?.function;
       trainParameter.loss = this.losses.get(trainParameter.loss)?.function;
-      const dataset = this.projectService.dataset().data;
+      const dataset = this.projectService.dataset();
+
       // todo: change mapping
-      const X = dataset.map((item: any) => {
-        return [
-          item.CRIM, item.ZN, item.INDUS, item.CHAS, item.NOX,
-          item.RM, item.AGE, item.DIS, item.RAD, item.TAX,
-          item.PTRATIO, item.B, item.LSTAT,
-        ];
+      const X =  dataset.data.map((item) => {
+        const values = [];
+        for (const column of  dataset.inputColumns) {
+          values.push(item[column]);
+        }
+        return values;
       });
 
-      const Y = dataset.map((item: any) => item.MEDV);
+      const Y =  dataset.data.map((item) => {
+        const values = [];
+        for (const column of  dataset.targetColumns) {
+          values.push(item[column]);
+        }
+        return values;
+      }).flat();
+
       await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
     } else {
       this.openDialog(ready);

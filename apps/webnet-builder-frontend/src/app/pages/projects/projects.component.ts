@@ -68,7 +68,7 @@ export class ProjectsComponent {
               shuffle: true,
               validationSplit: 0.2
             },
-            builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}
+            builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: [], compiled: false}
           });
         await this.router.navigate([`/projects/${projectName}`])
       }

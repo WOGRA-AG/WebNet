@@ -26,7 +26,8 @@ export interface Dataset {
 
 export interface Builder {
   layers: { id?: string, type: string, parameters?: any, position?: XY }[],
-  connections: { source: string, destination: string | undefined }[]
+  connections: { source: string, destination: string | undefined }[],
+  compiled: boolean
 }
 
 export interface TrainingConfig {

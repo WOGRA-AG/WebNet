@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { TestingComponent } from './pages/testing/testing.component';
-import { NnBuilderComponent } from './pages/nn-builder/nn-builder.component';
+import { NnBuilderComponent } from './pages/project/nn-builder/nn-builder.component';
 import { ProjectsComponent } from './pages/projects/projects.component';
 import { ProjectComponent } from './pages/project/project.component';
 
