@@ -65,8 +65,7 @@ export abstract class Layer {
       parameters.weights = [
         tf.tensor(weights.values, weights.shape),
         tf.tensor(bias.values, bias.shape)
-      ]
-      console.log(parameters.weights);
+      ];
     }
     return parameters;
   };

@@ -51,8 +51,7 @@ export class MnistTemplate {
       "connections": [{"source": "layer-1", "destination": "layer-3"}, {
         "source": "layer-3",
         "destination": "layer-4"
-      }, {"source": "layer-4", "destination": "layer-5"}, {"source": "layer-5", "destination": "layer-2"}],
-      compiled: false
+      }, {"source": "layer-4", "destination": "layer-5"}, {"source": "layer-5", "destination": "layer-2"}]
     }
   }
 

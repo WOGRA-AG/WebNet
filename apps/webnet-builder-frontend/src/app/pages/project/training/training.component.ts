@@ -75,7 +75,7 @@ export class TrainingComponent {
   }
 
   async showModelSummary(): Promise<void> {
-    const model = await this.modelBuilderService.generateModel();
+    const model = this.projectService.model();
     if (model) {
       await tfvis.show.modelSummary(this.modelSummaryContainer.nativeElement, model);
       this.modelSummaryContainer.nativeElement.querySelector('table').style.margin = "0";
@@ -107,7 +107,10 @@ export class TrainingComponent {
         return values;
       }).flat();
 
-      await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
+      const history = await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
+      if (history) {
+       console.log(history);
+      }
     } else {
       this.openDialog(ready);
     }

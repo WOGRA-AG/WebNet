@@ -1,10 +1,11 @@
-import {computed, effect, Injectable, signal} from '@angular/core';
+import {computed, effect, Injectable, Signal, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {Builder, Dataset, Project, ProjectInfo, TrainingConfig} from "../interfaces/project";
 import {LocalstorageService} from "./localstorage.service";
 import {StorageOption} from "../enums";
 import * as tf from "@tensorflow/tfjs";
+import {ModelBuilderService} from "./model-builder.service";
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +31,11 @@ export class ProjectService {
   });
   builder = signal<Builder>({
     layers: [],
-    connections: [],
-    compiled: false
+    connections: []
   });
+
   model = signal<tf.LayersModel | null>(null);
+
   trainConfig = signal<TrainingConfig>({
     epochs: 100,
     batchSize: 32,
@@ -55,22 +57,30 @@ export class ProjectService {
     }
   });
 
-  constructor(private localStorageService: LocalstorageService) {
+  constructor(private localStorageService: LocalstorageService, private modelBuilderService: ModelBuilderService) {
     const mnist = new MnistTemplate();
     const data = mnist.getProject();
     this.templateProjects.set('mnist', data);
+    // effect(() => {
+    //   console.log('CHANGES DONE TO PROJECT: ', this.activeProject());
+    // })
     effect(() => {
-      console.log('CHANGES DONE TO PROJECT: ', this.activeProject());
+      console.log('CHANGES DONE TO MODEL: ', this.model());
     })
     this.myProjects = this.localStorageService.getProjectsFromLocalStorage();
+    effect(async () => {
+      this.builder();
+      const model = await this.modelBuilderService.generateModel();
+      this.model.set(model);
+    });
   }
 
-  selectProject(name: string): void {
+  async selectProject(name: string): Promise<void> {
     const project = this.getProjectByName(name);
+    this.modelBuilderService.clearLayers();
     this.projectInfo.set(project.projectInfo);
     this.dataset.set(project.dataset);
     this.builder.set(project.builder);
-    this.model.set(project.model);
     this.trainConfig.set(project.trainConfig);
   }
 
@@ -103,11 +113,6 @@ export class ProjectService {
   getProjectByName(name: string): any {
     const myProject = this.myProjects.get(name);
     return myProject ? myProject : null;
-  }
-
-  isDatasetReady(): boolean {
-    const data = this.dataset().data;
-    return data ? true : false;
   }
 
   updateProject(): void {

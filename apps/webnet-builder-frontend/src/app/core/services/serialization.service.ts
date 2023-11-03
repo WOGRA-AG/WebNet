@@ -88,7 +88,7 @@ export class SerializationService {
   }
 
   async saveTFModel(): Promise<void> {
-    const model: tf.LayersModel | null = await this.modelBuilderService.generateModel();
+    const model: tf.LayersModel | null = this.projectService.model();
 
     await model?.save(tf.io.withSaveHandler(async (modelArtifacts: tf.io.ModelArtifacts): Promise<any> => {
       const modelData: tf.io.ModelJSON = {
@@ -107,7 +107,7 @@ export class SerializationService {
   }
 
   async saveModel() {
-    const model = await this.modelBuilderService.generateModel();
+    const model = this.projectService.model();
     if (model) {
       const saveResults = await model.save('downloads://model');
     }

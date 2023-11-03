@@ -1,8 +1,9 @@
-import {Component, EventEmitter, HostListener, Input, Output, ViewEncapsulation} from '@angular/core';
+import {Component, effect, EventEmitter, HostListener, Input, Output, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../../core/services/model-builder.service";
 import {LayerType} from "../../../core/enums";
 import {ProjectService} from "../../../core/services/project.service";
 import {FormControl} from "@angular/forms";
+
 
 @Component({
   selector: 'app-nn-builder',
@@ -16,6 +17,7 @@ export class NnBuilderComponent {
   layerForm: any;
   configuration: any;
   selectedTab = new FormControl(0);
+
   constructor(private modelBuilderService: ModelBuilderService, private projectService: ProjectService) {
     this.modelBuilderService.selectedLayerSubject.subscribe((layer) => {
       this.layerForm = layer ? layer.layerForm : null;
@@ -27,6 +29,7 @@ export class NnBuilderComponent {
   async ngOnInit(): Promise<void> {
     await this.modelBuilderService.initialize(this.projectService.builder());
     this.startAutoSave();
+    this.projectService.builder.update((value) => {return value}) //triggers effect to update model
   }
 
   startAutoSave() {
@@ -41,9 +44,37 @@ export class NnBuilderComponent {
     }
     await this.updateBuilder();
   }
+   areBuilderEqual(obj1: any, obj2: any): boolean {
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+      return obj1 === obj2;
+    }
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    for (const key of keys1) {
+      if (!keys2.includes(key)) {
+        return false;
+      }
+
+      if (!this.areBuilderEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   async updateBuilder(): Promise<void> {
-    this.projectService.builder.set(await this.modelBuilderService.generateBuilderJSON());
+    const newBuilder = await this.modelBuilderService.generateBuilderJSON();
+    const oldBuilder = this.projectService.builder();
+    if (!this.areBuilderEqual(newBuilder, oldBuilder)) {
+      this.projectService.builder.set(newBuilder);
+    }
   }
 
   @HostListener('window:keydown.Escape', ['$event'])
@@ -59,7 +90,7 @@ export class NnBuilderComponent {
   async clear(): Promise<void> {
     await this.modelBuilderService.clearModelBuilder();
   }
-  createLayer(type: LayerType): void {
+  async createLayer(type: LayerType): Promise<void> {
     this.modelBuilderService.createLayer({layerType: type});
   }
 }

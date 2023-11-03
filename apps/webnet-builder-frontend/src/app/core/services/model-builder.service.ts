@@ -15,7 +15,6 @@ import {Convolution} from "../../shared/layer/convolution";
 import {Flatten} from "../../shared/layer/flatten";
 import {Maxpooling} from "../../shared/layer/maxpooling";
 import {Builder} from "../interfaces/project";
-import {ProjectService} from "./project.service";
 import {XY} from "../interfaces/interfaces";
 
 
@@ -33,7 +32,7 @@ export class ModelBuilderService {
   activeConnectionSubject: BehaviorSubject<Connection | null> = new BehaviorSubject<Connection | null>(null);
   isInitialized = false;
 
-  constructor(protected fb: NonNullableFormBuilder, private projectService: ProjectService) {
+  constructor(protected fb: NonNullableFormBuilder) {
     this.selectedLayerSubject.subscribe((layer) => {
       this.selectedLayer?.unselect();
       this.selectedLayer = layer;
@@ -183,8 +182,7 @@ export class ModelBuilderService {
         connections.push(connection);
       }
     }
-    const compiled = await this.isModelReady();
-    return {layers: layers, connections: connections, compiled: compiled};
+    return {layers: layers, connections: connections};
     // todo:
     // training parameter -> other file?
     // zoom lvl?
@@ -226,16 +224,11 @@ export class ModelBuilderService {
     }
   }
 
-  async isModelReady(): Promise<boolean> {
-    const model = await this.generateModel();
-    return model ? true : false;
-  }
-
   generateLayerId(): string {
     return `layer-${this.nextLayerId++}`;
   }
 
-  private clearLayers(): void {
+  public clearLayers(): void {
     this.layerMap.forEach((layer) => layer.delete());
     this.layerMap.clear();
   }

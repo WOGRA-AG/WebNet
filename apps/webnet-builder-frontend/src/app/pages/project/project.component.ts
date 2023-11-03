@@ -14,7 +14,7 @@ export class ProjectComponent {
     return this.projectService.dataset().data.length <= 0 ? true: false;
   })
   modelError = computed(() => {
-    return !this.projectService.builder().compiled
+    return this.projectService.model() === null ? true : false;
   })
 
   constructor(private modelBuilderService: ModelBuilderService,

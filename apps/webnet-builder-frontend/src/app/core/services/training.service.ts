@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
-import {ModelBuilderService} from "./model-builder.service";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats} from "../interfaces/interfaces";
 import {ProjectService} from "./project.service";
@@ -19,8 +18,7 @@ export class TrainingService {
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private modelBuilderService: ModelBuilderService,
-              private projectService: ProjectService,
+  constructor(private projectService: ProjectService,
               public dialog: MatDialog) {
   }
 
@@ -40,8 +38,8 @@ export class TrainingService {
   }
 
   async trainingReady(): Promise<{ dataset: boolean, model: boolean }> {
-    const modelReady = await this.modelBuilderService.isModelReady();
-    const datasetReady = this.projectService.isDatasetReady();
+    const modelReady =  this.projectService.model() ? true : false;
+    const datasetReady = this.projectService.dataset().data.length > 0;
     return {dataset: datasetReady, model: modelReady}
   }
 
@@ -51,7 +49,7 @@ export class TrainingService {
   //   return data.sub(dataMin).div(dataMax.sub(dataMin));
   // }
 
-  async train(trainXs: any, trainYs: any, parameter: any, plotContainer: HTMLElement): Promise<void> {
+  async train(trainXs: any, trainYs: any, parameter: any, plotContainer: HTMLElement): Promise<any> {
 
     // const X = tf.ones([8, 10]);
     // const Y = tf.ones([8, 1]);
@@ -59,7 +57,6 @@ export class TrainingService {
     // const {trainXs, trainYs, testXs, testYs} = this.mnistDataService.prepData(5000);
     // const X = trainXs;
     // const Y = trainYs;
-    this.projectService.model.set(await this.modelBuilderService.generateModel());
     const X = tf.tensor2d(trainXs);
     const Y = tf.tensor1d(trainYs);
 
@@ -71,15 +68,15 @@ export class TrainingService {
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
 
-    console.log("#### 1")
-    this.projectService.model()?.layers.forEach((layer, index) => {
-      if (layer.name === 'layer-3') {
-        const weights = layer.getWeights();
-        weights.forEach((weight, weightIndex) => {
-          console.log(weight.dataSync()); // Print the weight data
-        });
-      }
-    });
+    // console.log("#### 1")
+    // this.projectService.model()?.layers.forEach((layer, index) => {
+    //   if (layer.name === 'layer-3') {
+    //     const weights = layer.getWeights();
+    //     weights.forEach((weight, weightIndex) => {
+    //       console.log(weight.dataSync()); // Print the weight data
+    //     });
+    //   }
+    // });
 
     this.projectService.model()?.compile({
       optimizer: parameter.optimizer(parameter.learningRate),
@@ -134,7 +131,7 @@ export class TrainingService {
 
     try {
       // todo: use fitDataset instead for more memory-efficiency?
-      const history = await this.projectService.model()?.fit(X, Y, {
+      const history =  await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
         validationSplit: VALIDATION_SPLIT,
         epochs: EPOCHS,
@@ -142,6 +139,16 @@ export class TrainingService {
         shuffle: SHUFFLE,
         yieldEvery: YIELD_EVERY
       });
+      // console.log("#### 2")
+      // this.projectService.model()?.layers.forEach((layer, index) => {
+      //   if (layer.name === 'layer-3') {
+      //     const weights = layer.getWeights();
+      //     weights.forEach((weight, weightIndex) => {
+      //       console.log(weight.dataSync()); // Print the weight data
+      //     });
+      //   }
+      // });
+      return history;
     } catch (e: any) {
       console.log(e.message);
       this.dialog.open(MessageDialogComponent, {
@@ -151,15 +158,5 @@ export class TrainingService {
           message: e.message}
       });
     }
-    console.log("#### 2")
-    this.projectService.model()?.layers.forEach((layer, index) => {
-      if (layer.name === 'layer-3') {
-        const weights = layer.getWeights();
-        weights.forEach((weight, weightIndex) => {
-          console.log(weight.dataSync()); // Print the weight data
-        });
-      }
-    });
   }
-
 }
