@@ -33,9 +33,7 @@ export class ProjectService {
     layers: [],
     connections: []
   });
-
   model = signal<tf.LayersModel | null>(null);
-
   trainConfig = signal<TrainingConfig>({
     epochs: 100,
     batchSize: 32,

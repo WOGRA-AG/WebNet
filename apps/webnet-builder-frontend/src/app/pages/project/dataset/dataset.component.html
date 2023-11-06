@@ -35,12 +35,14 @@
       <mat-select formControlName="input" multiple>
         <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
       </mat-select>
+      <mat-error *ngIf="datasetForm.get('input')?.hasError('required')">Input is required</mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Target(s)</mat-label>
       <mat-select formControlName="target" multiple>
         <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
       </mat-select>
+      <mat-error *ngIf="datasetForm.get('target')?.hasError('required')">Target is required</mat-error>
     </mat-form-field>
     <h4 class="bold-section-title">Split your Data into Training and Validation Data</h4>
     <mat-form-field>

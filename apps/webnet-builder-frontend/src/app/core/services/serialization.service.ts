@@ -3,7 +3,6 @@ import * as JSZip from 'jszip';
 import { Papa } from 'ngx-papaparse';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
-import {ModelBuilderService} from "./model-builder.service";
 import {ProjectService} from "./project.service";
 import {Project} from "../interfaces/project";
 
@@ -13,8 +12,7 @@ import {Project} from "../interfaces/project";
 export class SerializationService {
   zip: JSZip = new JSZip();
 
-  constructor(private modelBuilderService: ModelBuilderService,
-              private projectService: ProjectService,
+  constructor(private projectService: ProjectService,
               private papa: Papa) {}
 
   async parseCSV(file: File): Promise<any> {
@@ -44,6 +42,7 @@ export class SerializationService {
       const builder = project.builder;
       const model = this.projectService.model();
 
+      // todo
       builder.layers.forEach(layerObject => {
         const layer = model?.getLayer(layerObject.id as string);
         const layerWeights = layer?.getWeights();
