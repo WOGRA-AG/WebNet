@@ -3,7 +3,7 @@ import {optimizers} from "../../../shared/tf_objects/optimizers";
 import {losses} from "../../../shared/tf_objects/losses";
 import {AbstractControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {TrainStats} from "../../../core/interfaces/interfaces";
-import {TrainingService} from "../../../core/services/training.service";
+import {MachineLearningService} from "../../../core/services/machine-learning.service";
 import {MatDialog} from "@angular/material/dialog";
 import {TaskDialogComponent} from "../../../shared/components/task-dialog/task-dialog.component";
 import * as tfvis from "@tensorflow/tfjs-vis";
@@ -23,15 +23,15 @@ export class TrainingComponent {
   protected readonly optimizers = optimizers;
   protected readonly losses = losses;
 
-  constructor(private trainingService: TrainingService,
+  constructor(private ml: MachineLearningService,
               private projectService: ProjectService,
               public dialog: MatDialog,
               fb: NonNullableFormBuilder) {
-    this.trainingService.trainingInProgressSubject.subscribe((flag: boolean) => {
+    this.ml.trainingInProgressSubject.subscribe((flag: boolean) => {
       this.trainingInProgress = flag;
       this.updateFormControlState();
     });
-    this.trainingService.trainingStatsSubject.subscribe((stats: TrainStats) => {
+    this.ml.trainingStatsSubject.subscribe((stats: TrainStats) => {
       this.trainingStats = stats;
     });
     this.trainingForm = fb.group({
@@ -88,37 +88,35 @@ export class TrainingComponent {
   }
 
   async train(): Promise<void> {
-    const ready = await this.trainingService.trainingReady();
+    const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
-      const trainParameter = this.trainingForm.getRawValue();
-      trainParameter.optimizer = this.optimizers.get(trainParameter.optimizer)?.function;
-      trainParameter.loss = this.losses.get(trainParameter.loss)?.function;
       const dataset = this.projectService.dataset();
 
       // todo: change mapping
-      const X =  dataset.data.map((item) => {
+      const X = dataset.data.map((item) => {
         const values = [];
-        for (const column of  dataset.inputColumns) {
+        for (const column of dataset.inputColumns) {
           values.push(item[column]);
         }
         return values;
       });
 
-      const Y =  dataset.data.map((item) => {
+      const Y = dataset.data.map((item) => {
         const values = [];
-        for (const column of  dataset.targetColumns) {
+        for (const column of dataset.targetColumns) {
           values.push(item[column]);
         }
         return values;
       }).flat();
 
-      const history = await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
-      if (trainParameter.saveTraining && this.trainingStats) {
-        this.projectService.addTrainingToHistory(this.trainingStats);
-      }
-      if (history) {
-        // await tfvis.show.history(this.modelSummaryContainer.nativeElement, history, ['loss', 'acc']);
-       console.log(history);
+      const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
+      if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {
+        const val_loss = history.history['val_loss']
+          .map((value: number, epoch: number) => ({x: epoch, y: value}));
+        const loss = history.history['loss']
+          .map((value: number, epoch: number) => ({x: epoch, y: value}))
+          .splice(0, val_loss.length);
+        this.projectService.addTrainingRecord(this.trainingStats, {loss: loss, val_loss: val_loss});
       }
     } else {
       this.openDialog(ready);
@@ -134,6 +132,6 @@ export class TrainingComponent {
   }
 
   stopTraining(): void {
-    this.trainingService.stopTraining();
+    this.ml.stopTraining();
   }
 }

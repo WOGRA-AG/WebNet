@@ -42,6 +42,5 @@ export class ModelWrapperService {
       default:
         return null;
     }
-    return this.mnistDataService;
   }
 }

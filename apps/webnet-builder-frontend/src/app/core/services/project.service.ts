@@ -1,7 +1,15 @@
 import {computed, effect, Injectable, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
-import {Builder, Dataset, Project, ProjectInfo, TrainingConfig, TrainingHistory} from "../interfaces/project";
+import {
+  Builder,
+  Dataset,
+  MetricHistory,
+  Project,
+  ProjectInfo,
+  TrainingConfig,
+  TrainingRecords
+} from "../interfaces/project";
 import {LocalstorageService} from "./localstorage.service";
 import {LayerType, StorageOption} from "../enums";
 import * as tf from "@tensorflow/tfjs";
@@ -48,7 +56,7 @@ export class ProjectService {
     useWeights: false,
     validationSplit: 0.2
   });
-  trainHistory = signal<TrainingHistory[]>([]);
+  trainingRecords = signal<TrainingRecords[]>([]);
   activeProject = computed(() => {
     return {
       projectInfo: this.projectInfo(),
@@ -56,7 +64,7 @@ export class ProjectService {
       builder: this.builder(),
       model: this.model(),
       trainConfig: this.trainConfig(),
-      trainHistory: this.trainHistory(),
+      trainHistory: this.trainingRecords(),
     }
   });
 
@@ -85,18 +93,18 @@ export class ProjectService {
     this.dataset.set(project.dataset);
     this.builder.set(project.builder);
     this.trainConfig.set(project.trainConfig);
-    this.trainHistory.set(project.trainHistory);
+    this.trainingRecords.set(project.trainHistory);
   }
 
-  addTrainingToHistory(trainStats: TrainStats): void {
-    this.trainHistory.mutate(history => history.push({
-      id: history.length + 1,
+  addTrainingRecord(trainStats: TrainStats, history: MetricHistory): void {
+    this.trainingRecords.mutate(trainings => trainings.push({
+      id: trainings.length + 1,
       date: new Date(),
       config: this.trainConfig(),
       builder: this.builder(),
-      trainStats: trainStats
+      trainStats: trainStats,
+      history: history
     }));
-    console.log("MUTATION");
   }
 
   getNumberOfProjects(): number {

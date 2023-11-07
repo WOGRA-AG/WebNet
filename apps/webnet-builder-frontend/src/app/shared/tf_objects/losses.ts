@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 
-export const losses = new Map<string, { tooltip: string, function: Function }>([
+export const losses = new Map<string, { tooltip: string, function: any }>([
   ['meanSquaredError', {
     tooltip: 'Mean Squared Error',
     function: tf.losses.meanSquaredError

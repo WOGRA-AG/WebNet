@@ -1,1 +1,19 @@
-<p>evaluation works!</p>
+<p *ngIf="!trainingRecords || trainingRecords.length === 0">There you have no Trainings done yet or did not save them.
+  If
+  you want to compare different
+  Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Save Training
+  and Results'</p>
+<mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedHistory()">
+  <mat-list-option *ngFor="let history of trainingRecords" [value]="history">
+    <span matListItemTitle>#{{history.id}} - {{history.date | date:'d. MMM yyyy, H:mm:ss'}}</span>
+    <span matListItemLine>Epochs trained: {{history.trainStats.epoch}}</span>
+    <span matListItemLine>Accuracy: {{history.trainStats.accuracy}}</span>
+    <span matListItemLine>Loss: {{history.trainStats.loss}}</span>
+  </mat-list-option>
+</mat-selection-list>
+
+<div *ngIf="trainHistoryList.selectedOptions.hasValue()">
+  <span>Epochs trained: {{selectedRecord?.trainStats?.epoch}}</span>
+  <span>Loss on Validation Data: {{selectedRecord?.trainStats?.loss}}</span>
+</div>
+<div #trainingHistoryContainer></div>

@@ -6,7 +6,7 @@ export interface Project {
   dataset: Dataset,
   builder: Builder,
   trainConfig: TrainingConfig,
-  trainHistory: TrainingHistory[]
+  trainHistory: TrainingRecords[]
 }
 
 export interface ProjectInfo {
@@ -44,10 +44,16 @@ export interface TrainingConfig {
   validationSplit: number
 }
 
-export interface TrainingHistory {
+export interface MetricHistory {
+  loss: XY[],
+  val_loss: XY[]
+}
+
+export interface TrainingRecords {
   id: number,
   date: Date,
   config: TrainingConfig,
   builder: Builder,
-  trainStats: TrainStats
+  trainStats: TrainStats,
+  history: MetricHistory
 }
