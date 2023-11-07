@@ -20,8 +20,6 @@ export class MachineLearningService {
   trainingStats: TrainStats = {epoch: 0, accuracy: undefined, loss: undefined, progress: 0, time: 0};
   trainingStatsSubject: BehaviorSubject<TrainStats> = new BehaviorSubject<TrainStats>(this.trainingStats);
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  protected readonly optimizers = optimizers;
-  protected readonly losses = losses;
 
   constructor(private projectService: ProjectService,
               public dialog: MatDialog) {
@@ -56,8 +54,8 @@ export class MachineLearningService {
 
   compile(): void {
     const parameter = this.projectService.trainConfig();
-    const optimizer = this.optimizers.get(parameter.optimizer)?.function!;
-    const loss = this.losses.get(parameter.loss)?.function;
+    const optimizer = optimizers.get(parameter.optimizer)?.function!;
+    const loss = losses.get(parameter.loss)?.function;
     this.projectService.model()?.compile({
       optimizer: optimizer(parameter.learningRate),
       loss: loss,
