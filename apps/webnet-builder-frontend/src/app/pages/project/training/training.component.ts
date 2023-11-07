@@ -3,7 +3,6 @@ import {optimizers} from "../../../shared/tf_objects/optimizers";
 import {losses} from "../../../shared/tf_objects/losses";
 import {AbstractControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {TrainStats} from "../../../core/interfaces/interfaces";
-import {ModelBuilderService} from "../../../core/services/model-builder.service";
 import {TrainingService} from "../../../core/services/training.service";
 import {MatDialog} from "@angular/material/dialog";
 import {TaskDialogComponent} from "../../../shared/components/task-dialog/task-dialog.component";
@@ -24,8 +23,7 @@ export class TrainingComponent {
   protected readonly optimizers = optimizers;
   protected readonly losses = losses;
 
-  constructor(private modelBuilderService: ModelBuilderService,
-              private trainingService: TrainingService,
+  constructor(private trainingService: TrainingService,
               private projectService: ProjectService,
               public dialog: MatDialog,
               fb: NonNullableFormBuilder) {
@@ -45,6 +43,8 @@ export class TrainingComponent {
       accuracyPlot: true,
       lossPlot: false,
       shuffle: true,
+      saveTraining: true,
+      useWeights: false,
       validationSplit: 0.2,
     });
   }
@@ -54,6 +54,11 @@ export class TrainingComponent {
     this.trainingForm.valueChanges.subscribe((formValue) => {
       this.projectService.trainConfig.set(formValue);
     });
+  }
+
+  async ngAfterViewInit() {
+    // todo: does not always work when changing model in builder and directly switching to training page, due to time constraints
+    await this.showModelSummary();
   }
 
   openDialog(done: { dataset: boolean, model: boolean }) {
@@ -108,7 +113,11 @@ export class TrainingComponent {
       }).flat();
 
       const history = await this.trainingService.train(X, Y, trainParameter, this.plotContainer.nativeElement);
+      if (trainParameter.saveTraining && this.trainingStats) {
+        this.projectService.addTrainingToHistory(this.trainingStats);
+      }
       if (history) {
+        // await tfvis.show.history(this.modelSummaryContainer.nativeElement, history, ['loss', 'acc']);
        console.log(history);
       }
     } else {

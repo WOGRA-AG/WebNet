@@ -1,6 +1,11 @@
 import {Component, HostListener} from '@angular/core';
 import {Router, ActivatedRoute} from "@angular/router";
 import {ProjectService} from "./core/services/project.service";
+import {registerLocaleData} from "@angular/common";
+import localeDe from '@angular/common/locales/de';
+import localeDeExtra from '@angular/common/locales/extra/de';
+
+registerLocaleData(localeDe, 'de-DE', localeDeExtra);
 
 @Component({
   selector: 'app-root',

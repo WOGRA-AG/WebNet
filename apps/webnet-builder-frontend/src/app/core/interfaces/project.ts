@@ -1,11 +1,12 @@
-import {XY} from "./interfaces";
+import {TrainStats, XY} from "./interfaces";
 import {StorageOption} from "../enums";
 
 export interface Project {
   projectInfo: ProjectInfo,
   dataset: Dataset,
   builder: Builder,
-  trainConfig: TrainingConfig
+  trainConfig: TrainingConfig,
+  trainHistory: TrainingHistory[]
 }
 
 export interface ProjectInfo {
@@ -38,5 +39,15 @@ export interface TrainingConfig {
   accuracyPlot: boolean,
   lossPlot: boolean,
   shuffle: boolean,
+  saveTraining: boolean,
+  useWeights: boolean,
   validationSplit: number
+}
+
+export interface TrainingHistory {
+  id: number,
+  date: Date,
+  config: TrainingConfig,
+  builder: Builder,
+  trainStats: TrainStats
 }

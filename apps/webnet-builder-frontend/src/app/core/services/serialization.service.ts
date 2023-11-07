@@ -18,9 +18,11 @@ export class SerializationService {
   async parseCSV(file: File): Promise<any> {
     return new Promise((resolve, reject) => {
       this.papa.parse(file, {
-        header: true, // Assumes the first row contains column headers
-        dynamicTyping: true, // Automatically convert data types
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
         complete: (result: any) => {
+          console.log(result);
           resolve(result);
         },
         error: (error: any) => {
@@ -77,13 +79,16 @@ export class SerializationService {
     const datasetFile = files['dataset/dataset.json'];
     const trainingFile = files['training/configuration.json'];
     const builderFile = files['builder/model.json'];
+    const resultsFile = files['trainHistory/results.json'];
 
     const project = projectFile ? JSON.parse(await projectFile.async('string')) : {};
     const dataset = datasetFile ? JSON.parse(await datasetFile.async('string')) : {};
     const trainConfig = trainingFile ? JSON.parse(await trainingFile.async('string')) : {};
     const builder = builderFile ? JSON.parse(await builderFile.async('string')) : {};
+    // todo: export etc..
+    const results = resultsFile ? JSON.parse(await resultsFile.async('string')) : [];
 
-    return {projectInfo: project, dataset: dataset, trainConfig: trainConfig, builder: builder};
+    return {projectInfo: project, dataset: dataset, trainConfig: trainConfig, builder: builder, trainHistory: results};
   }
 
   async saveTFModel(): Promise<void> {

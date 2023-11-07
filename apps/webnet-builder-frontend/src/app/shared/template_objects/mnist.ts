@@ -7,7 +7,8 @@ export class MnistTemplate {
       projectInfo: {id: '', name: '', lastModified: new Date(), storeLocation: StorageOption.InMemory},
       dataset: this.getDataset(),
       builder: this.getBuilder(),
-      trainConfig: this.getTrainConfig()
+      trainConfig: this.getTrainConfig(),
+      trainHistory: []
     }
   }
 
@@ -21,6 +22,8 @@ export class MnistTemplate {
       accuracyPlot: true,
       lossPlot: false,
       shuffle: true,
+      saveTraining: true,
+      useWeights: false,
       validationSplit: 0.2
     }
   };

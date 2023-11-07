@@ -1,85 +1,91 @@
 <div class="two-column-container">
   <div class="left-column">
-  <form [formGroup]="trainingForm">
-    <h3 class="section-heading">Training Parameters</h3>
-    <div class="form-row">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Epochs</mat-label>
-        <input matInput formControlName="epochs" placeholder="Epochs" type="number" step="1">
-      </mat-form-field>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Batch Size</mat-label>
-        <input matInput formControlName="batchSize" placeholder="Batch Size" type="number" step="1">
-      </mat-form-field>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Learning Rate</mat-label>
-        <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
-      </mat-form-field>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Select an Optimizer</mat-label>
-        <mat-select formControlName="optimizer">
-          <mat-option *ngFor="let optimizer of optimizers | keyvalue;"
-                      [value]="optimizer.key" [matTooltip]="optimizer.value.tooltip" matTooltipPosition="right">
-            {{optimizer.key}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Select a Loss Function</mat-label>
-        <mat-select formControlName="loss">
-          <mat-option *ngFor="let loss of losses |keyvalue;"
-                      [value]="loss.key" [matTooltip]="loss.value.tooltip" matTooltipPosition="right">
-            {{loss.key}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <mat-slide-toggle formControlName="shuffle" color="primary">Enable Data Shuffle</mat-slide-toggle>
-    <h3 class="section-heading">Plot Settings</h3>
-    <p class="warning-message">Enabling these plots will slow down the training.</p>
-    <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>
-    <mat-slide-toggle formControlName="lossPlot" color="primary">Enable Loss Plot</mat-slide-toggle>
-  </form>
-
-  <h3 class="section-heading">Training Statistics</h3>
-  <mat-card *ngIf="trainingStats" class="training-stats-container">
-    <!--  <mat-card-header>-->
-    <!--    <mat-card-title>Training Stats</mat-card-title>-->
-    <!--    <mat-card-subtitle>Start</mat-card-subtitle>-->
-    <!--  </mat-card-header>-->
-    <mat-card-content>
-      <mat-list role="list">
-        <span class="epoch-display">Epoch: {{trainingStats.epoch }}</span>
-        <mat-list-item role="listitem" class="list-item">
-          <span class="label">Accuracy:</span>
-          <span class="value">{{ trainingStats.accuracy | number:'1.1-2'}}</span>
-        </mat-list-item>
-        <mat-list-item role="listitem" class="list-item">
-          <span class="label">Loss:</span>
-          <span class="value">{{ trainingStats.loss | number:'1.1-2'}}</span>
-        </mat-list-item>
-      </mat-list>
-    </mat-card-content>
-    <mat-card-footer>
-      <div class="percentage-time-container">
-        <span class="percentage">{{trainingStats.progress | number:'1.1-1'}}%</span>
-        <span class="time">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</span>
+    <form [formGroup]="trainingForm">
+      <h3 class="section-heading">Training Parameters</h3>
+      <div class="form-row">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Epochs</mat-label>
+          <input matInput formControlName="epochs" placeholder="Epochs" type="number" step="1">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Batch Size</mat-label>
+          <input matInput formControlName="batchSize" placeholder="Batch Size" type="number" step="1">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Learning Rate</mat-label>
+          <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Select an Optimizer</mat-label>
+          <mat-select formControlName="optimizer">
+            <mat-option *ngFor="let optimizer of optimizers | keyvalue;"
+                        [value]="optimizer.key" [matTooltip]="optimizer.value.tooltip" matTooltipPosition="right">
+              {{optimizer.key}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Select a Loss Function</mat-label>
+          <mat-select formControlName="loss">
+            <mat-option *ngFor="let loss of losses |keyvalue;"
+                        [value]="loss.key" [matTooltip]="loss.value.tooltip" matTooltipPosition="right">
+              {{loss.key}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
-    </mat-card-footer>
-  </mat-card>
+      <mat-slide-toggle formControlName="shuffle" color="primary">Enable Data Shuffle</mat-slide-toggle>
+    </form>
 
-  <div class="button-container">
-    <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
-    </button>
-    <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training
-    </button>
-    <button mat-raised-button color="secondary" (click)="showModelSummary()">
-      Show Model Summary
-    </button>
-  </div>
+    <h3 class="section-heading">Training Statistics</h3>
+    <mat-card *ngIf="trainingStats" class="training-stats-container">
+      <!--  <mat-card-header>-->
+      <!--    <mat-card-title>Training Stats</mat-card-title>-->
+      <!--    <mat-card-subtitle>Start</mat-card-subtitle>-->
+      <!--  </mat-card-header>-->
+      <mat-card-content>
+        <mat-list role="list">
+          <span class="epoch-display">Epoch: {{trainingStats.epoch }}</span>
+          <mat-list-item role="listitem" class="list-item">
+            <span class="label">Accuracy:</span>
+            <span class="value">{{ trainingStats.accuracy | number:'1.1-2'}}</span>
+          </mat-list-item>
+          <mat-list-item role="listitem" class="list-item">
+            <span class="label">Loss:</span>
+            <span class="value">{{ trainingStats.loss | number:'1.1-2'}}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-footer>
+        <div class="percentage-time-container">
+          <span class="percentage">{{trainingStats.progress | number:'1.1-1'}}%</span>
+          <span class="time">Time: {{ trainingStats.time * 1000 | date:'mm:ss'}}</span>
+        </div>
+        <mat-progress-bar mode="determinate" [value]="trainingStats.progress"></mat-progress-bar>
+      </mat-card-footer>
+    </mat-card>
+
+    <div class="button-container">
+      <form [formGroup]="trainingForm">
+        <mat-slide-toggle formControlName="saveTraining" color="primary">Record Training and Results</mat-slide-toggle>
+        <mat-slide-toggle formControlName="useWeights" color="primary">Further Train on Current Weights</mat-slide-toggle>
+      </form>
+      <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
+      </button>
+      <button *ngIf="trainingInProgress" mat-raised-button color="warn" (click)="stopTraining()">Stop Training
+      </button>
+      <button mat-raised-button color="secondary" (click)="showModelSummary()">
+        Show Model Summary
+      </button>
+    </div>
   </div>
   <div class="right-column">
+    <h3 class="section-heading">Visualization Settings</h3>
+    <form [formGroup]="trainingForm">
+      <p class="warning-message">Enabling these plots will slow down the training.</p>
+      <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>
+      <mat-slide-toggle formControlName="lossPlot" color="primary">Enable Loss Plot</mat-slide-toggle>
+    </form>
     <h3 class="section-heading">Training Visualizations</h3>
     <div #plotContainer class="tf-content-container"></div>
     <h3 class="section-heading">Model Summary</h3>

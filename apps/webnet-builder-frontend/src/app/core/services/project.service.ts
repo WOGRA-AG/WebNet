@@ -1,11 +1,12 @@
-import {computed, effect, Injectable, Signal, signal} from '@angular/core';
+import {computed, effect, Injectable, signal} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
-import {Builder, Dataset, Project, ProjectInfo, TrainingConfig} from "../interfaces/project";
+import {Builder, Dataset, Project, ProjectInfo, TrainingConfig, TrainingHistory} from "../interfaces/project";
 import {LocalstorageService} from "./localstorage.service";
-import {StorageOption} from "../enums";
+import {LayerType, StorageOption} from "../enums";
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
+import {TrainStats} from "../interfaces/interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -43,15 +44,19 @@ export class ProjectService {
     accuracyPlot: true,
     lossPlot: false,
     shuffle: true,
+    saveTraining: true,
+    useWeights: false,
     validationSplit: 0.2
   });
+  trainHistory = signal<TrainingHistory[]>([]);
   activeProject = computed(() => {
     return {
       projectInfo: this.projectInfo(),
       dataset: this.dataset(),
       builder: this.builder(),
       model: this.model(),
-      trainConfig: this.trainConfig()
+      trainConfig: this.trainConfig(),
+      trainHistory: this.trainHistory(),
     }
   });
 
@@ -62,9 +67,9 @@ export class ProjectService {
     // effect(() => {
     //   console.log('CHANGES DONE TO PROJECT: ', this.activeProject());
     // })
-    effect(() => {
-      console.log('CHANGES DONE TO MODEL: ', this.model());
-    })
+    // effect(() => {
+    //   console.log('CHANGES DONE TO MODEL: ', this.model());
+    // })
     this.myProjects = this.localStorageService.getProjectsFromLocalStorage();
     effect(async () => {
       this.builder();
@@ -80,6 +85,18 @@ export class ProjectService {
     this.dataset.set(project.dataset);
     this.builder.set(project.builder);
     this.trainConfig.set(project.trainConfig);
+    this.trainHistory.set(project.trainHistory);
+  }
+
+  addTrainingToHistory(trainStats: TrainStats): void {
+    this.trainHistory.mutate(history => history.push({
+      id: history.length + 1,
+      date: new Date(),
+      config: this.trainConfig(),
+      builder: this.builder(),
+      trainStats: trainStats
+    }));
+    console.log("MUTATION");
   }
 
   getNumberOfProjects(): number {
@@ -101,6 +118,33 @@ export class ProjectService {
 
   checkProjectNameTaken(name: string): boolean {
     return this.myProjects.has(name);
+  }
+
+  createProject(id:string, name: string): Project {
+    return {
+      projectInfo: {
+        id: id,
+        name: name,
+        lastModified: new Date(),
+        storeLocation: StorageOption.InMemory
+      },
+      dataset: {type: '', data: [], fileName: '', columns: [], inputColumns: [], targetColumns: []},
+      trainConfig: {
+        epochs: 100,
+        batchSize: 32,
+        optimizer: 'adam',
+        learningRate: 0.01,
+        loss: 'meanSquaredError',
+        accuracyPlot: true,
+        lossPlot: false,
+        shuffle: true,
+        saveTraining: true,
+        useWeights: false,
+        validationSplit: 0.2
+      },
+      builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []},
+      trainHistory: []
+    }
   }
 
   getTemplateProjectByName(name: string): any {

@@ -4,7 +4,6 @@ import {Router} from "@angular/router";
 import {ProjectService} from "../../core/services/project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
-import {LayerType, StorageOption} from "../../core/enums";
 import {v4 as uuidv4} from 'uuid';
 import {KeyValue} from "@angular/common";
 
@@ -48,28 +47,8 @@ export class ProjectsComponent {
     });
     dialogRef.afterClosed().subscribe(async (projectName) => {
       if (projectName) {
-        this.projectService.addProject(
-          {
-            projectInfo: {
-              id: this.generateProjectId(),
-              name: projectName,
-              lastModified: new Date(),
-              storeLocation: StorageOption.InMemory
-            },
-            dataset: {type: '', data: [], fileName: '', columns: [], inputColumns: [], targetColumns: []},
-            trainConfig: {
-              epochs: 100,
-              batchSize: 32,
-              optimizer: 'adam',
-              learningRate: 0.01,
-              loss: 'meanSquaredError',
-              accuracyPlot: true,
-              lossPlot: false,
-              shuffle: true,
-              validationSplit: 0.2
-            },
-            builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []}
-          });
+        const project = this.projectService.createProject(this.generateProjectId(), projectName);
+        this.projectService.addProject(project);
         await this.router.navigate([`/projects/${projectName}`])
       }
     });
