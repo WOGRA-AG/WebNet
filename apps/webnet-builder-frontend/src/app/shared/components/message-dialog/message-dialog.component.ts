@@ -8,7 +8,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 })
 export class MessageDialogComponent {
 
-  constructor(@Inject(MAT_DIALOG_DATA) protected data: { title: string, message: string }) {
+  constructor(@Inject(MAT_DIALOG_DATA) protected data: { title: string, message: string, warning: boolean }) {
   }
 
 }
