@@ -68,7 +68,7 @@
     <div class="button-container">
       <form [formGroup]="trainingForm">
         <mat-slide-toggle formControlName="saveTraining" color="primary">Record Training and Results</mat-slide-toggle>
-        <mat-slide-toggle formControlName="useWeights" color="primary">Continue Training with existing Weights</mat-slide-toggle>
+        <mat-slide-toggle formControlName="useExistingWeights" color="primary">Continue Training with existing Weights</mat-slide-toggle>
       </form>
       <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
       </button>

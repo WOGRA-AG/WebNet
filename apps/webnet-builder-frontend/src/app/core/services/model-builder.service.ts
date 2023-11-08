@@ -165,14 +165,14 @@ export class ModelBuilderService {
     return {x: x, y: y};
   }
 
-  async generateBuilderJSON(): Promise<Builder> {
+  generateBuilderJSON(): Builder {
     const layers = [];
     const connections = [];
     for (const [id, layer] of this.layerMap) {
       const layerInfo = {
         id: id,
         type: layer.getLayerType(),
-        parameters: layer.getParameters(),
+        parameters: layer.getBuilderParams(),
         position: layer.getSvgPosition()
       };
       layers.push(layerInfo);
@@ -202,17 +202,17 @@ export class ModelBuilderService {
     }
   }
 
-  async generateModel(): Promise<LayersModel | null> {
+  async generateModel(useExistingWeights: boolean = true): Promise<LayersModel | null> {
     try {
       await tf.ready();
-      const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getParameters());
+      const input = this.inputLayer?.tfjsLayer(this.inputLayer?.getModelParameters());
 
       let layer: Layer | null | undefined = this.inputLayer;
       let hidden = input;
 
       while (layer?.getNextLayer()) {
         const nextLayer = layer?.getNextLayer();
-        const parameters = nextLayer?.getParameters();
+        const parameters = nextLayer?.getModelParameters(useExistingWeights);
         hidden = nextLayer?.tfjsLayer(parameters).apply(hidden);
         layer = nextLayer;
       }
@@ -226,6 +226,18 @@ export class ModelBuilderService {
 
   generateLayerId(): string {
     return `layer-${this.nextLayerId++}`;
+  }
+
+  updateWeights(model: tf.LayersModel): Builder {
+    this.layerMap.forEach((layer) => {
+      const layerWeights = model.getLayer(layer.getLayerId()).getWeights();
+      const [weights, bias] =
+        layerWeights.map(weight => {
+          return {values: Object.values(weight.dataSync()), shape: weight.shape}
+        });
+      layer.updateWeights({weights: weights, bias: bias});
+    });
+    return this.generateBuilderJSON();
   }
 
   public clearLayers(): void {

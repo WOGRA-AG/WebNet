@@ -60,14 +60,21 @@ export abstract class Layer {
     this.weights = weights;
   }
 
-  getWeights(): Weights|null {
-    return this.weights;
-  }
-
-  getParameters(useWeights: boolean = true): any {
+  getBuilderParams(): any {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
-    if (this.weights && useWeights) {
+    if (this.weights) {
+      const weights = this.weights.weights;
+      const bias = this.weights.bias;
+      parameters.weights = {weights: weights, bias: bias}
+    }
+    return parameters;
+  }
+
+  getModelParameters(useExistingWeights: boolean = true): any {
+    const parameters = this.layerForm.getRawValue();
+    parameters.name = this.getLayerId();
+    if (this.weights && useExistingWeights) {
       const weights = this.weights.weights;
       const bias = this.weights.bias;
       parameters.weights = [

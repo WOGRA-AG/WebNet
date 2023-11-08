@@ -136,8 +136,8 @@ export class MachineLearningService {
       }
     });
     const parameter = this.projectService.trainConfig();
-    if (!parameter.useWeights) {
-      const model = await this.modelBuilderService.generateModel(parameter.useWeights);
+    if (!parameter.useExistingWeights) {
+      const model = await this.modelBuilderService.generateModel(parameter.useExistingWeights);
       this.projectService.model.set(model);
     }
     console.log("#### 2")

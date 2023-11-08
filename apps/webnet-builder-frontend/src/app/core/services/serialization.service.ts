@@ -42,21 +42,6 @@ export class SerializationService {
     }
     if (sections.builder.checked) {
       const builder = project.builder;
-      const model = this.projectService.model();
-
-      // todo
-      builder.layers.forEach(layerObject => {
-        const layer = model?.getLayer(layerObject.id as string);
-        const layerWeights = layer?.getWeights();
-
-        if (layerWeights) {
-          const [weights, bias] =
-            layerWeights.map(weight => {
-              return {values: Object.values(weight.dataSync()), shape: weight.shape}
-            });
-          layerObject.parameters.weights = {weights: weights, bias: bias};
-        }
-      })
       this.zip.file("builder/model.json", JSON.stringify(builder), {binary: false})
     }
     if (sections.trainConfig.checked) {
@@ -67,9 +52,9 @@ export class SerializationService {
       const evaluations = JSON.stringify(project.trainRecords);
       this.zip.file("evaluations/records.json", evaluations, {binary: false});
     }
-    if (sections.tf_model.checked) {
-      await this.saveTFModel();
-    }
+    // if (sections.tf_model.checked) {
+    //   await this.saveTFModel();
+    // }
     this.zip.file("project.json", JSON.stringify(projectInfo), {binary: false});
     const content = await this.zip.generateAsync({type: "blob"});
     saveAs(content, `${projectInfo.name}.zip`)

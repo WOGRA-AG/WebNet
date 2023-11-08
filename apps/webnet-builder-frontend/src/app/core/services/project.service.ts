@@ -53,7 +53,7 @@ export class ProjectService {
     lossPlot: false,
     shuffle: true,
     saveTraining: true,
-    useWeights: false,
+    useExistingWeights: false,
     validationSplit: 0.2
   });
   trainingRecords = signal<TrainingRecords[]>([]);
@@ -83,6 +83,16 @@ export class ProjectService {
       this.builder();
       const model = await this.modelBuilderService.generateModel();
       this.model.set(model);
+      console.log("BUILDER CHANGE. MODEL UPDATE");
+      console.log("#### 3")
+      model?.layers.forEach((layer, index) => {
+        if (layer.name === 'layer-3') {
+          const weights = layer.getWeights();
+          weights.forEach((weight, weightIndex) => {
+            console.log(weight.dataSync()); // Print the weight data
+          });
+        }
+      });
     });
   }
 
@@ -147,7 +157,7 @@ export class ProjectService {
         lossPlot: false,
         shuffle: true,
         saveTraining: true,
-        useWeights: false,
+        useExistingWeights: false,
         validationSplit: 0.2
       },
       builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []},

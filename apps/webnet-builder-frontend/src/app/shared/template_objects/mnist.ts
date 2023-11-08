@@ -23,7 +23,7 @@ export class MnistTemplate {
       lossPlot: false,
       shuffle: true,
       saveTraining: true,
-      useWeights: false,
+      useExistingWeights: false,
       validationSplit: 0.2
     }
   };

@@ -40,7 +40,7 @@ export interface TrainingConfig {
   lossPlot: boolean,
   shuffle: boolean,
   saveTraining: boolean,
-  useWeights: boolean,
+  useExistingWeights: boolean,
   validationSplit: number
 }
 
