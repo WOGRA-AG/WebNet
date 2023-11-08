@@ -1,0 +1,18 @@
+.two-column-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-column {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.right-column {
+  flex: 3;
+  margin-left: 1rem;
+}
+
+.load-button {
+  margin-left: 0;
+}

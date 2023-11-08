@@ -8,7 +8,7 @@ export class MnistTemplate {
       dataset: this.getDataset(),
       builder: this.getBuilder(),
       trainConfig: this.getTrainConfig(),
-      trainHistory: []
+      trainRecords: []
     }
   }
 

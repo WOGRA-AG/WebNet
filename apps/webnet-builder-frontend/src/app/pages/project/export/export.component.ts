@@ -20,7 +20,8 @@ export class ExportComponent {
     dataset: {name: '1) Dataset', checked: true, disabled: true, order: 1},
     builder: {name: '2) Modeling Builder', checked: true, disabled: true, order: 2},
     trainConfig: {name: '3) Training Configuration', checked: true, disabled: true, order: 3},
-    tf_model: {name: '4) Tensorflow Model', checked: false, disabled: false, order: 4},
+    evaluation: {name: '4) Evaluation Data', checked: true, disabled: true, order: 4},
+    tf_model: {name: '5) Tensorflow Model', checked: false, disabled: false, order: 5},
     // weights: {name: 'Trained Weights', checked: true}
   }
   allChecked: boolean = false;

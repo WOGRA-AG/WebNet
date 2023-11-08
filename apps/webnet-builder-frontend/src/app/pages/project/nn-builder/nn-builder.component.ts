@@ -29,7 +29,9 @@ export class NnBuilderComponent {
   async ngOnInit(): Promise<void> {
     await this.modelBuilderService.initialize(this.projectService.builder());
     this.startAutoSave();
-    this.projectService.builder.update((value) => {return value}) //triggers effect to update model
+    this.projectService.builder.update((value) => {
+      return value
+    }) //triggers effect to update model
   }
 
   startAutoSave() {
@@ -44,7 +46,8 @@ export class NnBuilderComponent {
     }
     await this.updateBuilder();
   }
-   areBuilderEqual(obj1: any, obj2: any): boolean {
+
+  areBuilderEqual(obj1: any, obj2: any): boolean {
     if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
       return obj1 === obj2;
     }
@@ -72,6 +75,7 @@ export class NnBuilderComponent {
   async updateBuilder(): Promise<void> {
     const newBuilder = await this.modelBuilderService.generateBuilderJSON();
     const oldBuilder = this.projectService.builder();
+
     if (!this.areBuilderEqual(newBuilder, oldBuilder)) {
       this.projectService.builder.set(newBuilder);
     }
@@ -90,6 +94,7 @@ export class NnBuilderComponent {
   async clear(): Promise<void> {
     await this.modelBuilderService.clearModelBuilder();
   }
+
   async createLayer(type: LayerType): Promise<void> {
     this.modelBuilderService.createLayer({layerType: type});
   }

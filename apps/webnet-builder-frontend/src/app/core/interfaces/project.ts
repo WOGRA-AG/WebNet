@@ -6,7 +6,7 @@ export interface Project {
   dataset: Dataset,
   builder: Builder,
   trainConfig: TrainingConfig,
-  trainHistory: TrainingRecords[]
+  trainRecords: TrainingRecords[]
 }
 
 export interface ProjectInfo {

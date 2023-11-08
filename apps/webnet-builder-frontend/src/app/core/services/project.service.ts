@@ -20,7 +20,7 @@ import {TrainStats} from "../interfaces/interfaces";
   providedIn: 'root'
 })
 export class ProjectService {
-  private myProjects: Map<string, Project> = new Map();
+  private readonly myProjects: Map<string, Project> = new Map();
   private templateProjects: Map<string, Project> = new Map();
   // Signals
   projectSubject: BehaviorSubject<Project | null> = new BehaviorSubject<Project | null>(null);
@@ -64,7 +64,7 @@ export class ProjectService {
       builder: this.builder(),
       model: this.model(),
       trainConfig: this.trainConfig(),
-      trainHistory: this.trainingRecords(),
+      trainRecords: this.trainingRecords(),
     }
   });
 
@@ -93,7 +93,7 @@ export class ProjectService {
     this.dataset.set(project.dataset);
     this.builder.set(project.builder);
     this.trainConfig.set(project.trainConfig);
-    this.trainingRecords.set(project.trainHistory);
+    this.trainingRecords.set(project.trainRecords);
   }
 
   addTrainingRecord(trainStats: TrainStats, history: MetricHistory): void {
@@ -151,7 +151,7 @@ export class ProjectService {
         validationSplit: 0.2
       },
       builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []},
-      trainHistory: []
+      trainRecords: []
     }
   }
 

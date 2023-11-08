@@ -81,7 +81,8 @@ export class MachineLearningService {
         maxWidth: '600px',
         data: {
           title: 'Predicting Failed',
-          message: e.message
+          message: e.message,
+          warning: true
         }
       });
     }
@@ -104,8 +105,9 @@ export class MachineLearningService {
       this.dialog.open(MessageDialogComponent, {
         maxWidth: '600px',
         data: {
-          title: 'Predicting Failed',
-          message: e.message
+          title: 'Evaluating Failed',
+          message: e.message,
+          warning: true
         }
       });
     }
@@ -210,7 +212,8 @@ export class MachineLearningService {
         maxWidth: '600px',
         data: {
           title: 'Training Failed',
-          message: e.message
+          message: e.message,
+          warning: true
         }
       });
     }

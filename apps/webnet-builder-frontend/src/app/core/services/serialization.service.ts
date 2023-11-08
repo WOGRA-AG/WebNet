@@ -33,14 +33,14 @@ export class SerializationService {
     });
   }
 
-  async exportProjectAsZIP(subProjects: any): Promise<void> {
+  async exportProjectAsZIP(sections: any): Promise<void> {
     const project = this.projectService.activeProject();
     const projectInfo = project.projectInfo;
-    if (subProjects.dataset.checked) {
+    if (sections.dataset.checked) {
       const dataset = JSON.stringify(project.dataset);
       this.zip.file("dataset/dataset.json", dataset, {binary: false});
     }
-    if (subProjects.builder.checked) {
+    if (sections.builder.checked) {
       const builder = project.builder;
       const model = this.projectService.model();
 
@@ -59,11 +59,15 @@ export class SerializationService {
       })
       this.zip.file("builder/model.json", JSON.stringify(builder), {binary: false})
     }
-    if (subProjects.trainConfig.checked) {
+    if (sections.trainConfig.checked) {
       const trainConfig = JSON.stringify(project.trainConfig);
       this.zip.file("training/configuration.json", trainConfig, {binary: false});
     }
-    if (subProjects.tf_model.checked) {
+    if (sections.evaluation.checked) {
+      const evaluations = JSON.stringify(project.trainRecords);
+      this.zip.file("evaluations/records.json", evaluations, {binary: false});
+    }
+    if (sections.tf_model.checked) {
       await this.saveTFModel();
     }
     this.zip.file("project.json", JSON.stringify(projectInfo), {binary: false});
@@ -79,16 +83,15 @@ export class SerializationService {
     const datasetFile = files['dataset/dataset.json'];
     const trainingFile = files['training/configuration.json'];
     const builderFile = files['builder/model.json'];
-    const resultsFile = files['trainHistory/results.json'];
+    const recordsFile = files['evaluations/records.json'];
 
     const project = projectFile ? JSON.parse(await projectFile.async('string')) : {};
     const dataset = datasetFile ? JSON.parse(await datasetFile.async('string')) : {};
     const trainConfig = trainingFile ? JSON.parse(await trainingFile.async('string')) : {};
     const builder = builderFile ? JSON.parse(await builderFile.async('string')) : {};
-    // todo: export etc..
-    const results = resultsFile ? JSON.parse(await resultsFile.async('string')) : [];
+    const records = recordsFile ? JSON.parse(await recordsFile.async('string')) : [];
 
-    return {projectInfo: project, dataset: dataset, trainConfig: trainConfig, builder: builder, trainHistory: results};
+    return {projectInfo: project, dataset: dataset, trainConfig: trainConfig, builder: builder, trainRecords: records};
   }
 
   async saveTFModel(): Promise<void> {
