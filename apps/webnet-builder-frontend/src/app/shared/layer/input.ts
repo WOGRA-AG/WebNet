@@ -26,12 +26,12 @@ export class Input extends Layer{
     super(tf.input, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
-  override getParameters(): any {
+  override getParameters(useWeights: boolean = true): any {
     const parameters = this.layerForm.getRawValue();
     if (typeof parameters.shape === 'string') {
       parameters.shape = parseShapeString(parameters.shape);
     }
-    if (this.weights) {
+    if (this.weights && useWeights) {
       parameters.weights = this.weights;
     }
     parameters.name = this.getLayerId();

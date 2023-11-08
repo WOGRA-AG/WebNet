@@ -6,6 +6,20 @@
 .left-column {
   flex: 1;
   margin-right: 1rem;
+
+  .mat-mdc-selection-list {
+    height: 500px;
+    overflow: auto;
+    padding-top: 0;
+
+    .mat-mdc-list-item {
+      margin-top: 0;
+    }
+  }
+  .load-button {
+    margin-left: 0;
+  }
+
 }
 
 .right-column {
@@ -13,6 +27,3 @@
   margin-left: 1rem;
 }
 
-.load-button {
-  margin-left: 0;
-}

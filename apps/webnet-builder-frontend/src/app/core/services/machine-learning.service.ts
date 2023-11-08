@@ -9,6 +9,7 @@ import {MessageDialogComponent} from "../../shared/components/message-dialog/mes
 import {optimizers} from "../../shared/tf_objects/optimizers";
 import {losses} from "../../shared/tf_objects/losses";
 import {MetricHistory} from "../interfaces/project";
+import {ModelBuilderService} from "./model-builder.service";
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class MachineLearningService {
   trainingInProgressSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private projectService: ProjectService,
+              private modelBuilderService: ModelBuilderService,
               public dialog: MatDialog) {
   }
 
@@ -113,8 +115,40 @@ export class MachineLearningService {
     }
   }
 
+  updateWeights(): void {
+    const model = this.projectService.model();
+    if (model) {
+      const builder = this.modelBuilderService.updateWeights(model);
+      this.projectService.builder.set(builder);
+    }
+  }
+
   async train(trainXs: any, trainYs: any, plotContainer: HTMLElement): Promise<any> {
+    // console.log("WEIGHTS: ");
+    // console.log(this.modelBuilderService.generateBuilderJSON().layers[1].parameters);
+    console.log("#### 1")
+    this.projectService.model()?.layers.forEach((layer, index) => {
+      if (layer.name === 'layer-3') {
+        const weights = layer.getWeights();
+        weights.forEach((weight, weightIndex) => {
+          console.log(weight.dataSync()); // Print the weight data
+        });
+      }
+    });
     const parameter = this.projectService.trainConfig();
+    if (!parameter.useWeights) {
+      const model = await this.modelBuilderService.generateModel(parameter.useWeights);
+      this.projectService.model.set(model);
+    }
+    console.log("#### 2")
+    this.projectService.model()?.layers.forEach((layer, index) => {
+      if (layer.name === 'layer-3') {
+        const weights = layer.getWeights();
+        weights.forEach((weight, weightIndex) => {
+          console.log(weight.dataSync()); // Print the weight data
+        });
+      }
+    });
     const X = tf.tensor2d(trainXs);
     const Y = tf.tensor1d(trainYs);
     const normalizedX = this.normalize(X);
@@ -127,17 +161,6 @@ export class MachineLearningService {
     const YIELD_EVERY = 'auto';
     const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
-
-    // console.log("#### 1")
-    // this.projectService.model()?.layers.forEach((layer, index) => {
-    //   if (layer.name === 'layer-3') {
-    //     const weights = layer.getWeights();
-    //     weights.forEach((weight, weightIndex) => {
-    //       console.log(weight.dataSync()); // Print the weight data
-    //     });
-    //   }
-    // });
-
 
     const fitCallback = {
       onTrainBegin: async (logs?: tf.Logs) => {
@@ -196,15 +219,7 @@ export class MachineLearningService {
         shuffle: SHUFFLE,
         yieldEvery: YIELD_EVERY
       });
-      // console.log("#### 2")
-      // this.projectService.model()?.layers.forEach((layer, index) => {
-      //   if (layer.name === 'layer-3') {
-      //     const weights = layer.getWeights();
-      //     weights.forEach((weight, weightIndex) => {
-      //       console.log(weight.dataSync()); // Print the weight data
-      //     });
-      //   }
-      // });
+
       return history;
     } catch (e: any) {
       console.log(e.message);

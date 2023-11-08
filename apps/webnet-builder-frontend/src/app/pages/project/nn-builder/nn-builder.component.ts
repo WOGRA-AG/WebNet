@@ -35,16 +35,16 @@ export class NnBuilderComponent {
   }
 
   startAutoSave() {
-    this.autoSaveInterval = setInterval(async () => {
-      await this.updateBuilder();
+    this.autoSaveInterval = setInterval(() => {
+      this.updateBuilder();
     }, 5000);
   }
 
-  async ngOnDestroy() {
+  ngOnDestroy() {
     if (this.autoSaveInterval) {
       clearInterval(this.autoSaveInterval);
     }
-    await this.updateBuilder();
+    this.updateBuilder();
   }
 
   areBuilderEqual(obj1: any, obj2: any): boolean {
@@ -72,8 +72,8 @@ export class NnBuilderComponent {
     return true;
   }
 
-  async updateBuilder(): Promise<void> {
-    const newBuilder = await this.modelBuilderService.generateBuilderJSON();
+  updateBuilder(): void {
+    const newBuilder = this.modelBuilderService.generateBuilderJSON();
     const oldBuilder = this.projectService.builder();
 
     if (!this.areBuilderEqual(newBuilder, oldBuilder)) {

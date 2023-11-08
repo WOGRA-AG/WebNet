@@ -56,10 +56,18 @@ export abstract class Layer {
     return this.outputConnection;
   }
 
-  getParameters(): any {
+  updateWeights(weights: Weights): void {
+    this.weights = weights;
+  }
+
+  getWeights(): Weights|null {
+    return this.weights;
+  }
+
+  getParameters(useWeights: boolean = true): any {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
-    if (this.weights) {
+    if (this.weights && useWeights) {
       const weights = this.weights.weights;
       const bias = this.weights.bias;
       parameters.weights = [

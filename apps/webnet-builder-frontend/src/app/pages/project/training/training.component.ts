@@ -117,6 +117,7 @@ export class TrainingComponent {
           .map((value: number, epoch: number) => ({x: epoch, y: value}))
           .splice(0, val_loss.length);
         this.projectService.addTrainingRecord(this.trainingStats, {loss: loss, val_loss: val_loss});
+        this.ml.updateWeights();
       }
     } else {
       this.openDialog(ready);
