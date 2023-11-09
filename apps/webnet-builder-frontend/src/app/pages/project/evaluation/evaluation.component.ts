@@ -34,8 +34,12 @@ export class EvaluationComponent {
     }
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.predict();
+  }
+
+  async ngAfterViewInit() {
+    await this.getSelectedHistory();
   }
 
   predict() {

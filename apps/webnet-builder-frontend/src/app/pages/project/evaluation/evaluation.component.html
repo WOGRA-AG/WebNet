@@ -6,11 +6,12 @@
 <div class="two-column-container">
   <div class="left-column">
     <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedHistory()">
-      <mat-list-option *ngFor="let history of trainingRecords" [value]="history">
-        <span matListItemTitle>#{{history.id}} - {{history.date | date:'d. MMM yyyy, H:mm:ss'}}</span>
-        <span matListItemLine>Epochs trained: {{history.trainStats.epoch}}</span>
-        <span matListItemLine>Accuracy: {{history.trainStats.accuracy}}</span>
-        <span matListItemLine>Loss: {{history.trainStats.loss}}</span>
+<!--      todo: why do i get NG0100 when adding [selected]-->
+      <mat-list-option *ngFor="let record of trainingRecords; let i = index;" [value]="record" [selected]="record && i == 0">
+        <span matListItemTitle>#{{record.id}} - {{record.date | date:'d. MMM yyyy, H:mm:ss'}}</span>
+        <span matListItemLine>Epochs trained: {{record.trainStats.epoch}}</span>
+        <span matListItemLine>Accuracy: {{record.trainStats.accuracy}}</span>
+        <span matListItemLine>Loss: {{record.trainStats.loss}}</span>
       </mat-list-option>
     </mat-selection-list>
     <button [disabled]="!trainHistoryList.selectedOptions.hasValue()" mat-raised-button color="primary"

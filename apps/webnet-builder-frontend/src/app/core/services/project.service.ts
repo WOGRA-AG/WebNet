@@ -100,7 +100,7 @@ export class ProjectService {
   }
 
   addTrainingRecord(trainStats: TrainStats, history: MetricHistory): void {
-    this.trainingRecords.mutate(trainings => trainings.push({
+    this.trainingRecords.mutate(trainings => trainings.splice(0, 0, {
       id: trainings.length + 1,
       date: new Date(),
       config: this.trainConfig(),
@@ -131,7 +131,7 @@ export class ProjectService {
     return this.myProjects.has(name);
   }
 
-  createProject(id:string, name: string): Project {
+  createProject(id: string, name: string): Project {
     return {
       projectInfo: {
         id: id,
