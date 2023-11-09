@@ -240,7 +240,7 @@ export class ModelBuilderService {
     return this.generateBuilderJSON();
   }
 
-  public clearLayers(): void {
+  clearLayers(): void {
     this.layerMap.forEach((layer) => layer.delete());
     this.layerMap.clear();
   }

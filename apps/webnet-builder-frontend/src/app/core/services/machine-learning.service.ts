@@ -8,8 +8,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
 import {optimizers} from "../../shared/tf_objects/optimizers";
 import {losses} from "../../shared/tf_objects/losses";
-import {MetricHistory} from "../interfaces/project";
+import {Dataset, MetricHistory} from "../interfaces/project";
 import {ModelBuilderService} from "./model-builder.service";
+import {Tensor} from "@tensorflow/tfjs";
 
 @Injectable({
   providedIn: 'root'
@@ -65,9 +66,9 @@ export class MachineLearningService {
     });
   }
 
-  predict(x: any, y: any): void {
-    const X = this.normalize(tf.tensor2d(x));
-    const Y = this.normalize(tf.tensor1d(y));
+  predict(X: Tensor, Y: Tensor): void {
+    const x = this.normalize(X);
+    const y = this.normalize(Y);
     const randomRowIndex = Math.floor(Math.random() * X.shape[0]);
     const randomRowX = X.slice([randomRowIndex], [1]);
     const randomRowY = Y.slice([randomRowIndex], [1]);
@@ -123,34 +124,33 @@ export class MachineLearningService {
     }
   }
 
-  async train(trainXs: any, trainYs: any, plotContainer: HTMLElement): Promise<any> {
-    // console.log("WEIGHTS: ");
-    // console.log(this.modelBuilderService.generateBuilderJSON().layers[1].parameters);
-    console.log("#### 1")
-    this.projectService.model()?.layers.forEach((layer, index) => {
-      if (layer.name === 'layer-3') {
-        const weights = layer.getWeights();
-        weights.forEach((weight, weightIndex) => {
-          console.log(weight.dataSync()); // Print the weight data
-        });
+  extractFeaturesAndTargets(dataset: Dataset): [Tensor, Tensor] {
+    // todo: change mapping
+    const X = dataset.data.map((item) => {
+      const values = [];
+      for (const column of dataset.inputColumns) {
+        values.push(item[column]);
       }
+      return values;
     });
+
+    const Y = dataset.data.map((item) => {
+      const values = [];
+      for (const column of dataset.targetColumns) {
+        values.push(item[column]);
+      }
+      return values;
+    }).flat();
+    return [tf.tensor2d(X), tf.tensor1d(Y)];
+  }
+
+  async train(X: Tensor, Y: Tensor, plotContainer: HTMLElement): Promise<any> {
     const parameter = this.projectService.trainConfig();
     if (!parameter.useExistingWeights) {
       const model = await this.modelBuilderService.generateModel(parameter.useExistingWeights);
       this.projectService.model.set(model);
     }
-    console.log("#### 2")
-    this.projectService.model()?.layers.forEach((layer, index) => {
-      if (layer.name === 'layer-3') {
-        const weights = layer.getWeights();
-        weights.forEach((weight, weightIndex) => {
-          console.log(weight.dataSync()); // Print the weight data
-        });
-      }
-    });
-    const X = tf.tensor2d(trainXs);
-    const Y = tf.tensor1d(trainYs);
+
     const normalizedX = this.normalize(X);
     const normalizedY = this.normalize(Y);
 

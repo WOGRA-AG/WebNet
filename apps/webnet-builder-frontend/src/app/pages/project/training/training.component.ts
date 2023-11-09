@@ -90,24 +90,7 @@ export class TrainingComponent {
   async train(): Promise<void> {
     const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
-      const dataset = this.projectService.dataset();
-
-      // todo: change mapping
-      const X = dataset.data.map((item) => {
-        const values = [];
-        for (const column of dataset.inputColumns) {
-          values.push(item[column]);
-        }
-        return values;
-      });
-
-      const Y = dataset.data.map((item) => {
-        const values = [];
-        for (const column of dataset.targetColumns) {
-          values.push(item[column]);
-        }
-        return values;
-      }).flat();
+     const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
 
       const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
       if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {

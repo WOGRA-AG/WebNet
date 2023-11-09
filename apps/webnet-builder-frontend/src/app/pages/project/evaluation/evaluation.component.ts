@@ -39,22 +39,7 @@ export class EvaluationComponent {
   }
 
   predict() {
-    const dataset = this.projectService.dataset();
-    const X = dataset.data.map((item) => {
-      const values = [];
-      for (const column of dataset.inputColumns) {
-        values.push(item[column]);
-      }
-      return values;
-    });
-
-    const Y = dataset.data.map((item) => {
-      const values = [];
-      for (const column of dataset.targetColumns) {
-        values.push(item[column]);
-      }
-      return values;
-    }).flat();
+    const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
     this.ml.predict(X, Y);
   }
 

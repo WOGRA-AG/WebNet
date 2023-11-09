@@ -22,7 +22,6 @@ export class SerializationService {
         dynamicTyping: true,
         skipEmptyLines: true,
         complete: (result: any) => {
-          console.log(result);
           resolve(result);
         },
         error: (error: any) => {

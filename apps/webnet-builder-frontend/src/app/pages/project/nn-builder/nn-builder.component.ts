@@ -77,6 +77,7 @@ export class NnBuilderComponent {
     const oldBuilder = this.projectService.builder();
 
     if (!this.areBuilderEqual(newBuilder, oldBuilder)) {
+      this.projectService.initNewWeights.set(true);
       this.projectService.builder.set(newBuilder);
     }
   }

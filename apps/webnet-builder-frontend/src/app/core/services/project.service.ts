@@ -1,4 +1,4 @@
-import {computed, effect, Injectable, signal} from '@angular/core';
+import {computed, effect, Injectable, signal, untracked} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {
@@ -42,6 +42,7 @@ export class ProjectService {
     layers: [],
     connections: []
   });
+  initNewWeights = signal<boolean>(false);
   model = signal<tf.LayersModel | null>(null);
   trainConfig = signal<TrainingConfig>({
     epochs: 100,
@@ -81,18 +82,10 @@ export class ProjectService {
     this.myProjects = this.localStorageService.getProjectsFromLocalStorage();
     effect(async () => {
       this.builder();
-      const model = await this.modelBuilderService.generateModel();
+      const initWeights = untracked(this.initNewWeights);
+      const model = await this.modelBuilderService.generateModel(!initWeights);
       this.model.set(model);
-      console.log("BUILDER CHANGE. MODEL UPDATE");
-      console.log("#### 3")
-      model?.layers.forEach((layer, index) => {
-        if (layer.name === 'layer-3') {
-          const weights = layer.getWeights();
-          weights.forEach((weight, weightIndex) => {
-            console.log(weight.dataSync()); // Print the weight data
-          });
-        }
-      });
+      this.initNewWeights.set(false);
     });
   }
 
