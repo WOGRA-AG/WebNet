@@ -12,6 +12,7 @@ import {FormBuilder, Validators} from "@angular/forms";
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   datasetForm;
   splitValue = 80;
   file: File | undefined;
@@ -19,7 +20,6 @@ export class DatasetComponent {
   trainConfig: TrainingConfig;
   displayedColumns: string[] | undefined;
   dataSource: MatTableDataSource<any> | undefined;
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
   constructor(private projectService: ProjectService,
               private serializationService: SerializationService,
@@ -97,7 +97,6 @@ export class DatasetComponent {
       const dataset = await this.serializationService.parseCSV(this.file);
       const columns = dataset.meta.fields;
       this.projectService.dataset.mutate((value: Dataset) => {
-
         value.fileName = name;
         value.data = dataset.data;
         value.columns = columns;

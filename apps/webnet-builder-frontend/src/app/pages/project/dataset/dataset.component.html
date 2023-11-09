@@ -1,4 +1,4 @@
-<h3 class="section-heading">Dataset Import</h3>
+<h3 class="section-heading">Dataset Import</h3> if else
 <div class="dataset-upload-content">
   <app-file-upload (fileEvent)="addFile($event)" [fileType]="'.csv'"></app-file-upload>
   <button [disabled]="!file" mat-raised-button color="primary" (click)="parseCSV()" class="import-button">
@@ -9,7 +9,7 @@
 <div class="dataset-view-content">
   <p *ngIf="dataset.data.length === 0"> No Dataset provided</p>
   <p *ngIf="dataset">{{dataset.fileName}}</p>
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" [ngClass]="{'hidden': !dataSource}">
     <table mat-table [dataSource]="dataSource" *ngIf="dataSource">
 
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
