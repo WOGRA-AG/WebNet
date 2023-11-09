@@ -70,8 +70,8 @@ export class MachineLearningService {
     const x = this.normalize(X);
     const y = this.normalize(Y);
     const randomRowIndex = Math.floor(Math.random() * X.shape[0]);
-    const randomRowX = X.slice([randomRowIndex], [1]);
-    const randomRowY = Y.slice([randomRowIndex], [1]);
+    const randomRowX = x.slice([randomRowIndex], [1]);
+    const randomRowY = y.slice([randomRowIndex], [1]);
 
     try {
       this.compile();

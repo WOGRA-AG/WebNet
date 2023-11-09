@@ -23,7 +23,7 @@ export class ExportComponent {
     evaluation: {name: '4) Evaluation Data', checked: true, disabled: true, order: 4},
     // tf_model: {name: '5) Tensorflow Model', checked: false, disabled: false, order: 5},
   }
-  allChecked: boolean = false;
+  allChecked: boolean = true;
 
   constructor(private serializationService: SerializationService, private projectService: ProjectService) {
   }
