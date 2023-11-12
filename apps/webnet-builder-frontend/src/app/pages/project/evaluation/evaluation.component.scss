@@ -23,7 +23,7 @@
 }
 
 .right-column {
-  flex: 3;
+  flex: 5;
   margin-left: 1rem;
 }
 
@@ -31,4 +31,8 @@
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 20px;
+}
+
+.prediction-container, .model-info {
+  margin-bottom: 1rem;
 }
