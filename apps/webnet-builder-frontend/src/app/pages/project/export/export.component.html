@@ -19,12 +19,12 @@
         </mat-checkbox>
       </li>
     </ul>
-    <button mat-raised-button color="primary" (click)="export()">Export as ZIP</button>
+    <button mat-raised-button color="primary" (click)="exportProject()">Export as ZIP</button>
     <button mat-raised-button color="primary" (click)="saveInLocalStorage()">Store in Localstorage</button>
   </div>
 </div>
 <div class="tf-export-section">
   <h3 class="section-heading">Tensorflow Model Export</h3>
   <p>Export your trained model with 'weights.bin' and 'model.JSON' for Python Tensorflow projects.</p>
-  <button mat-raised-button color="primary" (click)="saveModel()">Export TF Model</button>
+  <button mat-raised-button color="primary" (click)="exportModel()">Export TF Model</button>
 </div>

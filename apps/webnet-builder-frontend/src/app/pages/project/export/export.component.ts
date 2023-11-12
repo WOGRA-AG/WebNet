@@ -52,7 +52,7 @@ export class ExportComponent {
     });
   }
 
-  export(): void {
+  exportProject(): void {
     this.serializationService.exportProjectAsZIP(this.sections);
   }
 
@@ -60,8 +60,8 @@ export class ExportComponent {
     this.projectService.updateProject();
   }
 
-  async saveModel(): Promise<void> {
-    await this.serializationService.saveModel();
+  async exportModel(): Promise<void> {
+    await this.serializationService.exportModel();
   }
 
 }
