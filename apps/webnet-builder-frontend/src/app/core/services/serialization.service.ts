@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import * as JSZip from 'jszip';
-import { Papa } from 'ngx-papaparse';
+import {Papa} from 'ngx-papaparse';
 import {saveAs} from 'file-saver';
 import * as tf from "@tensorflow/tfjs";
 import {ProjectService} from "./project.service";
 import {Project} from "../interfaces/project";
+import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,9 @@ export class SerializationService {
   zip: JSZip = new JSZip();
 
   constructor(private projectService: ProjectService,
-              private papa: Papa) {}
+              private papa: Papa,
+              private dialog: MatDialog) {
+  }
 
   async parseCSV(file: File): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -97,10 +101,19 @@ export class SerializationService {
     }));
   }
 
-  async saveModel() {
+  async exportModel() {
     const model = this.projectService.model();
     if (model) {
-      const saveResults = await model.save('downloads://model');
+      await model.save('downloads://model');
+    } else {
+      this.dialog.open(MessageDialogComponent, {
+        maxWidth: '600px',
+        data: {
+          title: 'Model Compilation Failed',
+          message: 'The model you created in the Modeling Section could not be compiled into a TensorFlow model format. Please ensure that your model is correctly defined.',
+          warning: true
+        }
+      });
     }
   }
 
