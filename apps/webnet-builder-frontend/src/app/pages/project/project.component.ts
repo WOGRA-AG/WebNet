@@ -11,7 +11,7 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 export class ProjectComponent {
   projectName: string;
   datasetError = computed(() => {
-    return this.projectService.dataset().data.length <= 0 ? true: false;
+    return this.projectService.dataset().data.length <= 0 ? true : false;
   })
   modelError = computed(() => {
     return this.projectService.model() === null ? true : false;

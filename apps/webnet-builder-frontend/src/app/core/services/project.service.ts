@@ -90,13 +90,15 @@ export class ProjectService {
   }
 
   async selectProject(name: string): Promise<void> {
-    const project = this.getProjectByName(name);
     this.modelBuilderService.clearLayers();
-    this.projectInfo.set(project.projectInfo);
-    this.dataset.set(project.dataset);
-    this.builder.set(project.builder);
-    this.trainConfig.set(project.trainConfig);
-    this.trainingRecords.set(project.trainRecords);
+    const project = this.getProjectByName(name);
+    if (project) {
+      this.projectInfo.set(project.projectInfo);
+      this.dataset.set(project.dataset);
+      this.builder.set(project.builder);
+      this.trainConfig.set(project.trainConfig);
+      this.trainingRecords.set(project.trainRecords);
+    }
   }
 
   addTrainingRecord(trainStats: TrainStats, history: MetricHistory): void {
@@ -170,8 +172,11 @@ export class ProjectService {
 
   updateProject(): void {
     const project = this.activeProject();
-    this.myProjects.set(project.projectInfo.name, project);
-    this.storeProjectInLocalStorage(project.projectInfo.name, project);
+    const projectName = project.projectInfo.name;
+    if (projectName) {
+      this.myProjects.set(projectName, project);
+      this.storeProjectInLocalStorage(projectName, project);
+    }
   }
 
   storeProjectInLocalStorage(name: string, project: Project): void {
