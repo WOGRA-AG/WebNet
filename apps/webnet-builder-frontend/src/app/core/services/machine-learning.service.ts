@@ -238,9 +238,7 @@ export class MachineLearningService {
     // await tfvis.show.history(htmlContainer, history, ['loss', 'acc']);
   }
 
-  // let lossValues: Array<Array<{x: number, y: number}>> = [[], []];
   async renderLossPlot(htmlContainer: HTMLElement, metricHistory: MetricHistory): Promise<void> {
-    console.log(metricHistory);
     await tfvis.render.linechart(htmlContainer,
       {values: [metricHistory.loss, metricHistory.val_loss], series: Object.keys(metricHistory)}, {
         xLabel: "Epoch",

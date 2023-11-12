@@ -5,9 +5,10 @@
   and Results'</p>
 <div class="two-column-container">
   <div class="left-column">
-    <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedHistory()">
-<!--      todo: why do i get NG0100 when adding [selected]-->
-      <mat-list-option *ngFor="let record of trainingRecords; let i = index;" [value]="record" [selected]="record && i == 0">
+    <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedContent()">
+      <!--      todo: why do i get NG0100 when adding [selected]-->
+      <mat-list-option *ngFor="let record of trainingRecords; let i = index;" [value]="record"
+                       [selected]="record && i == 0">
         <span matListItemTitle>#{{record.id}} - {{record.date | date:'d. MMM yyyy, H:mm:ss'}}</span>
         <span matListItemLine>Epochs trained: {{record.trainStats.epoch}}</span>
         <span matListItemLine>Accuracy: {{record.trainStats.accuracy}}</span>
@@ -22,9 +23,25 @@
 
   <div class="right-column">
     <div *ngIf="trainHistoryList.selectedOptions.hasValue()">
-      <span>Epochs trained: {{selectedRecord?.trainStats?.epoch}}</span>
-      <span>Loss on Validation Data: {{selectedRecord?.trainStats?.loss}}</span>
+      <div>
+        <span>Epochs trained: {{selectedRecord?.trainStats?.epoch}}</span>
+        <span>Loss on Validation Data: {{selectedRecord?.trainStats?.loss}}</span>
+      </div>
+      <div>
+<!--        <form *ngIf="predictionForm" [formGroup]="predictionForm">-->
+          <h3 class="section-heading">Prediction</h3>
+<!--          <div class="form-row">-->
+          <ul>
+              <mat-form-field subscriptSizing="dynamic" *ngFor="let column of projectService.dataset().inputColumns">
+                <mat-label>{{column}}</mat-label>
+                <input matInput  placeholder="{{column}}" type="number">
+              </mat-form-field>
+          </ul>
+<!--          </div>-->
+<!--        </form>-->
+      </div>
     </div>
+
     <div #trainingHistoryContainer></div>
 
   </div>

@@ -18,20 +18,11 @@ export class EvaluationComponent {
   selectedRecord: TrainingRecords | null = null;
   trainingRecords: TrainingRecords[];
 
-  constructor(private projectService: ProjectService, private ml: MachineLearningService, private modelBuilderService: ModelBuilderService, private dialog: MatDialog) {
+  constructor(public projectService: ProjectService,
+              private ml: MachineLearningService,
+              private modelBuilderService: ModelBuilderService,
+              private dialog: MatDialog) {
     this.trainingRecords = this.projectService.trainingRecords();
-  }
-
-  async getSelectedHistory() {
-    const selectedOption = this.trainHistoryList?.selectedOptions.selected[0];
-    if (selectedOption) {
-      this.selectedRecord = selectedOption.value;
-      if (this.selectedRecord?.history) {
-        await this.ml.renderLossPlot(this.trainingHistoryContainer.nativeElement, this.selectedRecord?.history)
-      } else {
-        this.trainingHistoryContainer.nativeElement.innerHTML = '';
-      }
-    }
   }
 
   ngOnInit() {
@@ -39,7 +30,23 @@ export class EvaluationComponent {
   }
 
   async ngAfterViewInit() {
-    await this.getSelectedHistory();
+    await this.getSelectedContent();
+  }
+
+  async getSelectedContent() {
+    const selectedOption = this.trainHistoryList?.selectedOptions.selected[0];
+    if (selectedOption) {
+      this.selectedRecord = selectedOption.value;
+      await this.displayLossPlot();
+    }
+  }
+
+  async displayLossPlot() {
+    if (this.selectedRecord?.history) {
+      await this.ml.renderLossPlot(this.trainingHistoryContainer.nativeElement, this.selectedRecord?.history)
+    } else {
+      this.trainingHistoryContainer.nativeElement.innerHTML = '';
+    }
   }
 
   predict() {
