@@ -125,23 +125,28 @@ export class MachineLearningService {
   }
 
   extractFeaturesAndTargets(dataset: Dataset): [Tensor, Tensor] {
-    // todo: change mapping
+    const inputColumns: string[] = dataset.inputColumns;
+    const targetColumns: string[] = dataset.targetColumns;
+    const numSamples: number = dataset.data.length;
+
     const X = dataset.data.map((item) => {
       const values = [];
-      for (const column of dataset.inputColumns) {
+      for (const column of inputColumns) {
         values.push(item[column]);
       }
       return values;
     });
 
+    // todo: mapping is wrong, only works for one target predictions
     const Y = dataset.data.map((item) => {
       const values = [];
-      for (const column of dataset.targetColumns) {
+      for (const column of targetColumns) {
         values.push(item[column]);
       }
       return values;
-    }).flat();
-    return [tf.tensor2d(X), tf.tensor1d(Y)];
+    });
+
+    return [tf.tensor(X, [numSamples, inputColumns.length]), tf.tensor(Y, [numSamples, targetColumns.length])];
   }
 
   async train(X: Tensor, Y: Tensor, plotContainer: HTMLElement): Promise<any> {
