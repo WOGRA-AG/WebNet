@@ -1,4 +1,4 @@
-<h3 class="section-heading">Dataset Import</h3> if else
+<h3 class="section-heading">Dataset Import</h3>
 <div class="dataset-upload-content">
   <app-file-upload (fileEvent)="addFile($event)" [fileType]="'.csv'"></app-file-upload>
   <button [disabled]="!file" mat-raised-button color="primary" (click)="parseCSV()" class="import-button">
@@ -26,53 +26,57 @@
     </mat-paginator>
   </div>
 </div>
-<h3 class="section-heading">Configuration</h3>
-<div class="dataset-config-content">
-  <h4 class="bold-section-title">Choose Model Input & Target Columns</h4>
-  <form [formGroup]="datasetForm">
-    <mat-form-field>
-      <mat-label>Input(s)</mat-label>
-      <mat-select formControlName="input" multiple>
-        <mat-select-trigger>
-          {{datasetForm.get('input')?.value?.[0] || ''}}
-          <span *ngIf="(datasetForm.get('input')?.value?.length || 0) > 1" class="additional-selection-text">
-        (+{{(datasetForm.get('input')?.value?.length || 0) - 1}} {{datasetForm.get('input')?.value?.length === 2 ? 'other' : 'others'}})
+<ng-container *ngIf="dataset.data.length > 0">
+  <h3 class="section-heading">Configuration</h3>
+  <div class="dataset-config-content">
+    <h4 class="bold-section-title">Choose Model Input & Target Columns</h4>
+    <form [formGroup]="datasetForm">
+      <mat-form-field>
+        <mat-label>Input(s)</mat-label>
+        <mat-select formControlName="input" multiple>
+          <mat-select-trigger>
+            {{datasetForm.get('input')?.value?.[0] || ''}}
+            <span *ngIf="(datasetForm.get('input')?.value?.length || 0) > 1" class="additional-selection-text">
+        (+{{(datasetForm.get('input')?.value?.length || 0) - 1}} {{datasetForm.get('input')?.value?.length === 2 ? 'other' : 'others'}}
+              )
       </span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="datasetForm.get('input')?.hasError('required')">Input is required</mat-error>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Target(s)</mat-label>
-      <mat-select formControlName="target" multiple>
-        <mat-select-trigger>
-          {{datasetForm.get('target')?.value?.[0] || ''}}
-          <span *ngIf="(datasetForm.get('target')?.value?.length || 0) > 1" class="additional-selection-text">
-        (+{{(datasetForm.get('target')?.value?.length || 0) - 1}} {{datasetForm.get('target')?.value?.length === 2 ? 'other' : 'others'}})
+          </mat-select-trigger>
+          <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="datasetForm.get('input')?.hasError('required')">Input is required</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Target(s)</mat-label>
+        <mat-select formControlName="target" multiple>
+          <mat-select-trigger>
+            {{datasetForm.get('target')?.value?.[0] || ''}}
+            <span *ngIf="(datasetForm.get('target')?.value?.length || 0) > 1" class="additional-selection-text">
+        (+{{(datasetForm.get('target')?.value?.length || 0) - 1}} {{datasetForm.get('target')?.value?.length === 2 ? 'other' : 'others'}}
+              )
       </span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="datasetForm.get('target')?.hasError('required')">Target is required</mat-error>
-    </mat-form-field>
-    <h4 class="bold-section-title">Split your Data into Training and Validation Data</h4>
-    <mat-form-field>
-      <mat-label>Training Ratio</mat-label>
-      <input matInput type="text" formControlName="trainingRatio" readonly>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Validation Ratio</mat-label>
-      <input matInput type="text" formControlName="validationRatio" readonly>
-    </mat-form-field>
-  </form>
-  <div class="slider-container">
-    <mat-slider
-      class="always-show-thumb-value"
-      step="1"
-      discrete
-      [displayWith]="formatLabel">
-      <input matSliderThumb [(ngModel)]="splitValue" (ngModelChange)="updateSplitValue($event)">
-    </mat-slider>
+          </mat-select-trigger>
+          <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="datasetForm.get('target')?.hasError('required')">Target is required</mat-error>
+      </mat-form-field>
+      <h4 class="bold-section-title">Split your Data into Training and Validation Data</h4>
+      <mat-form-field>
+        <mat-label>Training Ratio</mat-label>
+        <input matInput type="text" formControlName="trainingRatio" readonly>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Validation Ratio</mat-label>
+        <input matInput type="text" formControlName="validationRatio" readonly>
+      </mat-form-field>
+    </form>
+    <div class="slider-container">
+      <mat-slider
+        class="always-show-thumb-value"
+        step="1"
+        discrete
+        [displayWith]="formatLabel">
+        <input matSliderThumb [(ngModel)]="splitValue" (ngModelChange)="updateSplitValue($event)">
+      </mat-slider>
+    </div>
   </div>
-</div>
+</ng-container>
