@@ -231,11 +231,13 @@ export class ModelBuilderService {
   updateWeights(model: tf.LayersModel): Builder {
     this.layerMap.forEach((layer) => {
       const layerWeights = model.getLayer(layer.getLayerId()).getWeights();
-      const [weights, bias] =
-        layerWeights.map(weight => {
-          return {values: Object.values(weight.dataSync()), shape: weight.shape}
-        });
-      layer.updateWeights({weights: weights, bias: bias});
+      if (layerWeights && layerWeights.length > 0) {
+        const [weights, bias] =
+          layerWeights.map(weight => {
+            return {values: Object.values(weight.dataSync()), shape: weight.shape}
+          });
+        layer.updateWeights({weights: weights, bias: bias});
+      }
     });
     return this.generateBuilderJSON();
   }

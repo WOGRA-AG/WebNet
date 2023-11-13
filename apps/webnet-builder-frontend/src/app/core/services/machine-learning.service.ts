@@ -8,7 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
 import {optimizers} from "../../shared/tf_objects/optimizers";
 import {losses} from "../../shared/tf_objects/losses";
-import {Dataset, MetricHistory} from "../interfaces/project";
+import {Dataset} from "../interfaces/project";
 import {ModelBuilderService} from "./model-builder.service";
 import {Tensor} from "@tensorflow/tfjs";
 
@@ -243,11 +243,7 @@ export class MachineLearningService {
     // await tfvis.show.history(htmlContainer, history, ['loss', 'acc']);
   }
 
-  async renderLossPlot(htmlContainer: HTMLElement, metricHistory: MetricHistory): Promise<void> {
-    await tfvis.render.linechart(htmlContainer,
-      {values: [metricHistory.loss, metricHistory.val_loss], series: Object.keys(metricHistory)}, {
-        xLabel: "Epoch",
-        yLabel: "Loss",
-      });
+  async renderPlot(htmlContainer: HTMLElement, values: XY[][], series: string[], options: {xLabel: string, yLabel: string, width?: number}): Promise<void> {
+    await tfvis.render.linechart(htmlContainer, {values: values, series: series}, options);
   }
 }

@@ -63,7 +63,8 @@ export abstract class Layer {
   getBuilderParams(): any {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
-    if (this.weights) {
+
+    if (this.weights && Object.keys(this.weights).length > 0) {
       const weights = this.weights.weights;
       const bias = this.weights.bias;
       parameters.weights = {weights: weights, bias: bias}

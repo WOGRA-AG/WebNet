@@ -46,7 +46,9 @@ export interface TrainingConfig {
 
 export interface MetricHistory {
   loss: XY[],
-  val_loss: XY[]
+  val_loss: XY[],
+  acc: XY[],
+  val_acc: XY[]
 }
 
 export interface TrainingRecords {

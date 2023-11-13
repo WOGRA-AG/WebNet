@@ -87,20 +87,28 @@ export class TrainingComponent {
     }
   }
 
+  mapHistoryRecord(history: number[]): { x: number, y: number }[] {
+    return history.map((value: number, epoch: number) => ({x: epoch, y: value}));
+  }
+
   async train(): Promise<void> {
     const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
-     const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
+      const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
 
       const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
+      this.ml.updateWeights();
       if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {
-        const val_loss = history.history['val_loss']
-          .map((value: number, epoch: number) => ({x: epoch, y: value}));
-        const loss = history.history['loss']
-          .map((value: number, epoch: number) => ({x: epoch, y: value}))
-          .splice(0, val_loss.length);
-        this.projectService.addTrainingRecord(this.trainingStats, {loss: loss, val_loss: val_loss});
-        this.ml.updateWeights();
+        const val_loss = this.mapHistoryRecord(history.history['val_loss']);
+        const loss = this.mapHistoryRecord(history.history['loss']).splice(0, val_loss.length);
+        const val_acc = this.mapHistoryRecord(history.history['val_acc']);
+        const acc = this.mapHistoryRecord(history.history['acc']).splice(0, val_acc.length);
+        this.projectService.addTrainingRecord(this.trainingStats, {
+          loss: loss,
+          val_loss: val_loss,
+          acc: acc,
+          val_acc: val_acc
+        });
       }
     } else {
       this.openDialog(ready);

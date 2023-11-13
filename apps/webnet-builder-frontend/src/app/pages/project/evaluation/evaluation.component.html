@@ -3,20 +3,20 @@
   you want to compare different
   Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Save Training
   and Results'</p>
-<div class="two-column-container">
+<div *ngIf="trainingRecords && trainingRecords.length > 0" class="two-column-container" >
   <div class="left-column">
     <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedContent()">
       <!--      todo: why do i get NG0100 when adding [selected]-->
       <mat-list-option *ngFor="let record of trainingRecords; let i = index;" [value]="record"
                        [selected]="record && i == 0">
-        <span matListItemTitle>#{{record.id}} - {{record.date | date:'d. MMM yyyy, H:mm:ss'}}</span>
-        <span matListItemLine>Epochs trained: {{record.trainStats.epoch}}</span>
-        <span matListItemLine>Accuracy: {{record.trainStats.accuracy}}</span>
-        <span matListItemLine>Loss: {{record.trainStats.loss}}</span>
+        <span matListItemTitle>#{{record.id}} <span class="record-date" >{{record.date | date:'d. MMM yyyy, H:mm:ss'}}</span></span>
+        <span matListItemLine><b>Epochs trained:</b> {{record.trainStats.epoch}}</span>
+        <span matListItemLine><b>Accuracy:</b> {{record.trainStats.accuracy | number:'1.1-5'}} | <b>Loss:</b> {{record.trainStats.loss | number:'1.1-5'}}</span>
+<!--        <span matListItemLine>Loss: {{record.trainStats.loss}}</span>-->
       </mat-list-option>
     </mat-selection-list>
-    <button [disabled]="!trainHistoryList.selectedOptions.hasValue()" mat-raised-button color="primary"
-            (click)="loadTrainingRecord()" class="load-button">
+    <button [disabled]="isSelectedRecordAlreadyLoaded" mat-raised-button color="primary"
+            (click)="loadTrainingRecord()" class="load-button" >
       Load Model and its Configuration
     </button>
   </div>
@@ -29,23 +29,30 @@
         <span>Loss on Validation Data: {{selectedRecord?.trainStats?.loss}}</span>
       </div>
     </div>
+    <div class="plot-section">
+      <h3 class="section-heading">Training Metrics</h3>
+      <div class="plot-flex">
+        <div #lossContainer class="plot-container"></div>
+        <div #accuracyContainer class="plot-container"></div>
+      </div>
+    </div>
     <div *ngIf="trainHistoryList.selectedOptions.hasValue()" class="prediction-container">
       <!--        <form *ngIf="predictionForm" [formGroup]="predictionForm">-->
       <h3 class="section-heading">Prediction</h3>
       <div class="dataset-view-content">
-        <div class="mat-elevation-z8" [ngClass]="{'hidden': !dataSource}">
-          <table mat-table [dataSource]="dataSource" *ngIf="dataSource">
+        <!--        <div class="mat-elevation-z8" [ngClass]="{'hidden': !dataSource}">-->
+        <!--          <table mat-table [dataSource]="dataSource" *ngIf="dataSource">-->
 
-            <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-              <th mat-header-cell *matHeaderCellDef> {{ column | titlecase }} </th>
-              <td mat-cell *matCellDef="let element" [contentEditable]="true"
-                  (input)="test(element, column, $event)"> {{ element[column] }} </td>
-            </ng-container>
+        <!--            <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">-->
+        <!--              <th mat-header-cell *matHeaderCellDef> {{ column | titlecase }} </th>-->
+        <!--              <td mat-cell *matCellDef="let element" [contentEditable]="true"-->
+        <!--                  (input)="test(element, column, $event)"> {{ element[column] }} </td>-->
+        <!--            </ng-container>-->
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
+        <!--            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
+        <!--            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>-->
+        <!--          </table>-->
+        <!--        </div>-->
         <!--          <div class="form-row">-->
         <!--          <ul>-->
         <!--              <mat-form-field subscriptSizing="dynamic" *ngFor="let column of projectService.dataset().inputColumns">-->
@@ -57,8 +64,5 @@
         <!--        </form>-->
       </div>
     </div>
-    <h3 class="section-heading">Loss Plot</h3>
-    <div #trainingHistoryContainer></div>
-
   </div>
 </div>

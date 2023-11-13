@@ -7,6 +7,7 @@ import {ModelBuilderService} from "../../../core/services/model-builder.service"
 import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../../shared/components/message-dialog/message-dialog.component";
 import {MatTableDataSource} from "@angular/material/table";
+import {areBuilderEqual} from "../../../shared/utils";
 
 @Component({
   selector: 'app-evaluation',
@@ -14,7 +15,8 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrls: ['./evaluation.component.scss']
 })
 export class EvaluationComponent {
-  @ViewChild('trainingHistoryContainer', {static: false}) trainingHistoryContainer!: ElementRef;
+  @ViewChild('lossContainer', {static: false}) lossContainer!: ElementRef;
+  @ViewChild('accuracyContainer', {static: false}) accuracyContainer!: ElementRef;
   @ViewChild('trainHistoryList') trainHistoryList: MatSelectionList | undefined;
   selectedRecord: TrainingRecords | null = null;
   trainingRecords: TrainingRecords[];
@@ -22,6 +24,7 @@ export class EvaluationComponent {
   randomExample: { [key: string]: any }[];
   dataSource: MatTableDataSource<any> | undefined;
   displayedColumns: string[] | undefined;
+  isSelectedRecordAlreadyLoaded: boolean = false;
 
   constructor(public projectService: ProjectService,
               private ml: MachineLearningService,
@@ -35,7 +38,10 @@ export class EvaluationComponent {
   ngOnInit() {
     this.displayedColumns = this.dataset.columns;
     this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.randomExample);
-    this.predict();
+
+    this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
+
+    // this.predict();
   }
 
   async ngAfterViewInit() {
@@ -46,15 +52,38 @@ export class EvaluationComponent {
     const selectedOption = this.trainHistoryList?.selectedOptions.selected[0];
     if (selectedOption) {
       this.selectedRecord = selectedOption.value;
+      this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
       await this.displayLossPlot();
+      await this.displayAccuracyPlot();
     }
   }
 
   async displayLossPlot() {
-    if (this.selectedRecord?.history) {
-      await this.ml.renderLossPlot(this.trainingHistoryContainer.nativeElement, this.selectedRecord?.history)
+    if (this.selectedRecord?.history.loss && this.selectedRecord?.history.val_loss) {
+      const values = [this.selectedRecord?.history.loss, this.selectedRecord?.history.val_loss];
+      const series = ['Loss', 'Val_Loss'];
+      const options = {
+        xLabel: "Epoch",
+        yLabel: "Loss",
+      }
+      await this.ml.renderPlot(this.lossContainer.nativeElement,values, series, options)
     } else {
-      this.trainingHistoryContainer.nativeElement.innerHTML = '';
+      this.lossContainer.nativeElement.innerHTML = '';
+    }
+  }
+
+  async displayAccuracyPlot() {
+    if (this.selectedRecord?.history.acc && this.selectedRecord?.history.val_acc) {
+      const values = [this.selectedRecord?.history.acc, this.selectedRecord?.history.val_acc];
+      const series = ['Accuracy', 'Val_Accuracy'];
+      const options = {
+        xLabel: "Epoch",
+        yLabel: "Accuracy",
+        // width: 200
+      }
+      await this.ml.renderPlot(this.accuracyContainer.nativeElement,values, series, options);
+    } else {
+      this.accuracyContainer.nativeElement.innerHTML = '';
     }
   }
 
@@ -69,6 +98,7 @@ export class EvaluationComponent {
       this.modelBuilderService.isInitialized = false;
       this.projectService.builder.set(record.builder);
       this.projectService.trainConfig.set(record.config);
+      this.isSelectedRecordAlreadyLoaded = true;
       this.dialog.open(MessageDialogComponent, {
         maxWidth: '600px',
         data: {
@@ -88,6 +118,7 @@ export class EvaluationComponent {
       });
     }
   }
+
   test(element: number, column: string, test: any) {
     console.log(element, column, test);
   }
