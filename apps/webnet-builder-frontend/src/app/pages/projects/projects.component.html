@@ -15,7 +15,11 @@
               Stored in {{ project.value.projectInfo.storeLocation }} at {{ project.value.projectInfo.lastModified | date: 'd.MMM y, H:mm:ss' }}
             </div>
             <div matListItemMeta>ID: {{ project.value.projectInfo.id }}</div>
-            <!--            <mat-icon matListItemIcon>delete</mat-icon>-->
+            <div matListItemMeta>
+              <button mat-icon-button (click)="deleteProject($event, project.value.projectInfo.name)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </mat-list-item>
         </mat-list>
       </ng-container>

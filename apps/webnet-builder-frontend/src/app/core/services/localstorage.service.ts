@@ -17,4 +17,11 @@ export class LocalstorageService {
     const projectsData = localStorage.getItem(this.localStorageKey);
     return projectsData ? new Map(JSON.parse(projectsData!)) : new Map();
   }
+
+  deleteProjectFromLocalStorage(name: string): boolean {
+    const projects = this.getProjectsFromLocalStorage();
+    const deleteSuccessfull = projects.delete(name);
+    localStorage.setItem(this.localStorageKey, JSON.stringify(Array.from(projects.entries())));
+    return deleteSuccessfull;
+  }
 }

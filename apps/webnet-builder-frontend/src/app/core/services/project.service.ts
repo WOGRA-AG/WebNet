@@ -160,6 +160,10 @@ export class ProjectService {
     }
   }
 
+  deleteProject(name: string): boolean {
+    return this.myProjects.delete(name) && this.localStorageService.deleteProjectFromLocalStorage(name);
+  }
+
   getTemplateProjectByName(name: string): any {
     const templateProject = this.templateProjects.get(name);
     return templateProject ? templateProject : null;

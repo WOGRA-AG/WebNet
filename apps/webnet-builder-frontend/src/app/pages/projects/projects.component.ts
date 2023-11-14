@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {InputDialogComponent} from "../../shared/components/input-dialog/input-dialog.component";
 import {v4 as uuidv4} from 'uuid';
 import {KeyValue} from "@angular/common";
+import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
 
 @Component({
   selector: 'app-projects',
@@ -75,5 +76,31 @@ export class ProjectsComponent {
       this.projectService.addProject(project);
       await this.router.navigate([`/projects/${project.projectInfo.name}`]);
     }
+  }
+
+  deleteProject(event: Event, name: string): void {
+    event.stopPropagation();
+    const project = this.projects.get(name);
+    if (this.projectService.deleteProject(name)) {
+      this.dialog.open(MessageDialogComponent, {
+        maxWidth: '600px',
+        data: {
+          title: 'Project deleted',
+          message: `You deleted the Project with the name ${project.projectInfo.name} and the id ${project.projectInfo.id} successfully!`,
+          warning: false
+        }
+      });
+      this.projects = this.projectService.getMyProjects();
+    } else {
+      this.dialog.open(MessageDialogComponent, {
+        maxWidth: '600px',
+        data: {
+          title: 'Deleting Project Failed',
+          message: `Deleting the Project with the name ${project.projectInfo.name} and the id ${project.projectInfo.id} failed!`,
+          warning: true
+        }
+      });
+    }
+
   }
 }
