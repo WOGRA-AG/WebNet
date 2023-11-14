@@ -12,7 +12,6 @@
         <span matListItemTitle>#{{record.id}} <span class="record-date" >{{record.date | date:'d. MMM yyyy, H:mm:ss'}}</span></span>
         <span matListItemLine><b>Epochs trained:</b> {{record.trainStats.epoch}}</span>
         <span matListItemLine><b>Accuracy:</b> {{record.trainStats.accuracy | number:'1.1-5'}} | <b>Loss:</b> {{record.trainStats.loss | number:'1.1-5'}}</span>
-<!--        <span matListItemLine>Loss: {{record.trainStats.loss}}</span>-->
       </mat-list-option>
     </mat-selection-list>
     <button [disabled]="isSelectedRecordAlreadyLoaded" mat-raised-button color="primary"

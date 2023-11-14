@@ -18,6 +18,7 @@ import {Builder} from "../interfaces/project";
 import {XY} from "../interfaces/interfaces";
 import {Lstm} from "../../shared/layer/lstm";
 import {Dropout} from "../../shared/layer/dropout";
+import {MatDialog} from "@angular/material/dialog";
 
 
 @Injectable({
@@ -103,7 +104,7 @@ export class ModelBuilderService {
     destination.addInputConnection(connection)
   }
 
-  createLayer(options: { layerType: LayerType, parameters?: any, position?: any }): Layer {
+  createLayer(options: { layerType: LayerType, parameters?: any, position?: any }): void {
     let layer;
     switch (options.layerType) {
       case LayerType.Input:
@@ -151,16 +152,9 @@ export class ModelBuilderService {
           this, this.fb);
         this.outputLayer = layer;
         break;
-      default:
-        // todo: throw instead error warning to the user
-        layer = new Dense(options.parameters ?? {units: 25, activation: 'softmax'},
-          options.position ?? {x: 300, y: 160},
-          this, this.fb);
-        break;
     }
     const id = layer.getLayerId();
     this.layerMap.set(id, layer);
-    return layer;
   }
 
   private getContainerWidthAndHeight(): { width: number, height: number } {
