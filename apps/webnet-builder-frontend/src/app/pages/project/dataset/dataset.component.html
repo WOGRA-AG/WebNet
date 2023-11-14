@@ -44,7 +44,7 @@
               )
       </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let input of displayedColumns;" [value]="input">{{input}}</mat-option>
+          <mat-option *ngFor="let input of columnNames;" [value]="input">{{input}}</mat-option>
         </mat-select>
         <mat-error *ngIf="datasetForm.get('input')?.hasError('required')">Input is required</mat-error>
       </mat-form-field>
@@ -58,7 +58,7 @@
               )
       </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let target of displayedColumns;" [value]="target">{{target}}</mat-option>
+          <mat-option *ngFor="let target of columnNames;" [value]="target">{{target}}</mat-option>
         </mat-select>
         <mat-error *ngIf="datasetForm.get('target')?.hasError('required')">Target is required</mat-error>
       </mat-form-field>
