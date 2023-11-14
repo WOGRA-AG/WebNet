@@ -25,6 +25,10 @@ export class SerializationService {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
+        transform: (value, columnOrHeader) => {
+          // todo: need better solution. fast workaround so i dont get null values after dynamic typing.
+          return value === '' ? ' ' : value;
+        },
         complete: (result: any) => {
           resolve(result);
         },

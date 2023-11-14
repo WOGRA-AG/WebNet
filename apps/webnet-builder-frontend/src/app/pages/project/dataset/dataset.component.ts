@@ -18,7 +18,8 @@ export class DatasetComponent {
   file: File | undefined;
   dataset: Dataset;
   trainConfig: TrainingConfig;
-  displayedColumns: string[] | undefined;
+  displayedColumns: { name: string, type: string }[] = [];
+  columnNames: string[] = [];
   dataSource: MatTableDataSource<any> | undefined;
 
   constructor(private projectService: ProjectService,
@@ -61,6 +62,7 @@ export class DatasetComponent {
     if (this.dataset.data.length > 0) {
       this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.dataset.data);
       this.displayedColumns = this.dataset.columns;
+      this.columnNames = this.displayedColumns.map(column => column.name);
       this.datasetForm.get('input')?.setValue(this.dataset.inputColumns);
     }
   }
@@ -95,12 +97,23 @@ export class DatasetComponent {
     if (this.file) {
       const name = this.file.name;
       const dataset = await this.serializationService.parseCSV(this.file);
-      const columns = dataset.meta.fields;
+      const columnNames = dataset.meta.fields;
+      const columns: {name: string, type: string}[] = [];
+      // todo: maybe not just look at the first row, but all?
+      const firstRow = dataset.data[0];
+
+      for (const name of columnNames) {
+        if (firstRow.hasOwnProperty(name)) {
+          const dataType = typeof firstRow[name];
+          columns.push({name: name, type: dataType});
+        }
+      }
+
       this.projectService.dataset.mutate((value: Dataset) => {
         value.fileName = name;
         value.data = dataset.data;
         value.columns = columns;
-        value.inputColumns = columns;
+        value.inputColumns = columnNames;
       });
       this.updateDataSource();
       this.initPaginator();

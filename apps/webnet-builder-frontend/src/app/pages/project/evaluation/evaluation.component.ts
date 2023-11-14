@@ -36,7 +36,8 @@ export class EvaluationComponent {
   }
 
   ngOnInit() {
-    this.displayedColumns = this.dataset.columns;
+    // todo: changed columns
+    // this.displayedColumns = this.dataset.columns;
     this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.randomExample);
 
     this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
