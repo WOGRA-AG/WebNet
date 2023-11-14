@@ -1,8 +1,7 @@
 <p *ngIf="!trainingRecords || trainingRecords.length === 0">There you have no Trainings done yet or did not save them.
   If
   you want to compare different
-  Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Save Training
-  and Results'</p>
+  Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Record Training and Results'</p>
 <div *ngIf="trainingRecords && trainingRecords.length > 0" class="two-column-container" >
   <div class="left-column">
     <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedContent()">
