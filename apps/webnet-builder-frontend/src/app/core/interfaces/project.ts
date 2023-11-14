@@ -20,7 +20,7 @@ export interface Dataset {
   type: string,
   fileName: string,
   data: { [key: string]: any }[],
-  columns: { name: string, type: string }[],
+  columns: { name: string, type: string, uniqueValues: number}[],
   inputColumns: string[],
   targetColumns: string[]
 }

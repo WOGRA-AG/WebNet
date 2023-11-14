@@ -18,7 +18,7 @@ export class DatasetComponent {
   file: File | undefined;
   dataset: Dataset;
   trainConfig: TrainingConfig;
-  displayedColumns: { name: string, type: string }[] = [];
+  displayedColumns: { name: string, type: string, uniqueValues: number }[] = [];
   columnNames: string[] = [];
   dataSource: MatTableDataSource<any> | undefined;
 
@@ -98,14 +98,16 @@ export class DatasetComponent {
       const name = this.file.name;
       const dataset = await this.serializationService.parseCSV(this.file);
       const columnNames = dataset.meta.fields;
-      const columns: {name: string, type: string}[] = [];
+      const columns: {name: string, type: string, uniqueValues: number}[] = [];
       // todo: maybe not just look at the first row, but all?
       const firstRow = dataset.data[0];
 
       for (const name of columnNames) {
         if (firstRow.hasOwnProperty(name)) {
           const dataType = typeof firstRow[name];
-          columns.push({name: name, type: dataType});
+          const values = dataset.data.map((data: any) => data[name]);
+          const uniqueValues = new Set(values).size;
+          columns.push({name: name, type: dataType, uniqueValues: uniqueValues});
         }
       }
 

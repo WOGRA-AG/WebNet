@@ -5,7 +5,7 @@
 .dataset-upload-content, .dataset-view-content, .dataset-config-content {
   margin-left: 0.5em;
   margin-bottom: 1rem;
-  width: 70%;
+  width: 90%;
 }
 
 .import-button {
@@ -38,8 +38,27 @@
 .additional-info {
   font-size: 10px;
   font-weight: 400;
+
+  .unique-values-info {
+    line-height: 11px;
+    font-size: 10px;
+    font-weight: 450;
+    font-style: italic;
+    color: gray;
+  }
+
+  .type-info {
+    font-size: 11px;
+    line-height: 12px;
+  }
+
+  p {
+    margin: 0;
+  }
 }
 
 .table-container {
   overflow-x: auto;
 }
+
+
