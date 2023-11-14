@@ -2,11 +2,15 @@
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   border: 1px solid black;
-  padding: 20px;
   margin: 0.5em;
 }
 
+.configuration-container {
+  padding: 20px;
+}
+
 .layer-components-container {
+  padding: 20px;
   .layer-components {
     padding: 10px;
   }

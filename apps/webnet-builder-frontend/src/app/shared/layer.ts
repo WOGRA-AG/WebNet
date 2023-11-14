@@ -26,7 +26,7 @@ export abstract class Layer {
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
     layerForm: FormGroup,
-    weights: Weights) {
+    weights?: Weights) {
     this.layerId = this.modelBuilderService.generateLayerId();
     this.position = position;
     this.tfjsLayer = tfjsLayer;
@@ -49,7 +49,7 @@ export abstract class Layer {
       .on("mouseleave", (event: any) => this.unhoverLayer(event));
 
     this.configuration.name = this.getLayerId();
-    this.weights = weights;
+    this.weights = weights ? weights : null;
   }
 
   getOutputConnection(): Connection | null {

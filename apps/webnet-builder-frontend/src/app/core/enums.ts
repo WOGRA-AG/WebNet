@@ -13,9 +13,11 @@ export enum TrainingExample {
 export enum LayerType {
   Input = "input",
   Dense = "dense",
+  Dropout = "dropout",
   Convolution = "convolution",
   Flatten = "flatten",
   Maxpooling = "maxpooling",
+  Lstm = "lstm",
   Output = "output"
 }
 

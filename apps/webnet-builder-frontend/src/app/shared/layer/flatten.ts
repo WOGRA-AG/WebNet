@@ -67,15 +67,6 @@ export class Flatten extends Layer {
         .style("fill", "#FF5733");
     }
 
-    if (flattenData.neuronCount > 8) {
-      flattenGrp.append("text")
-        .classed('untouchable', true)
-        .attr("x", 30)
-        .attr("y", startY + 7 * (2 * neuronRadius + neuronMargin) + 15)
-        .attr("text-anchor", "middle")
-        .text("...");
-    }
-
     this.addInputAnchor(flattenGrp);
     this.addOutputAnchor(flattenGrp);
     return flattenGrp;

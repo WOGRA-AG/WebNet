@@ -3,35 +3,28 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {Activation, Padding} from "../configuration";
+import {Activation, Filters, KernelSize, Padding, Strides} from "../configuration";
 import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Convolution extends Layer {
   override layerType = LayerType.Convolution;
-  constructor(parameters: {filters: number, kernelSize: number, strides: number, padding: string, activation: string, weights: Weights},
+
+  constructor(parameters: {
+                filters: number,
+                kernelSize: number,
+                strides: number,
+                padding: string,
+                activation: string,
+                weights: Weights
+              },
               position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Convolution',
       title: 'Convolution Layer Parameter',
-      formConfig: [{
-        key: 'filters',
-        label: 'Filters',
-        controlType: 'textbox',
-        type: 'number'
-      },
-        {
-          key: 'kernelSize',
-          label: 'Kernel Size',
-          controlType: 'textbox',
-          type: 'number'
-        },
-        {
-          key: 'strides',
-          label: 'Strides',
-          controlType: 'textbox',
-          type: 'number'
-        },
+      formConfig: [Filters,
+        KernelSize,
+        Strides,
         Padding,
         Activation
       ]

@@ -52,6 +52,7 @@ export class EvaluationComponent {
     const selectedOption = this.trainHistoryList?.selectedOptions.selected[0];
     if (selectedOption) {
       this.selectedRecord = selectedOption.value;
+      // todo: change boolean to id of record, so i can style the "loaded" list option
       this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
       await this.displayLossPlot();
       await this.displayAccuracyPlot();

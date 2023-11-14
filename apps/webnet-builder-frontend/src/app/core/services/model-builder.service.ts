@@ -16,6 +16,8 @@ import {Flatten} from "../../shared/layer/flatten";
 import {Maxpooling} from "../../shared/layer/maxpooling";
 import {Builder} from "../interfaces/project";
 import {XY} from "../interfaces/interfaces";
+import {Lstm} from "../../shared/layer/lstm";
+import {Dropout} from "../../shared/layer/dropout";
 
 
 @Injectable({
@@ -116,20 +118,30 @@ export class ModelBuilderService {
           options.position ?? {x: 300, y: 160},
           this, this.fb);
         break;
+      case LayerType.Dropout:
+        layer = new Dropout(options.parameters ?? {rate: 0.5},
+          options.position ?? {x: 350, y: 160},
+          this, this.fb);
+        break;
       case LayerType.Convolution:
         layer = new Convolution(options.parameters ??
           {filters: 3, kernelSize: 2, strides: 1, padding: 'valid', activation: 'relu'},
-          options.position ?? {x: 600, y: 160},
+          options.position ?? {x: 400, y: 160},
           this, this.fb);
         break;
       case LayerType.Flatten:
         layer = new Flatten(options.parameters ?? {shape: '', units: 500, filter: 3, kernelSize: 2},
-          options.position ?? {x: 500, y: 160},
+          options.position ?? {x: 450, y: 160},
           this, this.fb);
         break;
       case LayerType.Maxpooling:
         layer = new Maxpooling(options.parameters ?? {filters: 3, kernelSize: 2},
-          options.position ?? {x: 650, y: 160},
+          options.position ?? {x: 500, y: 160},
+          this, this.fb);
+        break;
+      case LayerType.Lstm:
+        layer = new Lstm(options.parameters ?? {units: 1, activation: 'tanh'},
+          options.position ?? {x: 550, y: 160},
           this, this.fb);
         break;
       case LayerType.Output:

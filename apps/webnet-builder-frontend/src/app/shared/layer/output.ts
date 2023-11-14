@@ -67,15 +67,6 @@ export class Output extends Layer {
         .style("fill", "#5733FF");
     }
 
-    if (outputData.neuronCount > 7) {
-      outputGrp.append("text")
-        .classed('untouchable', true)
-        .attr("x", 30)
-        .attr("y", startY + 7 * (2 * neuronRadius + neuronMargin) + 15)
-        .attr("text-anchor", "middle")
-        .text("...");
-    }
-
     this.addInputAnchor(outputGrp);
     return outputGrp;
   }

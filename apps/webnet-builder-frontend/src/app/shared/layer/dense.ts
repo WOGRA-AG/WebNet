@@ -69,14 +69,6 @@ export class Dense extends Layer {
         .style("fill", "#FF5733");
     }
 
-    if (denseData.neuronCount > 8) {
-      denseGrp.append("text")
-        .classed('untouchable', true)
-        .attr("x", 30)
-        .attr("y", startY + 7 * (2 * neuronRadius + neuronMargin) + 15)
-        .attr("text-anchor", "middle")
-        .text("...");
-    }
     this.addOutputAnchor(denseGrp);
     this.addInputAnchor(denseGrp);
     return denseGrp;

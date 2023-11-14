@@ -1,8 +1,9 @@
-import {Component, effect, EventEmitter, HostListener, Input, Output, ViewEncapsulation} from '@angular/core';
+import {Component, HostListener, ViewEncapsulation} from '@angular/core';
 import {ModelBuilderService} from "../../../core/services/model-builder.service";
 import {LayerType} from "../../../core/enums";
 import {ProjectService} from "../../../core/services/project.service";
 import {FormControl} from "@angular/forms";
+import {areBuilderEqual} from "../../../shared/utils";
 
 
 @Component({
@@ -47,36 +48,12 @@ export class NnBuilderComponent {
     this.updateBuilder();
   }
 
-  areBuilderEqual(obj1: any, obj2: any): boolean {
-    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-      return obj1 === obj2;
-    }
 
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-
-    if (keys1.length !== keys2.length) {
-      return false;
-    }
-
-    for (const key of keys1) {
-      if (!keys2.includes(key)) {
-        return false;
-      }
-
-      if (!this.areBuilderEqual(obj1[key], obj2[key])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 
   updateBuilder(): void {
     const newBuilder = this.modelBuilderService.generateBuilderJSON();
     const oldBuilder = this.projectService.builder();
-
-    if (!this.areBuilderEqual(newBuilder, oldBuilder)) {
+    if (!areBuilderEqual(newBuilder, oldBuilder)) {
       this.projectService.initNewWeights.set(true);
       this.projectService.builder.set(newBuilder);
     }

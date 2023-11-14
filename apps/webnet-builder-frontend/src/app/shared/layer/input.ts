@@ -7,12 +7,12 @@ import {NonNullableFormBuilder} from "@angular/forms";
 import {validateShapeArray} from "../../core/validators";
 import {parseShapeString} from "../utils";
 import {Shape} from "../configuration";
-import {Weights, XY} from "../../core/interfaces/interfaces";
+import {XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
 
 export class Input extends Layer{
   override layerType = LayerType.Input;
-  constructor(parameters: {shape: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {shape: string}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Input',
       title: 'Input Layer Parameter',
@@ -23,7 +23,7 @@ export class Input extends Layer{
     const layerForm = fb.group({
       shape: [parameters.shape, [validateShapeArray]]
     });
-    super(tf.input, position, config, modelBuilderService, layerForm, parameters?.weights);
+    super(tf.input, position, config, modelBuilderService, layerForm);
   }
 
   override getModelParameters(): any {
@@ -64,12 +64,12 @@ export class Input extends Layer{
       .attr("text-anchor", "middle")
       .text(inputData.name);
 
-    inputGrp.append("text")
-      .attr("x", 30)
-      .attr("y", 30)
-      .attr("text-anchor", "middle")
-      .text(`Shape: [${inputData.shape.join(", ")}]`)
-      .style("font-size", "10px");
+    // inputGrp.append("text")
+    //   .attr("x", 30)
+    //   .attr("y", 30)
+    //   .attr("text-anchor", "middle")
+    //   .text(`Shape: [${inputData.shape.join(", ")}]`)
+    //   .style("font-size", "10px");
 
     this.addOutputAnchor(inputGrp);
     return inputGrp;
