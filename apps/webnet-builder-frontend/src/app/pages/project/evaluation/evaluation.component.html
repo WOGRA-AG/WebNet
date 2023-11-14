@@ -25,8 +25,9 @@
     <div class="model-info">
       <h3 class="section-heading">Model Info</h3>
       <div>
-        <span>Epochs trained: {{selectedRecord?.trainStats?.epoch}}</span>
-        <span>Loss on Validation Data: {{selectedRecord?.trainStats?.loss}}</span>
+        <p><b>#{{selectedRecord?.id}}</b> - <span class="record-date" >{{selectedRecord?.date | date:'d. MMM yyyy, H:mm:ss'}}</span></p>
+        <p><b>Epochs trained:</b> {{selectedRecord?.trainStats?.epoch}}</p>
+        <p><b>Accuracy:</b> {{selectedRecord?.trainStats?.accuracy | number:'1.1-5'}} | <b>Loss:</b> {{selectedRecord?.trainStats?.loss | number:'1.1-5'}}</p>
       </div>
     </div>
     <div class="plot-section">
