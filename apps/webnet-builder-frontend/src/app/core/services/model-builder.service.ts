@@ -108,13 +108,13 @@ export class ModelBuilderService {
     switch (options.layerType) {
       case LayerType.Input:
         const inputPosition = this.getInputOutputPosition();
-        layer = new Input(options.parameters ?? {shape: '3'},
+        layer = new Input(options.parameters ?? {shape: '13'},
           options.position ?? {x: 30, y: inputPosition.y},
           this, this.fb);
         this.inputLayer = layer;
         break;
       case LayerType.Dense:
-        layer = new Dense(options.parameters ?? {units: 1, activation: 'relu'},
+        layer = new Dense(options.parameters ?? {units: 32, activation: 'relu'},
           options.position ?? {x: 300, y: 160},
           this, this.fb);
         break;
@@ -130,7 +130,7 @@ export class ModelBuilderService {
           this, this.fb);
         break;
       case LayerType.Flatten:
-        layer = new Flatten(options.parameters ?? {shape: '', units: 500, filter: 3, kernelSize: 2},
+        layer = new Flatten(options.parameters ?? {shape: '', units: 16, filter: 3, kernelSize: 2},
           options.position ?? {x: 450, y: 160},
           this, this.fb);
         break;
