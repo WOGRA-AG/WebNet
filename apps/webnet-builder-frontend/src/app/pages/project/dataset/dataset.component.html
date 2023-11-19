@@ -7,32 +7,45 @@
 </div>
 <h3 class="section-heading">Dataset</h3>
 <div class="dataset-view-content">
-  <p *ngIf="dataset.data.length === 0"> No Dataset provided</p>
-  <p *ngIf="dataset">{{dataset.fileName}}</p>
-  <div class="mat-elevation-z8" [ngClass]="{'hidden': !dataSource}">
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" *ngIf="dataSource">
-        <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.name">
-          <th mat-header-cell *matHeaderCellDef> {{ column.name | titlecase }}
-            <div class="additional-info">
-              <p *ngIf="column.type" class="type-info">{{column.type}}</p>
-              <p *ngIf="column.uniqueValues" class="unique-values-info">{{column.uniqueValues}} Uniques</p>
-            </div>
-          </th>
-          <td mat-cell *matCellDef="let element"> {{ element[column.name] }} </td>
-<!--          <td mat-footer-cell *matFooterCellDef>{{column.uniqueValues}} Uniques</td>-->
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnNames;"></tr>
-<!--        <tr mat-footer-row *matFooterRowDef="columnNames;"></tr>-->
-      </table>
+  <p *ngIf="projectService.dataset().data.length === 0"> No Dataset provided</p>
+  <p *ngIf="projectService.dataset()">{{projectService.dataset().fileName}}</p>
+  <div [ngClass]="{'hidden': projectService.dataset().data.length === 0}">
+    <mat-radio-group aria-label="Select an option" required [(ngModel)]="selectedTable" (ngModelChange)="updateDataSource($event)">
+      <mat-radio-button value="original">Original Dataset</mat-radio-button>
+      <mat-radio-button value="preprocessed">Preprocessed Dataset</mat-radio-button>
+    </mat-radio-group>
+    <div class="mat-elevation-z8">
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" *ngIf="dataSource">
+            <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.name">
+              <th mat-header-cell *matHeaderCellDef> {{ column.name | titlecase }}
+                <div class="additional-info">
+                  <p *ngIf="column.type" class="type-info">{{column.type}}</p>
+                  <p *ngIf="column.uniqueValues" class="unique-values-info">{{column.uniqueValues}} nUnique</p>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let element" [matTooltip]="element[column.name]">
+                <ng-container *ngIf="column.type === 'float32'; else noFormatting">
+                  {{ element[column.name] | number:'1.1-4' }}
+                </ng-container>
+                <ng-template #noFormatting>
+                  {{ element[column.name] }}
+                </ng-template>
+              </td>
+              <!--          <td mat-footer-cell *matFooterCellDef>{{column.uniqueValues}} Uniques</td>-->
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnNames;"></tr>
+            <!--        <tr mat-footer-row *matFooterRowDef="columnNames;"></tr>-->
+          </table>
+        </div>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                     showFirstLastButtons>
+      </mat-paginator>
     </div>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                   showFirstLastButtons>
-    </mat-paginator>
   </div>
 </div>
-<ng-container *ngIf="dataset.data.length > 0">
+<ng-container *ngIf="projectService.dataset().data.length > 0">
   <h3 class="section-heading">Configuration</h3>
   <div class="dataset-config-content">
     <h4 class="bold-section-title">Choose Model Input & Target Columns</h4>

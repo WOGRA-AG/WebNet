@@ -23,7 +23,6 @@ export class EvaluationComponent {
   dataset: Dataset;
   randomExample: { [key: string]: any }[];
   dataSource: MatTableDataSource<any> | undefined;
-  displayedColumns: string[] | undefined;
   isSelectedRecordAlreadyLoaded: boolean = false;
 
   constructor(public projectService: ProjectService,
@@ -36,10 +35,7 @@ export class EvaluationComponent {
   }
 
   ngOnInit() {
-    // todo: changed columns
-    // this.displayedColumns = this.dataset.columns;
     this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.randomExample);
-
     this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
 
     // this.predict();
@@ -90,8 +86,8 @@ export class EvaluationComponent {
   }
 
   predict() {
-    const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
-    this.ml.predict(X, Y);
+    // const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
+    // this.ml.predict(X, Y);
   }
 
   loadTrainingRecord(): void {

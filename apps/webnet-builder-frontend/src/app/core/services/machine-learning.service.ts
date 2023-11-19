@@ -8,9 +8,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
 import {optimizers} from "../../shared/tf_objects/optimizers";
 import {losses} from "../../shared/tf_objects/losses";
-import {Dataset} from "../interfaces/project";
 import {ModelBuilderService} from "./model-builder.service";
 import {Tensor} from "@tensorflow/tfjs";
+
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,9 @@ export class MachineLearningService {
               public dialog: MatDialog) {
   }
 
+  async ngOnInit(): Promise<void> {
+    await tf.ready();
+  }
   stopTraining(): void {
     this.stopTrainingFlag = true;
   }
@@ -124,29 +127,18 @@ export class MachineLearningService {
     }
   }
 
-  extractFeaturesAndTargets(dataset: Dataset): [Tensor, Tensor] {
+  async extractFeaturesAndTargets(): Promise<[Tensor, Tensor]> {
+    const dataset = this.projectService.dataset();
     const inputColumns: string[] = dataset.inputColumns;
     const targetColumns: string[] = dataset.targetColumns;
-    const numSamples: number = dataset.data.length;
 
-    const X = dataset.data.map((item) => {
-      const values = [];
-      for (const column of inputColumns) {
-        values.push(item[column]);
-      }
-      return values;
-    });
+    const df = await this.projectService.dataframe();
+    const inputs = df.loc({columns: inputColumns});
+    const targets = df.loc({columns: targetColumns});
 
-    // todo: mapping is wrong, only works for one target predictions
-    const Y = dataset.data.map((item) => {
-      const values = [];
-      for (const column of targetColumns) {
-        values.push(item[column]);
-      }
-      return values;
-    });
-
-    return [tf.tensor(X, [numSamples, inputColumns.length]), tf.tensor(Y, [numSamples, targetColumns.length])];
+    inputs.print();
+    targets.print();
+    return [inputs.tensor, targets.tensor];
   }
 
   async train(X: Tensor, Y: Tensor, plotContainer: HTMLElement): Promise<any> {
@@ -155,9 +147,6 @@ export class MachineLearningService {
       const model = await this.modelBuilderService.generateModel(parameter.useExistingWeights);
       this.projectService.model.set(model);
     }
-
-    const normalizedX = this.normalize(X);
-    const normalizedY = this.normalize(Y);
 
     const EPOCHS = parameter.epochs;
     const BATCH_SIZE = parameter.batchSize;
@@ -216,7 +205,7 @@ export class MachineLearningService {
     try {
       this.compile();
       // todo: use fitDataset instead for more memory-efficiency?
-      const history = await this.projectService.model()?.fit(normalizedX, normalizedY, {
+      const history = await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
         validationSplit: VALIDATION_SPLIT,
         epochs: EPOCHS,
@@ -243,7 +232,11 @@ export class MachineLearningService {
     // await tfvis.show.history(htmlContainer, history, ['loss', 'acc']);
   }
 
-  async renderPlot(htmlContainer: HTMLElement, values: XY[][], series: string[], options: {xLabel: string, yLabel: string, width?: number}): Promise<void> {
+  async renderPlot(htmlContainer: HTMLElement, values: XY[][], series: string[], options: {
+    xLabel: string,
+    yLabel: string,
+    width?: number
+  }): Promise<void> {
     await tfvis.render.linechart(htmlContainer, {values: values, series: series}, options);
   }
 }

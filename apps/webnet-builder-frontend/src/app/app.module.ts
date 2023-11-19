@@ -21,6 +21,7 @@ import { DatasetComponent } from './pages/project/dataset/dataset.component';
 import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
 import { MessageDialogComponent } from './shared/components/message-dialog/message-dialog.component';
 import { EvaluationComponent } from './pages/project/evaluation/evaluation.component';
+import {NgOptimizedImage} from "@angular/common";
 
 
 
@@ -50,6 +51,7 @@ import { EvaluationComponent } from './pages/project/evaluation/evaluation.compo
         MaterialModule,
         ReactiveFormsModule,
         FormsModule,
+        NgOptimizedImage,
     ],
   providers: [],
   bootstrap: [AppComponent]

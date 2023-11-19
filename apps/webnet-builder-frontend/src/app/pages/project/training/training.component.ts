@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {TaskDialogComponent} from "../../../shared/components/task-dialog/task-dialog.component";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import {ProjectService} from "../../../core/services/project.service";
+import * as dfd from "danfojs";
 
 @Component({
   selector: 'app-training',
@@ -91,13 +92,19 @@ export class TrainingComponent {
     return history.map((value: number, epoch: number) => ({x: epoch, y: value}));
   }
 
+  minMaxScale(df: dfd.DataFrame) {
+    let scaler = new dfd.MinMaxScaler();
+    scaler.fit(df['Passengerid']);
+  }
+
   async train(): Promise<void> {
     const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
-      const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
+      const [X, Y] = await this.ml.extractFeaturesAndTargets();
 
       const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
       this.ml.updateWeights();
+
       if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {
         const val_loss = this.mapHistoryRecord(history.history['val_loss']);
         const loss = this.mapHistoryRecord(history.history['loss']).splice(0, val_loss.length);

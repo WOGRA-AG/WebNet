@@ -156,6 +156,6 @@ export class MnistTemplate {
   }
 
   getDataset(): Dataset {
-    return {type: 'string', data: [{'text': 'MNIST DATASET!'}], fileName: 'mnist.csv', columns: [], inputColumns: [], targetColumns: []};
+    return {data: [{'text': 'MNIST DATASET!'}], fileName: 'mnist.csv', columns: [], inputColumns: [], targetColumns: []};
   }
 }

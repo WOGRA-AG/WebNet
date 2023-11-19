@@ -15,6 +15,9 @@ import {LayerType, StorageOption} from "../enums";
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
 import {TrainStats} from "../interfaces/interfaces";
+import * as dfd from "danfojs";
+import {DataFrame, Series} from "danfojs";
+
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +27,7 @@ export class ProjectService {
   private templateProjects: Map<string, Project> = new Map();
   // Signals
   projectSubject: BehaviorSubject<Project | null> = new BehaviorSubject<Project | null>(null);
+  // todo: initial value. getter!
   projectInfo = signal<ProjectInfo>({
     id: '',
     name: '',
@@ -31,13 +35,19 @@ export class ProjectService {
     storeLocation: StorageOption.Unknown
   })
   dataset = signal<Dataset>({
-    type: 'text',
     data: [{'text': 'Das ist ein Test und nur ein Test!'}],
     fileName: '',
     columns: [],
     inputColumns: [],
     targetColumns: []
   });
+
+  dataframe = computed(async() => {
+    const dataset = this.dataset();
+    const df = new dfd.DataFrame(dataset.data);
+    await tf.ready();
+    return this.preprocessData(df);
+  })
   builder = signal<Builder>({
     layers: [],
     connections: []
@@ -106,6 +116,7 @@ export class ProjectService {
       id: trainings.length + 1,
       date: new Date(),
       config: this.trainConfig(),
+      datasetName: this.dataset().fileName,
       builder: this.builder(),
       trainStats: trainStats,
       history: history
@@ -141,7 +152,7 @@ export class ProjectService {
         lastModified: new Date(),
         storeLocation: StorageOption.InMemory
       },
-      dataset: {type: '', data: [], fileName: '', columns: [], inputColumns: [], targetColumns: []},
+      dataset: {data: [], fileName: '', columns: [], inputColumns: [], targetColumns: []},
       trainConfig: {
         epochs: 100,
         batchSize: 32,
@@ -190,4 +201,49 @@ export class ProjectService {
     });
     this.localStorageService.saveProjectInLocalStorage(name, project);
   }
+
+  ordinalEncode(data: string[]) {
+    // const vocab = Array.from(new Set(data));
+    // const ordinalEncodedData = data.map(value => vocab.indexOf(value));
+    // return ordinalEncodedData;
+  }
+
+  oneHotEncode(data: number[]) {
+    // const vocab = new Set(data);
+    // const oneHotEncodedData = tf.oneHot(data, vocab.size);
+    // return oneHotEncodedData;
+  }
+
+
+  minMaxEncode(series: Series): Series {
+    const scaler = new dfd.MinMaxScaler();
+    scaler.fit(series);
+    return scaler.transform(series);
+  }
+
+  labelEncode(series: Series): Series {
+    let encode = new dfd.LabelEncoder();
+    encode.fit(series);
+    return encode.transform(series.values);
+  }
+
+  preprocessData(df: DataFrame): DataFrame {
+    this.dataset().columns.forEach(column => {
+      console.log(column.name, column.type);
+      if ((column.type === 'int32' || column.type === 'float32') && column.uniqueValues > 2 && column.uniqueValues < df.shape[0]) {
+        df[column.name] = this.minMaxEncode(df[column.name]);
+        console.log("MINMAX");
+      }
+      else if (column.type === 'string') {
+        df[column.name] = this.labelEncode(df[column.name]);
+        console.log("LABEL ENCODER")
+      } else {
+        console.log("NO ENCODER");
+      }
+      console.log("========");
+    })
+    return df;
+    // todo: warum werden nicht alle columns gescheid umgewandelt, z.b. age?
+  }
+
 }

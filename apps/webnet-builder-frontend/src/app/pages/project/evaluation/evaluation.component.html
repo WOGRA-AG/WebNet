@@ -1,7 +1,7 @@
-<p *ngIf="!trainingRecords || trainingRecords.length === 0">There you have no Trainings done yet or did not save them.
+<p *ngIf="!trainingRecords || trainingRecords.length === 0" class="no-training-msg">You have no Trainings done yet or did not save them.
   If
   you want to compare different
-  Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Record Training and Results'</p>
+  Models and their configurations with each other, please select the Checkbox on the Training Page saying 'Record Training and Results' before starting your Training.</p>
 <div *ngIf="trainingRecords && trainingRecords.length > 0" class="two-column-container" >
   <div class="left-column">
     <mat-selection-list #trainHistoryList [multiple]="false" (selectionChange)="getSelectedContent()">
@@ -24,6 +24,7 @@
       <h3 class="section-heading">Model Info</h3>
       <div>
         <p><b>#{{selectedRecord?.id}}</b> - <span class="record-date" >{{selectedRecord?.date | date:'d. MMM yyyy, H:mm:ss'}}</span></p>
+        <p><b>Trained on:</b> {{selectedRecord?.datasetName}}</p>
         <p><b>Epochs trained:</b> {{selectedRecord?.trainStats?.epoch}}</p>
         <p><b>Accuracy:</b> {{selectedRecord?.trainStats?.accuracy | number:'1.1-5'}} | <b>Loss:</b> {{selectedRecord?.trainStats?.loss | number:'1.1-5'}}</p>
       </div>
