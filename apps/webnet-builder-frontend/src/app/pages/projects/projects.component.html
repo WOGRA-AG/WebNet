@@ -1,8 +1,8 @@
 <div class="content-container">
   <mat-card class="projects-card">
     <mat-card-header>
-      <mat-card-title>Your Projects</mat-card-title>
-      <mat-card-subtitle>All Projects in Progress</mat-card-subtitle>
+      <mat-card-title class="card-colored-title">Projects Overview</mat-card-title>
+      <mat-card-subtitle>List of all Projects you are working on</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <ng-container *ngIf="projects && projects.size > 0; else noProjects">
@@ -10,7 +10,7 @@
           <mat-list-item role="listitem" [routerLink]="['/projects/' + project.key]"
                          *ngFor="let project of projects | keyvalue: lastModifiedOrder">
             <mat-icon matListItemIcon>folder</mat-icon>
-            <div matListItemTitle>{{ project.value.projectInfo.name | uppercase}}</div>
+            <div matListItemTitle style="color: #3f51b5">{{ project.value.projectInfo.name | uppercase}}</div>
             <div matListItemLine>
               Updated in {{ project.value.projectInfo.storeLocation }} at {{ project.value.projectInfo.lastModified | date: 'd.MMM y, H:mm:ss' }}
             </div>
@@ -37,7 +37,7 @@
   <div class="flex-container">
     <mat-card class="projects-card">
       <mat-card-header>
-        <mat-card-title>Project Templates</mat-card-title>
+        <mat-card-title class="card-colored-title">Project Templates</mat-card-title>
         <mat-card-subtitle>Open Preconfigured Projects</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
@@ -56,7 +56,7 @@
 
     <mat-card class="projects-card">
       <mat-card-header>
-        <mat-card-title>Import Project</mat-card-title>
+        <mat-card-title class="card-colored-title">Import Project</mat-card-title>
         <mat-card-subtitle>Open Projects via Zip File</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>

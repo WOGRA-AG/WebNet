@@ -2,7 +2,14 @@
   .mat-stepper-horizontal {
     .mat-step-header {
       height: 40px;
+
+      .mat-step-label-selected {
+        .mat-step-text-label {
+          font-weight: bold;
+        }
+      }
     }
+
     .mat-stepper-horizontal-line {
       min-width: 200px;
       flex: none;

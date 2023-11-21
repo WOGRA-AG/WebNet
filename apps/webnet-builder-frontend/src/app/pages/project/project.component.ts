@@ -11,7 +11,15 @@ import {ModelBuilderService} from "../../core/services/model-builder.service";
 export class ProjectComponent {
   projectName: string;
   datasetError = computed(() => {
-    return this.projectService.dataset().data.length <= 0 ? true : false;
+    const dataset = this.projectService.dataset();
+    if (dataset.data.length <= 0) {
+      return 'Please import a dataset to proceed.';
+    } else if (dataset.inputColumns.length <= 0) {
+      return 'Please specify at least one input column for the machine learning model.';
+    } else if (dataset.targetColumns.length <= 0) {
+      return 'Please specify at least one target column for the machine learning model.';
+    }
+    return null;
   })
   modelError = computed(() => {
     return this.projectService.model() === null ? true : false;

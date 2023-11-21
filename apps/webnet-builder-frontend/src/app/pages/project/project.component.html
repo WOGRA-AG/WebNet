@@ -1,6 +1,6 @@
 <mat-stepper [linear]="false" #stepper>
   <!--  Dataset  -->
-  <mat-step label="Dataset" [completed]="false" [errorMessage]="'No Dataset available'" [hasError]="datasetError()"
+  <mat-step label="Dataset" [completed]="false" [errorMessage]="datasetError() ?? ''" [hasError]="datasetError() !== null"
             #dataset_step>
 <!--    <h2 class="step-title">Dataset</h2>-->
     <div class="dataset-section">
@@ -8,7 +8,7 @@
     </div>
   </mat-step>
   <!--  Modeling  -->
-  <mat-step label="Modeling" [completed]="false" [errorMessage]="'Your Model is not ready.'" [hasError]="modelError()"
+  <mat-step label="Modeling" [completed]="false" [errorMessage]="'Please build and connect your model to proceed.'" [hasError]="modelError()"
             #modeling_step>
 <!--    <h2 class="step-title">Modeling</h2>-->
     <div class="modeling-section">
