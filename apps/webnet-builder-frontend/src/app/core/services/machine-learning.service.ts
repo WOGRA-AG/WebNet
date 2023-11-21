@@ -190,7 +190,7 @@ export class MachineLearningService {
     const callbacks: any[] = [fitCallback];
 
     if (parameter.accuracyPlot) {
-      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['acc'], {
+      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['acc', 'val_acc'], {
         callbacks: ['onEpochEnd'],
         xLabel: 'Epoch',
         yLabel: 'Accuracy',
