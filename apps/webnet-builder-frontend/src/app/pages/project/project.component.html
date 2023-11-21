@@ -2,7 +2,7 @@
   <!--  Dataset  -->
   <mat-step label="Dataset" [completed]="false" [errorMessage]="'No Dataset available'" [hasError]="datasetError()"
             #dataset_step>
-    <h2 class="step-title">Dataset</h2>
+<!--    <h2 class="step-title">Dataset</h2>-->
     <div class="dataset-section">
       <app-dataset></app-dataset>
     </div>
@@ -10,28 +10,28 @@
   <!--  Modeling  -->
   <mat-step label="Modeling" [completed]="false" [errorMessage]="'Your Model is not ready.'" [hasError]="modelError()"
             #modeling_step>
-    <h2 class="step-title">Modeling</h2>
+<!--    <h2 class="step-title">Modeling</h2>-->
     <div class="modeling-section">
       <app-nn-builder *ngIf="stepper.selected == modeling_step"></app-nn-builder>
     </div>
   </mat-step>
   <!--  Training  -->
   <mat-step label="Training" [completed]="false" #training_step>
-    <h2 class="step-title">Training</h2>
+<!--    <h2 class="step-title">Training</h2>-->
     <div class="training-section">
       <app-training *ngIf="stepper.selected == training_step"></app-training>
     </div>
   </mat-step>
   <!--  Evaluation  -->
   <mat-step label="Evaluation" [completed]="false" #evaluation_step>
-    <h2 class="step-title">Evaluation</h2>
+<!--    <h2 class="step-title">Evaluation</h2>-->
     <div class="evaluation-section">
       <app-evaluation *ngIf="stepper.selected == evaluation_step"></app-evaluation>
     </div>
   </mat-step>
   <!--  Saving/Export  -->
   <mat-step label="Export" [completed]="false" #export_step>
-    <h2 class="step-title">Export</h2>
+<!--    <h2 class="step-title">Export</h2>-->
     <div class="export-section">
       <app-export *ngIf="stepper.selected == export_step"></app-export>
     </div>

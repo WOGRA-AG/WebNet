@@ -3,7 +3,7 @@
   <p>Export your project files as a ZIP archive or in store them in Localstorage, enabling you to import and use them later for future use.</p>
   <div>
     <mat-checkbox class="all-checkbox"
-                  color="accent"
+                  color="primary"
                   [checked]="allChecked"
                   [indeterminate]="someChecked()"
                   (change)="setAll($event.checked)">
@@ -11,7 +11,7 @@
     </mat-checkbox>
     <ul>
       <li *ngFor="let section of sections|keyvalue: fixedOrder">
-        <mat-checkbox color="primary"
+        <mat-checkbox color="accent"
                       [(ngModel)]="section.value.checked"
                       [disabled]="section.value.disabled"
                       (ngModelChange)="updateAllChecked()">
