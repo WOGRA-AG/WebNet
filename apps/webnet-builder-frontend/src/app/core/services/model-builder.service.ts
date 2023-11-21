@@ -208,6 +208,11 @@ export class ModelBuilderService {
     }
   }
 
+  getDataInputShape(): number[] {
+    const shape = this.inputLayer?.getShape();
+    return shape ? shape : [];
+  }
+
   async generateModel(useExistingWeights: boolean = true): Promise<LayersModel | null> {
     try {
       await tf.ready();
@@ -215,7 +220,6 @@ export class ModelBuilderService {
 
       let layer: Layer | null | undefined = this.inputLayer;
       let hidden = input;
-
       while (layer?.getNextLayer()) {
         const nextLayer = layer?.getNextLayer();
         const parameters = nextLayer?.getModelParameters(useExistingWeights);
@@ -237,12 +241,20 @@ export class ModelBuilderService {
   updateWeights(model: tf.LayersModel): Builder {
     this.layerMap.forEach((layer) => {
       const layerWeights = model.getLayer(layer.getLayerId()).getWeights();
-      if (layerWeights && layerWeights.length > 0) {
-        const [weights, bias] =
-          layerWeights.map(weight => {
-            return {values: Object.values(weight.dataSync()), shape: weight.shape}
-          });
-        layer.updateWeights({weights: weights, bias: bias});
+      if (layerWeights) {
+        if (layerWeights.length === 2) {
+          const [weights, bias] =
+            layerWeights.map(weight => {
+              return {values: Object.values(weight.dataSync()), shape: weight.shape}
+            });
+          layer.updateWeights({weights: weights, bias: bias});
+        } else if (layerWeights.length === 3) {
+          const [weights, recurrentWeights, bias] =
+            layerWeights.map(weight => {
+              return {values: Object.values(weight.dataSync()), shape: weight.shape}
+            });
+          layer.updateWeights({weights: weights, recurrentWeights: recurrentWeights, bias: bias});
+        }
       }
     });
     return this.generateBuilderJSON();

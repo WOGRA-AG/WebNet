@@ -25,7 +25,7 @@
                 </div>
               </th>
               <td mat-cell *matCellDef="let element" [matTooltip]="element[column.name]">
-                <ng-container *ngIf="column.type === 'float32'; else noFormatting">
+                <ng-container *ngIf="column.type === 'float32' || selectedTable === 'preprocessed'; else noFormatting">
                   {{ element[column.name] | number:'1.1-4' }}
                 </ng-container>
                 <ng-template #noFormatting>

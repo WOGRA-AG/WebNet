@@ -33,7 +33,7 @@ export const Shape = {
   label: 'Shape',
   controlType: 'textbox',
   type: 'text',
-  tooltip: 'A shape, not including the batch size. For instance, shape=[32] indicates that the expected input will be batches of 32-dimensional vectors.',
+  tooltip: 'Defines the shape of the input data, excluding the batch size. For example, shape=[6] indicates that each input in a batch will have 6 features. For time series data, use a 2D array like [timesteps, features], where timesteps represent the sequence length and features represent the number of features at each time step.'
 };
 
 export const Padding = {

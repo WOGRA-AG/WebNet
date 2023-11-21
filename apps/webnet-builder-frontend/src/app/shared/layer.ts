@@ -67,7 +67,12 @@ export abstract class Layer {
     if (this.weights && Object.keys(this.weights).length > 0) {
       const weights = this.weights.weights;
       const bias = this.weights.bias;
-      parameters.weights = {weights: weights, bias: bias}
+      const recurrentWeights = this.weights.recurrentWeights;
+      parameters.weights = recurrentWeights ? {
+        weights: weights,
+        recurrentWeights: recurrentWeights,
+        bias: bias
+      } : {weights: weights, bias: bias};
     }
     return parameters;
   }
@@ -75,10 +80,16 @@ export abstract class Layer {
   getModelParameters(useExistingWeights: boolean = true): any {
     const parameters = this.layerForm.getRawValue();
     parameters.name = this.getLayerId();
+
     if (this.weights && useExistingWeights) {
       const weights = this.weights.weights;
       const bias = this.weights.bias;
-      parameters.weights = [
+      const recurrentWeights = this.weights.recurrentWeights;
+      parameters.weights = recurrentWeights ? [
+        tf.tensor(weights.values, weights.shape),
+        tf.tensor(recurrentWeights.values, recurrentWeights.shape),
+        tf.tensor(bias.values, bias.shape)
+      ] : [
         tf.tensor(weights.values, weights.shape),
         tf.tensor(bias.values, bias.shape)
       ];

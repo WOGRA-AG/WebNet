@@ -148,12 +148,16 @@ export class MachineLearningService {
       this.projectService.model.set(model);
     }
 
+    const shape = this.modelBuilderService.getDataInputShape();
+    const reshapedX= X.reshape([X.shape[0], ...shape]);
+    const reshapedY = Y;
+
     const EPOCHS = parameter.epochs;
     const BATCH_SIZE = parameter.batchSize;
     const VALIDATION_SPLIT = parameter.validationSplit;
     const SHUFFLE = parameter.shuffle;
     const YIELD_EVERY = 'auto';
-    const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
+    const BATCHES_PER_EPOCH = Math.ceil(reshapedX.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
 
     const fitCallback = {
@@ -204,8 +208,10 @@ export class MachineLearningService {
 
     try {
       this.compile();
+      this.modelBuilderService.getDataInputShape();
+
       // todo: use fitDataset instead for more memory-efficiency?
-      const history = await this.projectService.model()?.fit(X, Y, {
+      const history = await this.projectService.model()?.fit(reshapedX, reshapedY, {
         batchSize: BATCH_SIZE,
         validationSplit: VALIDATION_SPLIT,
         epochs: EPOCHS,

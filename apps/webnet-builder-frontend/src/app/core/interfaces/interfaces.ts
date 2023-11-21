@@ -36,5 +36,6 @@ export interface Weight {
 
 export interface Weights {
   weights: Weight,
+  recurrentWeights?: Weight,
   bias: Weight
 }

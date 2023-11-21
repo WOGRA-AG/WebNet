@@ -216,6 +216,7 @@ export class ProjectService {
 
 
   minMaxEncode(series: Series): Series {
+    series.asType('float32', {inplace: true});
     const scaler = new dfd.MinMaxScaler();
     scaler.fit(series);
     return scaler.transform(series);
@@ -227,23 +228,34 @@ export class ProjectService {
     return encode.transform(series.values);
   }
 
-  preprocessData(df: DataFrame): DataFrame {
-    this.dataset().columns.forEach(column => {
-      console.log(column.name, column.type);
-      if ((column.type === 'int32' || column.type === 'float32') && column.uniqueValues > 2 && column.uniqueValues < df.shape[0]) {
-        df[column.name] = this.minMaxEncode(df[column.name]);
-        console.log("MINMAX");
-      }
-      else if (column.type === 'string') {
-        df[column.name] = this.labelEncode(df[column.name]);
-        console.log("LABEL ENCODER")
-      } else {
-        console.log("NO ENCODER");
-      }
-      console.log("========");
-    })
-    return df;
-    // todo: warum werden nicht alle columns gescheid umgewandelt, z.b. age?
+  replaceEmptyValues(series: Series): Series {
+    const med = series.median();
+    const replaceEmptyValues = (x: any) => {
+      return typeof x === 'string' ? med : x;
+    };
+    return series.apply(replaceEmptyValues);
   }
-
+  preprocessData(df: DataFrame): DataFrame {
+    const columnValues: { [key: string]: any } = {};
+    for (const column of this.dataset().columns) {
+      let series = df[column.name];
+      // console.log(column.name, column.type);
+      if ((column.type === 'int32' || column.type === 'float32') && column.uniqueValues > 2 && column.uniqueValues < df.shape[0]) {
+        series = this.replaceEmptyValues(series);
+        series = this.minMaxEncode(series);
+        columnValues[column.name] = series.values;
+        // console.log("MINMAX");
+      } else if (column.type === 'string') {
+        series = this.labelEncode(series);
+        columnValues[column.name] = series;
+        // console.log("LABEL ENCODER");
+      } else {
+        columnValues[column.name] = series.values;
+        // console.log("NO ENCODER");
+      }
+      // console.log("========");
+    }
+    // console.log(columnValues);
+    return new dfd.DataFrame(columnValues);
+  }
 }

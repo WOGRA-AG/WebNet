@@ -35,7 +35,10 @@ export class Input extends Layer{
     return parameters;
   }
 
-
+  getShape(): null|number[] {
+    const shape = this.layerForm.get('shape')?.value;
+    return parseShapeString(shape);
+  }
 
   protected override createLayer(): Selection<any, any, any, any> {
     const inputData = { name: "Input", shape: [64, 64, 3] };
