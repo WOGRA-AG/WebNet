@@ -5,24 +5,32 @@ import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
+import {Padding, PoolSize, Strides} from "../configuration";
 
 export class Maxpooling extends Layer {
   override layerType = LayerType.Maxpooling;
-  constructor(parameters: {filters: number, kernelSize: number, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+
+  constructor(parameters: {
+    padding: string,
+    strides: number,
+    poolSize: number,
+    weights: Weights
+  }, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',
-      formConfig: []
+      formConfig: [Strides, Padding, PoolSize]
     };
     const layerForm = fb.group({
-      filters: [parameters.filters, [Validators.required]],
-      kernelSize: [parameters.kernelSize, [Validators.required]],
+      poolSize: [parameters.poolSize, [Validators.required]],
+      strides: [parameters.strides, [Validators.required]],
+      padding: [parameters.padding, [Validators.required]],
     })
     super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer() {
-    const maxPoolData = { name: "MaxPooling", poolSize: 2 };
+    const maxPoolData = {name: "MaxPooling", poolSize: 2};
 
     const maxPoolGrp = d3.select("#inner-svg-container").append("g")
       .classed("layer-group", true)

@@ -131,12 +131,16 @@ export class ModelBuilderService {
           this, this.fb);
         break;
       case LayerType.Flatten:
-        layer = new Flatten(options.parameters ?? {shape: '', units: 16, filter: 3, kernelSize: 2},
+        layer = new Flatten(options.parameters ?? {},
           options.position ?? {x: 450, y: 160},
           this, this.fb);
         break;
       case LayerType.Maxpooling:
-        layer = new Maxpooling(options.parameters ?? {filters: 3, kernelSize: 2},
+        layer = new Maxpooling(options.parameters ?? {
+          padding: 'valid',
+          strides: 2,
+          poolSize: 2,
+        },
           options.position ?? {x: 500, y: 160},
           this, this.fb);
         break;

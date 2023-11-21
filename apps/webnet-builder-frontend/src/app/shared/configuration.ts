@@ -75,3 +75,11 @@ export const Strides = {
   type: 'number',
   tooltip: 'The strides of the convolution in each dimension. If strides is a number, strides in both dimensions are equal.'
 };
+
+export const PoolSize = {
+  key: 'poolSize',
+  label: 'Pool Size',
+  controlType: 'textbox',
+  type: 'number',
+  tooltip: 'Factors by which to downscale in each dimension [vertical, horizontal].'
+};
