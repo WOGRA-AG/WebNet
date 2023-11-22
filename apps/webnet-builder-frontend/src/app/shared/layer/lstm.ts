@@ -5,23 +5,25 @@ import * as d3 from "d3";
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
-import {Activation, Units} from "../configuration";
+import {Activation, RecurrentActivation, Units} from "../configuration";
 
 export class Lstm extends Layer {
   override layerType = LayerType.Lstm;
-  constructor(parameters: {units: number, activation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(parameters: {units: number, activation: string, recurrentActivation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Lstm',
       title: 'Lstm Layer Parameter',
       formConfig: [
         Units,
-        Activation
+        Activation,
+        RecurrentActivation
       ]
     };
 
     const layerForm = fb.group({
       units: [parameters.units, [Validators.required, Validators.minLength(1)]],
       activation: [parameters.activation, [Validators.required]],
+      recurrentActivation: [parameters.recurrentActivation, [Validators.required]],
     });
     super(tf.layers.lstm, position, config, modelBuilderService, layerForm, parameters?.weights);
   }

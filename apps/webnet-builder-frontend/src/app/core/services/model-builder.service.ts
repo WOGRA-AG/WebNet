@@ -145,7 +145,7 @@ export class ModelBuilderService {
           this, this.fb);
         break;
       case LayerType.Lstm:
-        layer = new Lstm(options.parameters ?? {units: 1, activation: 'tanh'},
+        layer = new Lstm(options.parameters ?? {units: 1, activation: 'tanh', recurrentActivation: 'hardSigmoid'},
           options.position ?? {x: 550, y: 160},
           this, this.fb);
         break;

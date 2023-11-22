@@ -20,6 +20,28 @@ export const Activation = {
   tooltip: 'Activation function to use. If unspecified, no activation is applied.'
 };
 
+export const RecurrentActivation = {
+  key: 'recurrentActivation',
+  label: 'Recurrent Activation Function',
+  controlType: 'dropdown',
+  options: {
+    softmax: 'Softmax',
+    sigmoid: 'Sigmoid',
+    relu: 'ReLU',
+    elu: 'ELU',
+    hardSigmoid: 'Hard Sigmoid',
+    linear: 'Linear',
+    relu6: 'ReLU6',
+    selu: 'SELU',
+    softplus: 'Softplus',
+    softsign: 'Softsign',
+    tanh: 'Tanh',
+    swish: 'Swish',
+    mish: 'Mish'
+  },
+  tooltip: 'Activation function to use for the recurrent step. If unspecified, no activation is applied.'
+};
+
 export const Units = {
   key: 'units',
   label: 'Units',
@@ -30,7 +52,7 @@ export const Units = {
 
 export const Shape = {
   key: 'shape',
-  label: 'Shape',
+  label: 'Input Shape',
   controlType: 'textbox',
   type: 'text',
   tooltip: 'Defines the shape of the input data, excluding the batch size. For example, shape=[6] indicates that each input in a batch will have 6 features. For time series data, use a 2D array like [timesteps, features], where timesteps represent the sequence length and features represent the number of features at each time step.'
