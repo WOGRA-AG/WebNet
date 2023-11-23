@@ -45,8 +45,11 @@ export class ProjectService {
   dataframe = computed(async () => {
     const dataset = this.dataset();
     const df = new dfd.DataFrame(dataset.data);
-    await tf.ready();
-    return this.preprocessData(df);
+    if (df && df.shape[0] !== 0) {
+      await tf.ready();
+      return this.preprocessData(df);
+    }
+    return df;
   })
   builder = signal<Builder>({
     layers: [],
@@ -242,6 +245,7 @@ export class ProjectService {
 
   preprocessData(df: DataFrame): DataFrame {
     const columnValues: { [key: string]: any } = {};
+
     for (const column of this.dataset().columns) {
       let series = df[column.name];
       // console.log(column.name, column.type);
