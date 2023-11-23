@@ -15,7 +15,7 @@ export class MnistTemplate {
   getTrainConfig(): TrainingConfig {
     return {
       epochs: 100,
-      batchSize:32,
+      batchSize: 32,
       optimizer: 'adam',
       learningRate: 0.01,
       loss: 'meanSquaredError',
@@ -30,7 +30,7 @@ export class MnistTemplate {
 
   getBuilder(): Builder {
     return {
-      "layers": [{
+      layers: [{
         "id": "layer-1",
         "type": "input",
         "position": {"x": 30, "y": 246},
@@ -51,10 +51,11 @@ export class MnistTemplate {
         "position": {"x": 735, "y": 175},
         "parameters": {"shape": "", "units": 500, "filter": 3, "kernelSize": 2}
       }],
-      "connections": [{"source": "layer-1", "destination": "layer-3"}, {
+      connections: [{"source": "layer-1", "destination": "layer-3"}, {
         "source": "layer-3",
         "destination": "layer-4"
-      }, {"source": "layer-4", "destination": "layer-5"}, {"source": "layer-5", "destination": "layer-2"}]
+      }, {"source": "layer-4", "destination": "layer-5"}, {"source": "layer-5", "destination": "layer-2"}],
+      nextLayerId: 6,
     }
   }
 
@@ -156,6 +157,12 @@ export class MnistTemplate {
   }
 
   getDataset(): Dataset {
-    return {data: [{'text': 'MNIST DATASET!'}], fileName: 'mnist.csv', columns: [], inputColumns: [], targetColumns: []};
+    return {
+      data: [{'text': 'MNIST DATASET!'}],
+      fileName: 'mnist.csv',
+      columns: [],
+      inputColumns: [],
+      targetColumns: []
+    };
   }
 }

@@ -10,7 +10,7 @@ import {LayerType} from "../../core/enums";
 export class Convolution extends Layer {
   override layerType = LayerType.Convolution;
 
-  constructor(parameters: {
+  constructor(id: string, parameters: {
                 filters: number,
                 kernelSize: number,
                 strides: number,
@@ -36,7 +36,7 @@ export class Convolution extends Layer {
       padding: [parameters.padding, [Validators.required]],
       activation: [parameters.activation, [Validators.required]],
     })
-    super(tf.layers.conv2d, position, config, modelBuilderService, layerForm, parameters?.weights);
+    super(id, tf.layers.conv2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer() {

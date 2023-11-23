@@ -8,7 +8,7 @@
 <h3 class="section-heading">Dataset View</h3>
 <div class="dataset-view-content">
   <p *ngIf="projectService.dataset().data.length === 0"> No Dataset provided</p>
-  <p *ngIf="projectService.dataset()"><span class="bold-text">Dataset File:</span> {{projectService.dataset().fileName}}</p>
+  <p *ngIf="projectService.dataset().fileName"><span class="bold-text">Dataset File:</span> {{projectService.dataset().fileName}}</p>
   <div [ngClass]="{'hidden': projectService.dataset().data.length === 0}">
     <mat-radio-group aria-label="Select an option" required [(ngModel)]="selectedTable"
                      (ngModelChange)="updateDataSource($event)" color="primary">

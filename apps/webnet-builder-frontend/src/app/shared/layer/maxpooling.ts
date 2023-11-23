@@ -10,7 +10,7 @@ import {Padding, PoolSize, Strides} from "../configuration";
 export class Maxpooling extends Layer {
   override layerType = LayerType.Maxpooling;
 
-  constructor(parameters: {
+  constructor(id: string, parameters: {
     padding: string,
     strides: number,
     poolSize: number,
@@ -26,7 +26,7 @@ export class Maxpooling extends Layer {
       strides: [parameters.strides, [Validators.required]],
       padding: [parameters.padding, [Validators.required]],
     })
-    super(tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters?.weights);
+    super(id, tf.layers.maxPooling2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer() {

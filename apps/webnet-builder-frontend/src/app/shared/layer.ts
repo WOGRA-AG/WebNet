@@ -21,13 +21,14 @@ export abstract class Layer {
   protected weights: Weights | null;
 
   protected constructor(
+    id: string,
     tfjsLayer: any,
     position: XY,
     configuration: any,
     protected modelBuilderService: ModelBuilderService,
     layerForm: FormGroup,
     weights?: Weights) {
-    this.layerId = this.modelBuilderService.generateLayerId();
+    this.layerId = id;
     this.position = position;
     this.tfjsLayer = tfjsLayer;
     this.configuration = configuration

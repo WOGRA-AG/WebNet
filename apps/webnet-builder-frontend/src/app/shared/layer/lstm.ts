@@ -9,7 +9,7 @@ import {Activation, RecurrentActivation, Units} from "../configuration";
 
 export class Lstm extends Layer {
   override layerType = LayerType.Lstm;
-  constructor(parameters: {units: number, activation: string, recurrentActivation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(id: string, parameters: {units: number, activation: string, recurrentActivation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Lstm',
       title: 'Lstm Layer Parameter',
@@ -25,7 +25,7 @@ export class Lstm extends Layer {
       activation: [parameters.activation, [Validators.required]],
       recurrentActivation: [parameters.recurrentActivation, [Validators.required]],
     });
-    super(tf.layers.lstm, position, config, modelBuilderService, layerForm, parameters?.weights);
+    super(id, tf.layers.lstm, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer(){
