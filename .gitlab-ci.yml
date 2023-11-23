@@ -40,7 +40,6 @@ build-frontend-image:
     name: image-digest
     paths:
       - image-digest
-    expire_in: never
 
 .dev-environment:
   environment:
