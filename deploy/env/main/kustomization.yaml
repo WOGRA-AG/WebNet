@@ -3,4 +3,4 @@ kind: Component
 components:
   - ../../base
 resources:
-  - ingress.yaml
+  - frontend-ing.yaml
