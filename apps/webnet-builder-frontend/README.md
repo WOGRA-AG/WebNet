@@ -1,10 +1,11 @@
-# WebNet Builder - Frontend
+# WebNet Builder
 
-- SCSS https://sass-lang.com/documentation/syntax/#the-indented-syntax
-- Angular https://angular.io/guide/setup-local
-- Angular Material https://material.angular.io/guide/getting-started
-- Angular Animation https://angular.io/guide/animations
-- best practices https://aglowiditsolutions.com/blog/angular-best-practices/
+Welcome to our Drag-and-Drop Neural Network Builder! 
+Unleash the power of artificial intelligence effortlessly. 
+Whether you're a seasoned data scientist or just beginning your journey 
+into the world of AI, our intuitive platform empowers you to 
+seamlessly build, train, test, and evaluate neural networks—no coding
+required. Dive into the future of innovation and turn your ideas into 
+reality with the click of a mouse. Your journey into the world of AI 
+starts here!
 
-lazy loading?
-ng serve --open
