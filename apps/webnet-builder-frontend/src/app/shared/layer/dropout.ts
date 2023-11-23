@@ -10,7 +10,7 @@ import {LayerType} from "../../core/enums";
 
 export class Dropout extends Layer {
   override layerType = LayerType.Dropout;
-  constructor(parameters: {rate: number}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(id: string, parameters: {rate: number}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Dropout',
       title: 'Dropout Layer Parameter',
@@ -22,7 +22,7 @@ export class Dropout extends Layer {
     const layerForm = fb.group({
       rate: [parameters.rate, [Validators.required, Validators.min(0), Validators.max(1)]],
     });
-    super(tf.layers.dropout, position, config, modelBuilderService, layerForm);
+    super(id, tf.layers.dropout, position, config, modelBuilderService, layerForm);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

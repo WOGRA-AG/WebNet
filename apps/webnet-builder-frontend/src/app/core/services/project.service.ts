@@ -42,7 +42,7 @@ export class ProjectService {
     targetColumns: []
   });
 
-  dataframe = computed(async() => {
+  dataframe = computed(async () => {
     const dataset = this.dataset();
     const df = new dfd.DataFrame(dataset.data);
     await tf.ready();
@@ -50,7 +50,8 @@ export class ProjectService {
   })
   builder = signal<Builder>({
     layers: [],
-    connections: []
+    connections: [],
+    nextLayerId: 0
   });
   initNewWeights = signal<boolean>(false);
   model = signal<tf.LayersModel | null>(null);
@@ -88,6 +89,9 @@ export class ProjectService {
     // })
     // effect(() => {
     //   console.log('CHANGES DONE TO MODEL: ', this.model());
+    // })
+    // effect(() => {
+    //   console.log('CHANGES DONE TO BUILDER: ', this.builder());
     // })
     this.myProjects = this.localStorageService.getProjectsFromLocalStorage();
     effect(async () => {
@@ -166,7 +170,7 @@ export class ProjectService {
         useExistingWeights: false,
         validationSplit: 0.2
       },
-      builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: []},
+      builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: [], nextLayerId: 3},
       trainRecords: []
     }
   }
@@ -235,6 +239,7 @@ export class ProjectService {
     };
     return series.apply(replaceEmptyValues);
   }
+
   preprocessData(df: DataFrame): DataFrame {
     const columnValues: { [key: string]: any } = {};
     for (const column of this.dataset().columns) {

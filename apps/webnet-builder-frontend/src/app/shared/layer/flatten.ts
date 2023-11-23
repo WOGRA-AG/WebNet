@@ -3,15 +3,15 @@ import {Layer} from "../layer";
 import {ModelBuilderService} from "../../core/services/model-builder.service";
 import {Selection} from "d3";
 import * as d3 from "d3";
-import {NonNullableFormBuilder, Validators} from "@angular/forms";
+import {NonNullableFormBuilder} from "@angular/forms";
 import {Weights, XY} from "../../core/interfaces/interfaces";
 import {LayerType} from "../../core/enums";
-import {Shape} from "../configuration";
+
 
 
 export class Flatten extends Layer {
   override layerType = LayerType.Flatten;
-  constructor(parameters: {weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+  constructor(id: string, parameters: {weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Flatten',
       title: 'Flatten Layer Parameter',
@@ -19,7 +19,7 @@ export class Flatten extends Layer {
     };
     const layerForm = fb.group({
     });
-    super(tf.layers.flatten, position, config, modelBuilderService, layerForm, parameters?.weights);
+    super(id, tf.layers.flatten, position, config, modelBuilderService, layerForm, parameters?.weights);
   }
 
   protected override createLayer(): Selection<any, any, any, any> {

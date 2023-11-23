@@ -77,7 +77,7 @@ export class ModelBuilderService {
     if (!this.isInitialized) {
       this.clearLayers();
       this.isInitialized = true;
-      this.nextLayerId = 1;
+      this.nextLayerId = builder.nextLayerId;
       this.loadFromBuilder(builder);
     } else {
       this.redrawLayers();
@@ -104,39 +104,40 @@ export class ModelBuilderService {
     destination.addInputConnection(connection)
   }
 
-  createLayer(options: { layerType: LayerType, parameters?: any, position?: any }): void {
+  createLayer(options: { layerId?:string,  layerType: LayerType, parameters?: any, position?: any }): void {
+    const id = options.layerId ? options.layerId : this.generateLayerId();
     let layer;
     switch (options.layerType) {
       case LayerType.Input:
         const inputPosition = this.getInputOutputPosition();
-        layer = new Input(options.parameters ?? {shape: '13'},
+        layer = new Input(id, options.parameters ?? {shape: '13'},
           options.position ?? {x: 30, y: inputPosition.y},
           this, this.fb);
         this.inputLayer = layer;
         break;
       case LayerType.Dense:
-        layer = new Dense(options.parameters ?? {units: 32, activation: 'relu'},
+        layer = new Dense(id,options.parameters ?? {units: 32, activation: 'relu'},
           options.position ?? {x: 300, y: 160},
           this, this.fb);
         break;
       case LayerType.Dropout:
-        layer = new Dropout(options.parameters ?? {rate: 0.5},
+        layer = new Dropout(id,options.parameters ?? {rate: 0.5},
           options.position ?? {x: 350, y: 160},
           this, this.fb);
         break;
       case LayerType.Convolution:
-        layer = new Convolution(options.parameters ??
+        layer = new Convolution(id,options.parameters ??
           {filters: 3, kernelSize: 2, strides: 1, padding: 'valid', activation: 'relu'},
           options.position ?? {x: 400, y: 160},
           this, this.fb);
         break;
       case LayerType.Flatten:
-        layer = new Flatten(options.parameters ?? {},
+        layer = new Flatten(id,options.parameters ?? {},
           options.position ?? {x: 450, y: 160},
           this, this.fb);
         break;
       case LayerType.Maxpooling:
-        layer = new Maxpooling(options.parameters ?? {
+        layer = new Maxpooling(id,options.parameters ?? {
           padding: 'valid',
           strides: 2,
           poolSize: 2,
@@ -145,19 +146,18 @@ export class ModelBuilderService {
           this, this.fb);
         break;
       case LayerType.Lstm:
-        layer = new Lstm(options.parameters ?? {units: 1, activation: 'tanh', recurrentActivation: 'hardSigmoid'},
+        layer = new Lstm(id,options.parameters ?? {units: 1, activation: 'tanh', recurrentActivation: 'hardSigmoid'},
           options.position ?? {x: 550, y: 160},
           this, this.fb);
         break;
       case LayerType.Output:
         const outputPosition = this.getInputOutputPosition();
-        layer = new Output(options.parameters ?? {units: 1, activation: 'sigmoid'},
+        layer = new Output(id,options.parameters ?? {units: 1, activation: 'sigmoid'},
           options.position ?? {x: outputPosition.x, y: outputPosition.y},
           this, this.fb);
         this.outputLayer = layer;
         break;
     }
-    const id = layer.getLayerId();
     this.layerMap.set(id, layer);
   }
 
@@ -192,7 +192,7 @@ export class ModelBuilderService {
         connections.push(connection);
       }
     }
-    return {layers: layers, connections: connections};
+    return {layers: layers, connections: connections, nextLayerId: this.nextLayerId};
     // todo:
     // training parameter -> other file?
     // zoom lvl?
@@ -200,7 +200,7 @@ export class ModelBuilderService {
 
   loadFromBuilder(builder: any): void {
     for (const layer of builder.layers) {
-      this.createLayer({layerType: layer.type, parameters: layer.parameters, position: layer.position})
+      this.createLayer({layerId: layer.id, layerType: layer.type, parameters: layer.parameters, position: layer.position})
     }
 
     for (const connection of builder.connections) {
