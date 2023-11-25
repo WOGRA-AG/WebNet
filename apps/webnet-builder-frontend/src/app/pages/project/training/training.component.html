@@ -33,8 +33,18 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
+          <mat-label>Select a Backend</mat-label>
+          <mat-select formControlName="tfBackend">
+            <mat-option *ngFor="let backend of tfBackends |keyvalue;"
+                        [value]="backend.key">
+              {{backend.value.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <mat-slide-toggle class="shuffle-toggle" formControlName="shuffle" color="accent">Enable Data Shuffle</mat-slide-toggle>
+      <mat-slide-toggle class="shuffle-toggle" formControlName="shuffle" color="accent">Enable Data Shuffle
+      </mat-slide-toggle>
     </form>
 
     <h3 class="section-heading">Training Statistics</h3>
@@ -68,7 +78,8 @@
     <div class="button-container">
       <form [formGroup]="trainingForm">
         <mat-slide-toggle formControlName="saveTraining" color="accent">Record Training and Results</mat-slide-toggle>
-        <mat-slide-toggle formControlName="useExistingWeights" color="accent">Continue Training with existing Weights</mat-slide-toggle>
+        <mat-slide-toggle formControlName="useExistingWeights" color="accent">Continue Training with existing Weights
+        </mat-slide-toggle>
       </form>
       <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
       </button>

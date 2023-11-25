@@ -1,6 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {optimizers} from "../../../shared/tf_objects/optimizers";
 import {losses} from "../../../shared/tf_objects/losses";
+import {tfBackends} from "../../../shared/tf_objects/tfBackends";
 import {AbstractControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 import {TrainStats} from "../../../core/interfaces/interfaces";
 import {MachineLearningService} from "../../../core/services/machine-learning.service";
@@ -23,6 +24,7 @@ export class TrainingComponent {
   trainingInProgress: boolean = false;
   protected readonly optimizers = optimizers;
   protected readonly losses = losses;
+  protected readonly tfBackends = tfBackends;
 
   constructor(private ml: MachineLearningService,
               private projectService: ProjectService,
@@ -41,6 +43,7 @@ export class TrainingComponent {
       optimizer: ['adam', Validators.required],
       learningRate: [0.01, Validators.required],
       loss: ['meanSquaredError', Validators.required],
+      tfBackend: ['webgpu', Validators.required],
       accuracyPlot: true,
       lossPlot: false,
       shuffle: true,
@@ -100,6 +103,7 @@ export class TrainingComponent {
   async train(): Promise<void> {
     const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
+      await this.ml.setTfBackend(this.trainingForm.get('tfBackend')?.value)
       const [X, Y] = await this.ml.extractFeaturesAndTargets();
 
       const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);

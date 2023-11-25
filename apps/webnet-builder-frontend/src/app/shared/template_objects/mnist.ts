@@ -24,7 +24,8 @@ export class MnistTemplate {
       shuffle: true,
       saveTraining: true,
       useExistingWeights: false,
-      validationSplit: 0.2
+      validationSplit: 0.2,
+      tfBackend: 'webgpu'
     }
   };
 

@@ -69,7 +69,8 @@ export class ProjectService {
     shuffle: true,
     saveTraining: true,
     useExistingWeights: false,
-    validationSplit: 0.2
+    validationSplit: 0.2,
+    tfBackend: 'webgpu'
   });
   trainingRecords = signal<TrainingRecords[]>([]);
   activeProject = computed(() => {
@@ -171,7 +172,8 @@ export class ProjectService {
         shuffle: true,
         saveTraining: true,
         useExistingWeights: false,
-        validationSplit: 0.2
+        validationSplit: 0.2,
+        tfBackend: 'webgpu'
       },
       builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: [], nextLayerId: 1},
       trainRecords: []
