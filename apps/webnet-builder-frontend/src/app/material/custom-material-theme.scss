@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @use './components';
 
 @include components.stepper();
@@ -6,3 +7,21 @@
 @include components.slide-toggle();
 @include components.form-field();
 @include components.slider();
+
+@import './essentials/colors.scss';
+@import '@angular/material/theming';
+
+$my-theme: mat.define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn,
+  ),
+  typography: mat.define-typography-config(
+    $font-family: 'Roboto, sans-serif'
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+

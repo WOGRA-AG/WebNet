@@ -3,6 +3,14 @@
   border-radius: 8px;
   border: 1px solid black;
   margin: 0.5em;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  span {
+    font-size: 14px;
+  }
 }
 
 .configuration-container {
@@ -21,6 +29,7 @@
 
   h3 {
     margin: 0.5em 0 0.5em 0;
+    font-size: 16px;
     font-weight: bold;
   }
 
@@ -63,7 +72,7 @@
   }
 
   .input-anchor-group {
-    fill: red;
+    fill: var(--color-warn);
 
     &.hovered {
       fill: yellow;
@@ -94,7 +103,7 @@
     }
 
     .layer {
-      stroke: red;
+      stroke: var(--color-warn);
       stroke-width: 3;
     }
   }

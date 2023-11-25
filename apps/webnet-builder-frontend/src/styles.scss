@@ -1,4 +1,9 @@
-@import 'app/material/custom-material-theme.scss';
+:root {
+  --color-primary: #3f51b5;
+  --color-accent: #FF5722;
+  --color-warn: #F44336;
+  --color-success: #4CAF50;
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -7,12 +12,13 @@ h2 {
 }
 
 .section-heading {
-  font-size: 1.25rem;
-  color: #ff4081;
+  color: var(--color-primary);
+  margin-top: 4px;
   margin-bottom: 10px;
-  border-bottom: 2px solid #ff4081;
+  border-bottom: 2px solid var(--color-primary);
   display: inline-block;
-  padding-bottom: 2px;
+  padding-bottom: 5px;
+  font-weight: 500;
 }
 
 // SCROLLBAR
@@ -30,7 +36,7 @@ h2 {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #3f51b5;
+  background: var(--color-primary);
   border-radius: 5px;
 }
 

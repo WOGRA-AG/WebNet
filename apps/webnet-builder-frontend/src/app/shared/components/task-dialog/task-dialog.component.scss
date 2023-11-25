@@ -10,9 +10,9 @@
 }
 
 .done {
-  color: green;
+  color: var(--color-success);
 }
 
 .not-done {
-  color: red;
+  color: var(--color-warn);
 }

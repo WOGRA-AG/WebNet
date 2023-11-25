@@ -34,7 +34,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <mat-slide-toggle formControlName="shuffle" color="primary">Enable Data Shuffle</mat-slide-toggle>
+      <mat-slide-toggle formControlName="shuffle" color="accent">Enable Data Shuffle</mat-slide-toggle>
     </form>
 
     <h3 class="section-heading">Training Statistics</h3>
@@ -67,8 +67,8 @@
 
     <div class="button-container">
       <form [formGroup]="trainingForm">
-        <mat-slide-toggle formControlName="saveTraining" color="primary">Record Training and Results</mat-slide-toggle>
-        <mat-slide-toggle formControlName="useExistingWeights" color="primary">Continue Training with existing Weights</mat-slide-toggle>
+        <mat-slide-toggle formControlName="saveTraining" color="accent">Record Training and Results</mat-slide-toggle>
+        <mat-slide-toggle formControlName="useExistingWeights" color="accent">Continue Training with existing Weights</mat-slide-toggle>
       </form>
       <button *ngIf="!trainingInProgress" mat-raised-button color="primary" (click)="train()">Start Training
       </button>
@@ -83,8 +83,8 @@
     <h3 class="section-heading">Visualization Settings</h3>
     <form [formGroup]="trainingForm">
       <p class="warning-message">Enabling these plots will slow down the training.</p>
-      <mat-slide-toggle formControlName="accuracyPlot" color="primary">Enable Accuracy Plot</mat-slide-toggle>
-      <mat-slide-toggle formControlName="lossPlot" color="primary">Enable Loss Plot</mat-slide-toggle>
+      <mat-slide-toggle formControlName="accuracyPlot" color="accent">Enable Accuracy Plot</mat-slide-toggle>
+      <mat-slide-toggle formControlName="lossPlot" color="accent">Enable Loss Plot</mat-slide-toggle>
     </form>
     <h3 class="section-heading">Training Visualizations</h3>
     <div #plotContainer class="tf-content-container"></div>
