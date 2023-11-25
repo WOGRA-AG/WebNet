@@ -15,8 +15,8 @@ export class Dense extends Layer {
       name: 'Dense',
       title: 'Dense Layer Parameter',
       formConfig: [
-        Units,
-        Activation
+        Activation,
+        Units
       ]
     };
 

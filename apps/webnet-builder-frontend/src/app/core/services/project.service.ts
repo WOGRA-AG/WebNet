@@ -173,7 +173,7 @@ export class ProjectService {
         useExistingWeights: false,
         validationSplit: 0.2
       },
-      builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: [], nextLayerId: 3},
+      builder: {layers: [{type: LayerType.Input}, {type: LayerType.Output}], connections: [], nextLayerId: 1},
       trainRecords: []
     }
   }

@@ -34,5 +34,6 @@ export interface Parameter {
   controlType: string
   type: string,
   options: any[],
-  tooltip?: string
+  tooltip?: string,
+  hint?: string
 }

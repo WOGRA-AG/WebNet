@@ -22,19 +22,17 @@ export class Convolution extends Layer {
     const config = {
       name: 'Convolution',
       title: 'Convolution Layer Parameter',
-      formConfig: [Filters,
-        KernelSize,
+      formConfig: [Activation, Padding, Filters,
         Strides,
-        Padding,
-        Activation
+        KernelSize,
       ]
     };
     const layerForm = fb.group({
-      filters: [parameters.filters, [Validators.required]],
-      kernelSize: [parameters.kernelSize, [Validators.required]],
-      strides: [parameters.strides, [Validators.required]],
-      padding: [parameters.padding, [Validators.required]],
       activation: [parameters.activation, [Validators.required]],
+      padding: [parameters.padding, [Validators.required]],
+      filters: [parameters.filters, [Validators.required]],
+      strides: [parameters.strides, [Validators.required]],
+      kernelSize: [parameters.kernelSize, [Validators.required]],
     })
     super(id, tf.layers.conv2d, position, config, modelBuilderService, layerForm, parameters?.weights);
   }

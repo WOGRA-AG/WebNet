@@ -43,19 +43,18 @@
   flex-direction: row;
 
   #svg-container {
-    height: 600px;
-    width: 80%;
-    min-width: 80%;
+    height: 700px;
+    flex: 3.5;
 
     #inner-svg-container {
       height: 100%;
       width: 100%;
     }
   }
-
-  .layer-components {
-    flex-grow: 1;
+  .settings-container {
+    flex: 1;
   }
+
 }
 
 .connection {

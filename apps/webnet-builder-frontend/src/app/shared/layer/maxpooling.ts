@@ -19,7 +19,7 @@ export class Maxpooling extends Layer {
     const config = {
       name: 'MaxPooling',
       title: 'MaxPooling Layer Parameter',
-      formConfig: [Strides, Padding, PoolSize]
+      formConfig: [Padding, Strides, PoolSize]
     };
     const layerForm = fb.group({
       poolSize: [parameters.poolSize, [Validators.required]],

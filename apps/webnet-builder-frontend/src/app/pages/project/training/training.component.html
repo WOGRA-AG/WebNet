@@ -3,19 +3,19 @@
     <form [formGroup]="trainingForm">
       <h3 class="section-heading">Training Parameters</h3>
       <div class="form-row">
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
           <mat-label>Epochs</mat-label>
           <input matInput formControlName="epochs" placeholder="Epochs" type="number" step="1">
         </mat-form-field>
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
           <mat-label>Batch Size</mat-label>
           <input matInput formControlName="batchSize" placeholder="Batch Size" type="number" step="1">
         </mat-form-field>
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
           <mat-label>Learning Rate</mat-label>
           <input matInput formControlName="learningRate" placeholder="Learning Rate" type="number" step="0.01">
         </mat-form-field>
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
           <mat-label>Select an Optimizer</mat-label>
           <mat-select formControlName="optimizer">
             <mat-option *ngFor="let optimizer of optimizers | keyvalue;"
@@ -24,7 +24,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field subscriptSizing="dynamic" appearance="outline">
           <mat-label>Select a Loss Function</mat-label>
           <mat-select formControlName="loss">
             <mat-option *ngFor="let loss of losses |keyvalue;"

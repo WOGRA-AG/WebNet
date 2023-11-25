@@ -16,8 +16,7 @@ export const Activation = {
     tanh: 'Tanh',
     swish: 'Swish',
     mish: 'Mish'
-  },
-  tooltip: 'Activation function to use. If unspecified, no activation is applied.'
+  }
 };
 
 export const RecurrentActivation = {
@@ -38,8 +37,7 @@ export const RecurrentActivation = {
     tanh: 'Tanh',
     swish: 'Swish',
     mish: 'Mish'
-  },
-  tooltip: 'Activation function to use for the recurrent step. If unspecified, no activation is applied.'
+  }
 };
 
 export const Units = {
@@ -47,7 +45,7 @@ export const Units = {
   label: 'Units',
   controlType: 'textbox',
   type: 'number',
-  tooltip: 'Positive integer, dimensionality of the output space.'
+  hint: 'Number of Neurons.'
 };
 
 export const Shape = {
@@ -55,15 +53,15 @@ export const Shape = {
   label: 'Input Shape',
   controlType: 'textbox',
   type: 'text',
-  tooltip: 'Defines the shape of the input data, excluding the batch size. For example, shape=[6] indicates that each input in a batch will have 6 features. For time series data, use a 2D array like [timesteps, features], where timesteps represent the sequence length and features represent the number of features at each time step.'
+  tooltip: 'Defines the shape of the input data, excluding the batch size. For example, shape=[6] indicates that each input in a batch will have 6 features. For time series data, use a 2D array like [timesteps, features], where timesteps represent the sequence length and features represent the number of features at each time step.',
+  hint: 'Number or comma separated numbers.'
 };
 
 export const Padding = {
   key: 'padding',
-  label: 'Padding',
+  label: 'Padding Mode',
   controlType: 'dropdown',
   options: {valid: 'Valid', same: 'Same', casual: 'Casual'},
-  tooltip: ' Padding mode.'
 };
 
 export const Rate = {
@@ -71,7 +69,8 @@ export const Rate = {
   label: 'Rate',
   controlType: 'textbox',
   type: 'number',
-  tooltip: ' Float between 0 and 1. Fraction of the input units to drop.'
+  tooltip: 'Fraction of the input neurons to drop.',
+  hint: 'Float between 0 and 1.'
 };
 
 export const Filters = {
@@ -79,7 +78,7 @@ export const Filters = {
   label: 'Filters',
   controlType: 'textbox',
   type: 'number',
-  tooltip: 'The dimensionality of the output space (i.e. the number of filters in the convolution).'
+  hint: 'Number of filters.'
 };
 
 export const KernelSize = {
@@ -87,7 +86,7 @@ export const KernelSize = {
   label: 'Kernel Size',
   controlType: 'textbox',
   type: 'number',
-  tooltip: 'The dimensions of the convolution window. If kernelSize is a number, the convolutional window will be square.'
+  hint: 'Dimension of the Convolution Window.'
 };
 
 export const Strides = {
@@ -95,7 +94,7 @@ export const Strides = {
   label: 'Strides',
   controlType: 'textbox',
   type: 'number',
-  tooltip: 'The strides of the convolution in each dimension. If strides is a number, strides in both dimensions are equal.'
+  hint: 'Number of Strides.'
 };
 
 export const PoolSize = {
@@ -103,5 +102,5 @@ export const PoolSize = {
   label: 'Pool Size',
   controlType: 'textbox',
   type: 'number',
-  tooltip: 'Factors by which to downscale in each dimension [vertical, horizontal].'
+  hint: 'Factor by which to downscale in each dimension.',
 };
