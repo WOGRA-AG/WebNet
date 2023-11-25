@@ -234,10 +234,10 @@ export class MachineLearningService {
     }
   }
 
-  async setTfBackend(backend: string) {
+  async setTfBackend(backend: string): Promise<boolean> {
     await tf.setBackend(backend);
     await tf.ready();
-    console.log("Backend Set: ", tf.getBackend());
+    return tf.getBackend() === backend;
   }
 
   async showHistory(htmlContainer: HTMLElement, history: History): Promise<void> {

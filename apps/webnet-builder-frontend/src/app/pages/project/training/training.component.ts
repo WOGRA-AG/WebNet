@@ -9,7 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {TaskDialogComponent} from "../../../shared/components/task-dialog/task-dialog.component";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import {ProjectService} from "../../../core/services/project.service";
-import * as dfd from "danfojs";
+import {MessageDialogComponent} from "../../../shared/components/message-dialog/message-dialog.component";
 
 @Component({
   selector: 'app-training',
@@ -95,30 +95,36 @@ export class TrainingComponent {
     return history.map((value: number, epoch: number) => ({x: epoch, y: value}));
   }
 
-  minMaxScale(df: dfd.DataFrame) {
-    let scaler = new dfd.MinMaxScaler();
-    scaler.fit(df['Passengerid']);
-  }
-
   async train(): Promise<void> {
     const ready = await this.ml.trainingReady();
     if (ready.dataset && ready.model) {
-      await this.ml.setTfBackend(this.trainingForm.get('tfBackend')?.value)
-      const [X, Y] = await this.ml.extractFeaturesAndTargets();
+      const backend = this.trainingForm.get('tfBackend')?.value;
+      const backendSelected = await this.ml.setTfBackend(backend);
+      if (backendSelected) {
+        const [X, Y] = await this.ml.extractFeaturesAndTargets();
+        const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
+        this.ml.updateWeights();
 
-      const history = await this.ml.train(X, Y, this.plotContainer.nativeElement);
-      this.ml.updateWeights();
-
-      if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {
-        const val_loss = this.mapHistoryRecord(history.history['val_loss']);
-        const loss = this.mapHistoryRecord(history.history['loss']).splice(0, val_loss.length);
-        const val_acc = this.mapHistoryRecord(history.history['val_acc']);
-        const acc = this.mapHistoryRecord(history.history['acc']).splice(0, val_acc.length);
-        this.projectService.addTrainingRecord(this.trainingStats, {
-          loss: loss,
-          val_loss: val_loss,
-          acc: acc,
-          val_acc: val_acc
+        if (this.trainingForm.get('saveTraining')?.value && this.trainingStats && history) {
+          const val_loss = this.mapHistoryRecord(history.history['val_loss']);
+          const loss = this.mapHistoryRecord(history.history['loss']).splice(0, val_loss.length);
+          const val_acc = this.mapHistoryRecord(history.history['val_acc']);
+          const acc = this.mapHistoryRecord(history.history['acc']).splice(0, val_acc.length);
+          this.projectService.addTrainingRecord(this.trainingStats, {
+            loss: loss,
+            val_loss: val_loss,
+            acc: acc,
+            val_acc: val_acc
+          });
+        }
+      } else {
+        this.dialog.open(MessageDialogComponent, {
+          maxWidth: '600px',
+          data: {
+            title: 'Backend not supported',
+            message: `The ${tfBackends.get(backend)?.name} Backend you selected is not supported by your browser.`,
+            warning: true
+          },
         });
       }
     } else {
