@@ -7,9 +7,13 @@
   color: var(--color-primary);
 }
 
-.project-name {
-  color: var(--color-accent);
+.mat-mdc-list-item:hover {
+  .project-name {
+    color: var(--color-accent);
+  }
 }
+
+
 .projects-card {
   margin: 1rem;
   display: flex;
