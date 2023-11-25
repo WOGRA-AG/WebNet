@@ -9,6 +9,10 @@
   font-weight: bold;
 }
 
+.shuffle-toggle {
+  margin-top: 0 !important;
+}
+
 .training-stats-container {
   width: 400px;
   margin: .5rem;
@@ -55,7 +59,7 @@
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  //margin-bottom: 20px;
 }
 
 .two-column-container {
@@ -82,5 +86,5 @@
 }
 
 .warning-message {
-  color: #ff5722;
+  color: var(--color-warn);
 }

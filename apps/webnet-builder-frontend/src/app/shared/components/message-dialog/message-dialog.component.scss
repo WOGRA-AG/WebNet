@@ -3,9 +3,9 @@
 }
 
 .warning-msg {
-  color: red;
+  color: var(--color-warn);
 }
 
 .success-msg {
-  color: green;
+  color: var(--color-success);
 }

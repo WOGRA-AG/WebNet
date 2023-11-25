@@ -10,13 +10,13 @@
           <mat-list-item role="listitem" [routerLink]="['/projects/' + project.key]"
                          *ngFor="let project of projects | keyvalue: lastModifiedOrder">
             <mat-icon matListItemIcon>folder</mat-icon>
-            <div matListItemTitle style="color: #3f51b5">{{ project.value.projectInfo.name | uppercase}}</div>
+            <div matListItemTitle class="project-name">{{ project.value.projectInfo.name | uppercase}}</div>
             <div matListItemLine>
               Updated in {{ project.value.projectInfo.storeLocation }} at {{ project.value.projectInfo.lastModified | date: 'd.MMM y, H:mm:ss' }}
             </div>
             <div matListItemMeta>ID: {{ project.value.projectInfo.id }}</div>
             <div matListItemMeta>
-              <button mat-icon-button (click)="deleteProject($event, project.value.projectInfo.name)">
+              <button mat-icon-button (click)="deleteProject($event, project.value.projectInfo.name)" color="warn">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

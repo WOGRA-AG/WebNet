@@ -234,6 +234,12 @@ export class MachineLearningService {
     }
   }
 
+  async setTfBackend(backend: string) {
+    await tf.setBackend(backend);
+    await tf.ready();
+    console.log("Backend Set: ", tf.getBackend());
+  }
+
   async showHistory(htmlContainer: HTMLElement, history: History): Promise<void> {
     // await tfvis.show.history(htmlContainer, history, ['loss', 'acc']);
   }

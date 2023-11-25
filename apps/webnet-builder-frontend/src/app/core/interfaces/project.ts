@@ -41,7 +41,8 @@ export interface TrainingConfig {
   shuffle: boolean,
   saveTraining: boolean,
   useExistingWeights: boolean,
-  validationSplit: number
+  validationSplit: number,
+  tfBackend: string
 }
 
 export interface MetricHistory {

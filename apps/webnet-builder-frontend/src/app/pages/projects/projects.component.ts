@@ -86,7 +86,7 @@ export class ProjectsComponent {
         maxWidth: '600px',
         data: {
           title: 'Project deleted',
-          message: `You deleted the Project with the name ${project.projectInfo.name} and the id ${project.projectInfo.id} successfully!`,
+          message: `You deleted the Project with the name '${project.projectInfo.name}' and the id '${project.projectInfo.id}' successfully!`,
           warning: false
         }
       });
@@ -96,7 +96,7 @@ export class ProjectsComponent {
         maxWidth: '600px',
         data: {
           title: 'Deleting Project Failed',
-          message: `Deleting the Project with the name ${project.projectInfo.name} and the id ${project.projectInfo.id} failed!`,
+          message: `Deleting the Project with the name '${project.projectInfo.name}' and the id '${project.projectInfo.id}' failed!`,
           warning: true
         }
       });

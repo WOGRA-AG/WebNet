@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <ng-container *ngFor="let parameter of parameterConfig;">
-    <mat-form-field [ngSwitch]="parameter.controlType" subscriptSizing="dynamic">
+    <mat-form-field [ngSwitch]="parameter.controlType" subscriptSizing="dynamic" appearance="outline" class="form-element">
       <mat-label [id]="parameter.key">{{parameter.label}}</mat-label>
       <!-- input -->
       <input matInput [id]="parameter.key" [type]="parameter.type" [formControlName]="parameter.key"
@@ -13,6 +13,8 @@
       <mat-icon *ngIf="parameter.tooltip" class="question-mark-icon" aria-label="Question Mark" [matTooltip]="parameter.tooltip">help</mat-icon>
       <!-- error message-->
       <mat-error *ngIf="form.get(parameter.key)?.hasError('invalidShape')">Invalid shape format</mat-error>
+      <!-- hint message-->
+      <mat-hint *ngIf="parameter.hint">{{parameter.hint}}</mat-hint>
     </mat-form-field>
   </ng-container>
 </form>

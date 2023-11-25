@@ -10,13 +10,17 @@ import {LayerType} from "../../core/enums";
 
 export class Output extends Layer {
   override layerType = LayerType.Output;
-  constructor(id: string, parameters: {units: number, activation: string, weights: Weights}, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
+
+  constructor(id: string, parameters: {
+    units: number,
+    activation: string,
+    weights: Weights
+  }, position: XY, modelBuilderService: ModelBuilderService, fb: NonNullableFormBuilder) {
     const config = {
       name: 'Output',
       title: 'Dense Layer Parameter',
       formConfig: [
-        Units,
-        Activation
+        Activation, Units
       ]
     };
     const layerForm = fb.group({

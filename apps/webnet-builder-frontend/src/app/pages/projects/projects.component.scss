@@ -4,8 +4,15 @@
 }
 
 .card-colored-title {
-  color: #ff4081;
+  color: var(--color-primary);
 }
+
+.mat-mdc-list-item:hover {
+  .project-name {
+    color: var(--color-primary);
+  }
+}
+
 
 .projects-card {
   margin: 1rem;
@@ -16,7 +23,7 @@
 
 .info-message {
   margin-top: 1rem;
-  color: red;
+  color: var(--color-warn);
 }
 
 .flex-container {
