@@ -82,11 +82,11 @@
         <mat-error *ngIf="datasetForm.get('target')?.hasError('required')">Target is required</mat-error>
       </mat-form-field>
       <h4 class="bold-section-title">Split your Data into Training and Validation Data</h4>
-      <mat-form-field>
+      <mat-form-field class="unstyled-form-field">
         <mat-label>Training Ratio</mat-label>
         <input matInput type="text" formControlName="trainingRatio" readonly>
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field class="unstyled-form-field">
         <mat-label>Validation Ratio</mat-label>
         <input matInput type="text" formControlName="validationRatio" readonly>
       </mat-form-field>

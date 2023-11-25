@@ -1,31 +1,27 @@
 @mixin form-field() {
   .mat-mdc-form-field {
     margin: .5rem;
-  }
 
-  .mat-mdc-form-field-type-mat-select {
-    .mat-mdc-floating-label {
-      top: 50% !important;
+      &.mat-mdc-form-field-type-mat-select, &.mat-mdc-form-field-type-mat-input:has(input) {
+        .mat-mdc-floating-label {
+          top: 50% !important;
 
-      &.mdc-floating-label--float-above {
-        top: 28px !important;
+          &.mdc-floating-label--float-above {
+            top: 28px !important;
+          }
+        }
       }
-    }
-  }
-  .mat-mdc-form-field-type-mat-input:has(input){
-    .mat-mdc-floating-label {
-      top: 50% !important;
-
-      &.mdc-floating-label--float-above {
-        top: 28px !important;
-      }
-    }
   }
 
-  .mat-mdc-form-field-infix {
-    min-height: 47px !important;
-    height: 47px !important;
-    padding: 1em 0 !important;
+
+
+
+  .mat-mdc-form-field:not(.unstyled-form-field) {
+    .mat-mdc-form-field-infix {
+      min-height: 47px !important;
+      height: 47px !important;
+      padding: 1em 0 !important;
+    }
   }
 
   .mat-mdc-form-field-hint-wrapper, .mat-mdc-form-field-error-wrapper {
