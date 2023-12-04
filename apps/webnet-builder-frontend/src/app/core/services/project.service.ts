@@ -41,7 +41,6 @@ export class ProjectService {
     inputColumns: [],
     targetColumns: []
   });
-
   dataframe = computed(async () => {
     const dataset = this.dataset();
     const df = new dfd.DataFrame(dataset.data);
@@ -67,6 +66,7 @@ export class ProjectService {
     accuracyPlot: true,
     lossPlot: false,
     shuffle: true,
+    earlyStopping: false,
     saveTraining: true,
     useExistingWeights: false,
     validationSplit: 0.2,
@@ -96,6 +96,9 @@ export class ProjectService {
     // })
     // effect(() => {
     //   console.log('CHANGES DONE TO BUILDER: ', this.builder());
+    // })
+    // effect(() => {
+    //   console.log('CHANGES DONE TO DATASET: ', this.dataset());
     // })
     this.myProjects = this.localStorageService.getProjectsFromLocalStorage();
     effect(async () => {
@@ -170,6 +173,7 @@ export class ProjectService {
         accuracyPlot: true,
         lossPlot: false,
         shuffle: true,
+        earlyStopping: false,
         saveTraining: true,
         useExistingWeights: false,
         validationSplit: 0.2,
@@ -211,31 +215,29 @@ export class ProjectService {
     this.localStorageService.saveProjectInLocalStorage(name, project);
   }
 
-  ordinalEncode(data: string[]) {
-    // const vocab = Array.from(new Set(data));
-    // const ordinalEncodedData = data.map(value => vocab.indexOf(value));
-    // return ordinalEncodedData;
-  }
 
-  oneHotEncode(data: number[]) {
-    // const vocab = new Set(data);
-    // const oneHotEncodedData = tf.oneHot(data, vocab.size);
-    // return oneHotEncodedData;
-  }
-
-
-  minMaxEncode(series: Series): Series {
+  minMaxEncode(columnName: string, series: Series): DataFrame {
     series.asType('float32', {inplace: true});
     const scaler = new dfd.MinMaxScaler();
-    scaler.fit(series);
-    return scaler.transform(series);
+    const encodedValues = scaler.fitTransform(series).values;
+    return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  labelEncode(series: Series): Series {
+  labelEncode(columnName: string, series: Series): DataFrame {
     let encode = new dfd.LabelEncoder();
-    encode.fit(series);
-    return encode.transform(series.values);
+    const encodedValues = encode.fitTransform(series).values;
+    return new dfd.DataFrame({[columnName]: encodedValues});
   }
+
+  oneHotEncode(columnName: string, series: Series): DataFrame {
+    let encode = new dfd.OneHotEncoder();
+    const encodedValues = encode.fitTransform(series.values);
+    const labels = series.unique().values;
+    const newColumns = labels.map(label => columnName + '_' + label);
+    const df = new dfd.DataFrame(encodedValues, {columns: newColumns});
+    return df;
+  }
+
 
   replaceEmptyValues(series: Series): Series {
     const med = series.median();
@@ -246,27 +248,22 @@ export class ProjectService {
   }
 
   preprocessData(df: DataFrame): DataFrame {
-    const columnValues: { [key: string]: any } = {};
-
+    const encDfList: DataFrame[] = [];
     for (const column of this.dataset().columns) {
       let series = df[column.name];
-      // console.log(column.name, column.type);
-      if ((column.type === 'int32' || column.type === 'float32') && column.uniqueValues > 2 && column.uniqueValues < df.shape[0]) {
+      if (column.encoding === 'minmax') {
         series = this.replaceEmptyValues(series);
-        series = this.minMaxEncode(series);
-        columnValues[column.name] = series.values;
-        // console.log("MINMAX");
-      } else if (column.type === 'string') {
-        series = this.labelEncode(series);
-        columnValues[column.name] = series;
-        // console.log("LABEL ENCODER");
+        encDfList.push(this.minMaxEncode(column.name, series));
+      } else if (column.encoding === 'label') {
+        encDfList.push(this.labelEncode(column.name, series));
+      } else if (column.encoding === 'onehot') {
+        encDfList.push(this.oneHotEncode(column.name, series));
       } else {
-        columnValues[column.name] = series.values;
-        // console.log("NO ENCODER");
+        encDfList.push(series);
       }
-      // console.log("========");
     }
-    // console.log(columnValues);
-    return new dfd.DataFrame(columnValues);
+    const prepDf = dfd.concat({dfList: encDfList, axis: 1}) as DataFrame;
+    prepDf.print();
+    return prepDf;
   }
 }

@@ -22,6 +22,7 @@ export class MnistTemplate {
       accuracyPlot: true,
       lossPlot: false,
       shuffle: true,
+      earlyStopping: false,
       saveTraining: true,
       useExistingWeights: false,
       validationSplit: 0.2,

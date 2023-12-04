@@ -6,6 +6,7 @@ import {SerializationService} from "../../../core/services/serialization.service
 import {Dataset, TrainingConfig} from "../../../core/interfaces/project";
 import {FormBuilder, Validators} from "@angular/forms";
 import * as dfd from "danfojs";
+import {Encoder} from "../../../shared/ml_objects/encoder";
 
 @Component({
   selector: 'app-dataset',
@@ -18,10 +19,12 @@ export class DatasetComponent {
   splitValue = 80;
   file: File | undefined;
   trainConfig: TrainingConfig;
-  displayedColumns: { name: string, type: string, uniqueValues: number }[] = [];
+  displayedColumns: { name: string, type: string, uniqueValues: number, encoding: string }[] = [];
+  dfColumns: string[] = [];
   columnNames: string[] = [];
   dataSource: MatTableDataSource<any>;
   selectedTable: string = 'original';
+  selectedEncoders: { [key: string]: string } = {};
 
   constructor(public projectService: ProjectService,
               private serializationService: SerializationService,
@@ -34,7 +37,7 @@ export class DatasetComponent {
       trainingRatio: [`${this.splitValue.toFixed(0)} %`],
       validationRatio: [`${(100 - this.splitValue).toFixed(0)} %`],
     });
-  this.dataSource = new MatTableDataSource();
+    this.dataSource = new MatTableDataSource();
   }
 
   async ngOnInit() {
@@ -64,6 +67,10 @@ export class DatasetComponent {
     const dataset = this.projectService.dataset();
     if (df && df.shape[0] !== 0) {
       this.displayedColumns = dataset.columns;
+      this.selectedEncoders = dataset.columns.reduce((acc: any, column) => {
+        acc[column.name] = column.encoding;
+        return acc;
+      }, {});
       this.columnNames = dataset.columns.map(column => column.name);
       this.datasetForm.get('input')?.setValue(this.projectService.dataset().inputColumns);
       this.selectedTable = 'original';
@@ -79,6 +86,7 @@ export class DatasetComponent {
       const df = await this.projectService.dataframe();
       const data: { [key: string]: any }[] = dfd.toJSON(df) as { [key: string]: any }[];
       this.dataSource!.data = data;
+      this.dfColumns = df.columns;
     }
   }
 
@@ -98,9 +106,9 @@ export class DatasetComponent {
       const dataset = await this.serializationService.parseCSV(this.file);
       const df = new dfd.DataFrame(dataset.data);
 
-      const columns: { name: string, type: string, uniqueValues: number }[] = [];
+      const columns: { name: string, type: string, uniqueValues: number, encoding: string }[] = [];
       df.columns.forEach(column => {
-        columns.push({name: column, type: df[column].dtype, uniqueValues: df[column].nUnique()});
+        columns.push({name: column, type: df[column].dtype, uniqueValues: df[column].nUnique(), encoding: 'no'});
       })
 
       this.projectService.dataset.mutate((value: Dataset) => {
@@ -114,6 +122,14 @@ export class DatasetComponent {
     }
   }
 
+  onEncoderChange(columnName: string, encoding: string) {
+    this.projectService.dataset.mutate((dataset: Dataset) => {
+      const columnToUpdate = dataset.columns.find(column => column.name === columnName);
+        if (columnToUpdate) {
+          columnToUpdate.encoding = encoding;
+        }
+      });
+    }
 
   ngAfterViewInit() {
     this.initPaginator();
@@ -132,5 +148,10 @@ export class DatasetComponent {
       })
     });
   }
+
+  checkIfTypeNumber(value: any) {
+    return typeof value === 'number';
+  }
+  protected readonly Encoder = Encoder;
 }
 

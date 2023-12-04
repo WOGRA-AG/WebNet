@@ -19,7 +19,7 @@ export interface ProjectInfo {
 export interface Dataset {
   fileName: string,
   data: { [key: string]: any }[],
-  columns: { name: string, type: string, uniqueValues: number}[],
+  columns: { name: string, type: string, uniqueValues: number, encoding: string}[],
   inputColumns: string[],
   targetColumns: string[]
 }
@@ -39,6 +39,7 @@ export interface TrainingConfig {
   accuracyPlot: boolean,
   lossPlot: boolean,
   shuffle: boolean,
+  earlyStopping: boolean,
   saveTraining: boolean,
   useExistingWeights: boolean,
   validationSplit: number,

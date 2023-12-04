@@ -6,8 +6,8 @@ import {TrainStats, XY} from "../interfaces/interfaces";
 import {ProjectService} from "./project.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../shared/components/message-dialog/message-dialog.component";
-import {optimizers} from "../../shared/tf_objects/optimizers";
-import {losses} from "../../shared/tf_objects/losses";
+import {optimizers} from "../../shared/ml_objects/optimizers";
+import {losses} from "../../shared/ml_objects/losses";
 import {ModelBuilderService} from "./model-builder.service";
 import {Tensor} from "@tensorflow/tfjs";
 
@@ -31,6 +31,7 @@ export class MachineLearningService {
   async ngOnInit(): Promise<void> {
     await tf.ready();
   }
+
   stopTraining(): void {
     this.stopTrainingFlag = true;
   }
@@ -65,7 +66,7 @@ export class MachineLearningService {
     this.projectService.model()?.compile({
       optimizer: optimizer(parameter.learningRate),
       loss: loss,
-      metrics: ['accuracy', tf.metrics.binaryAccuracy, tf.metrics.recall]
+      metrics: ['accuracy',  tf.metrics.recall]
     });
   }
 
@@ -94,18 +95,28 @@ export class MachineLearningService {
     }
   }
 
-  evaluate(x: any, y: any): void {
-    const X = this.normalize(tf.tensor2d(x));
-    const Y = this.normalize(tf.tensor1d(y));
-    const randomRowIndex = Math.floor(Math.random() * X.shape[0]);
-    const randomRowX = X.slice([randomRowIndex], [1]);
-    const randomRowY = Y.slice([randomRowIndex], [1]);
+  evaluate(X: Tensor, Y: Tensor): void {
+    const shape = this.modelBuilderService.getDataInputShape();
+
+    const reshapedX = X.reshape([X.shape[0], ...shape]);
+    const reshapedY = Y;
 
     try {
       this.compile();
-      const evaluation = this.projectService.model()?.evaluate(
-        randomRowX, randomRowY)
-      console.log(evaluation);
+      const evaluation: tf.Scalar[] = this.projectService.model()?.evaluate(
+        reshapedX, reshapedY) as tf.Scalar[];
+      const metricsNames = this.projectService.model()?.metricsNames;
+
+      if (evaluation && metricsNames) {
+        for (let i = 0; i < evaluation?.length; i++) {
+          const tensor = evaluation[i];
+          const metricName = metricsNames[i];
+          const value = tensor.dataSync()[0];
+          console.log(metricName, value);
+        }
+      }
+
+      console.log("==========EVALOUATION==========");
     } catch (e: any) {
       console.log(e.message);
       this.dialog.open(MessageDialogComponent, {
@@ -127,13 +138,26 @@ export class MachineLearningService {
     }
   }
 
+  reshapeTensors(tensor: Tensor): Tensor|false {
+    try {
+      const shape = this.modelBuilderService.getDataInputShape();
+      return tensor.reshape([tensor.shape[0], ...shape]);
+    } catch (e: any) {
+      console.log(e.message);
+      return false;
+    }
+  }
+
   async extractFeaturesAndTargets(): Promise<[Tensor, Tensor]> {
     const dataset = this.projectService.dataset();
+
     const inputColumns: string[] = dataset.inputColumns;
     const targetColumns: string[] = dataset.targetColumns;
 
     const df = await this.projectService.dataframe();
-    const inputs = df.loc({columns: inputColumns});
+    const dfInputColumns = df.columns.filter(column => inputColumns.includes(column.split('_')[0]));
+
+    const inputs = df.loc({columns: dfInputColumns});
     const targets = df.loc({columns: targetColumns});
 
     inputs.print();
@@ -148,19 +172,15 @@ export class MachineLearningService {
       this.projectService.model.set(model);
     }
 
-    const shape = this.modelBuilderService.getDataInputShape();
-    const reshapedX= X.reshape([X.shape[0], ...shape]);
-    const reshapedY = Y;
-
     const EPOCHS = parameter.epochs;
     const BATCH_SIZE = parameter.batchSize;
     const VALIDATION_SPLIT = parameter.validationSplit;
     const SHUFFLE = parameter.shuffle;
     const YIELD_EVERY = 'auto';
-    const BATCHES_PER_EPOCH = Math.ceil(reshapedX.shape[0] / BATCH_SIZE);
+    const BATCHES_PER_EPOCH = Math.ceil(X.shape[0] / BATCH_SIZE);
     const TOTAL_NUM_BATCHES = EPOCHS * BATCHES_PER_EPOCH;
 
-    const fitCallback = {
+    const fitCallback = new tf.CustomCallback({
       onTrainBegin: async (logs?: tf.Logs) => {
         this.startTimer();
         this.trainingStatsSubject.next({epoch: 0, accuracy: undefined, loss: undefined, progress: 0, time: 0});
@@ -186,38 +206,39 @@ export class MachineLearningService {
         this.projectService.model()!.stopTraining = this.stopTrainingFlag;
         this.stopTrainingFlag = false;
       }
-    }
+    }, YIELD_EVERY);
     const callbacks: any[] = [fitCallback];
 
     if (parameter.accuracyPlot) {
-      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['acc', 'val_acc'], {
+      callbacks.push(new tf.CustomCallback(tfvis.show.fitCallbacks(plotContainer, ['acc', 'val_acc'], {
         callbacks: ['onEpochEnd'],
         xLabel: 'Epoch',
         yLabel: 'Accuracy',
         // width: 100,
         // height: 2000
-      }))
+      })));
     }
     if (parameter.lossPlot) {
-      callbacks.push(tfvis.show.fitCallbacks(plotContainer, ['loss', 'val_loss'], {
+      callbacks.push(new tf.CustomCallback(tfvis.show.fitCallbacks(plotContainer, ['loss', 'val_loss'], {
         callbacks: ['onEpochEnd'],
         xLabel: 'Epoch',
         yLabel: 'Loss'
-      }));
+      })));
+    }
+    if (parameter.earlyStopping) {
+      callbacks.push(tf.callbacks.earlyStopping({monitor: 'val_acc', patience: 5}));
     }
 
     try {
       this.compile();
-      this.modelBuilderService.getDataInputShape();
 
       // todo: use fitDataset instead for more memory-efficiency?
-      const history = await this.projectService.model()?.fit(reshapedX, reshapedY, {
+      const history = await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
         validationSplit: VALIDATION_SPLIT,
         epochs: EPOCHS,
         callbacks: callbacks,
         shuffle: SHUFFLE,
-        yieldEvery: YIELD_EVERY
       });
 
       return history;
