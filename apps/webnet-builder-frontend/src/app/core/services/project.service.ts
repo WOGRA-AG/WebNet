@@ -223,6 +223,12 @@ export class ProjectService {
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
+  standardScaler(columnName: string, series: Series): DataFrame {
+    const scaler = new dfd.StandardScaler();
+    const encodedValues = scaler.fitTransform(series).values;
+    return new dfd.DataFrame({[columnName]: encodedValues});
+  }
+
   labelEncode(columnName: string, series: Series): DataFrame {
     let encode = new dfd.LabelEncoder();
     const encodedValues = encode.fitTransform(series).values;
@@ -254,6 +260,8 @@ export class ProjectService {
       if (column.encoding === 'minmax') {
         series = this.replaceEmptyValues(series);
         encDfList.push(this.minMaxEncode(column.name, series));
+      } else if (column.encoding === 'standard') {
+        encDfList.push(this.standardScaler(column.name, series));
       } else if (column.encoding === 'label') {
         encDfList.push(this.labelEncode(column.name, series));
       } else if (column.encoding === 'onehot') {
