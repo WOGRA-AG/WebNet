@@ -1,12 +1,11 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {ProjectService} from "../../../core/services/project.service";
-import {Dataset, TrainingRecords} from "../../../core/interfaces/project";
+import {TrainingRecords} from "../../../core/interfaces/project";
 import {MatSelectionList} from "@angular/material/list";
 import {MachineLearningService} from "../../../core/services/machine-learning.service";
 import {ModelBuilderService} from "../../../core/services/model-builder.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../../shared/components/message-dialog/message-dialog.component";
-import {MatTableDataSource} from "@angular/material/table";
 import {areBuilderEqual} from "../../../shared/utils";
 
 @Component({
@@ -20,25 +19,17 @@ export class EvaluationComponent {
   @ViewChild('trainHistoryList') trainHistoryList: MatSelectionList | undefined;
   selectedRecord: TrainingRecords | null = null;
   trainingRecords: TrainingRecords[];
-  dataset: Dataset;
-  randomExample: { [key: string]: any }[];
-  dataSource: MatTableDataSource<any> | undefined;
   isSelectedRecordAlreadyLoaded: boolean = false;
 
   constructor(public projectService: ProjectService,
               private ml: MachineLearningService,
               private modelBuilderService: ModelBuilderService,
               private dialog: MatDialog) {
-    this.dataset = this.projectService.dataset();
-    this.randomExample = [this.dataset.data[0]];
     this.trainingRecords = this.projectService.trainingRecords();
   }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource<{ [key: string]: any; }>(this.randomExample);
     this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
-
-    // this.predict();
   }
 
   async ngAfterViewInit() {
@@ -77,7 +68,6 @@ export class EvaluationComponent {
       const options = {
         xLabel: "Epoch",
         yLabel: "Accuracy",
-        // width: 200
       }
       await this.ml.renderPlot(this.accuracyContainer.nativeElement,values, series, options);
     } else {
@@ -115,9 +105,5 @@ export class EvaluationComponent {
         },
       });
     }
-  }
-
-  test(element: number, column: string, test: any) {
-    console.log(element, column, test);
   }
 }
