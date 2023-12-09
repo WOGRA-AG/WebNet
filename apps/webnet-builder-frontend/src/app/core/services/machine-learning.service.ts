@@ -10,6 +10,7 @@ import {optimizers} from "../../shared/ml_objects/optimizers";
 import {losses} from "../../shared/ml_objects/losses";
 import {ModelBuilderService} from "./model-builder.service";
 import {Tensor} from "@tensorflow/tfjs";
+import {DataFrame} from "danfojs";
 
 
 @Injectable({
@@ -70,20 +71,15 @@ export class MachineLearningService {
     });
   }
 
-  predict(X: Tensor, Y: Tensor): void {
-    const x = this.normalize(X);
-    const y = this.normalize(Y);
-    const randomRowIndex = Math.floor(Math.random() * X.shape[0]);
-    const randomRowX = x.slice([randomRowIndex], [1]);
-    const randomRowY = y.slice([randomRowIndex], [1]);
-
+  predict(X: Tensor): string {
     try {
+      // todo: input with comma separated values?
+      // todo: + rnd example ?
+      // show
       this.compile();
-      const result = this.projectService.model()?.predict(randomRowX) as tf.Tensor2D;
-      console.log("PREDICTION: ", result?.dataSync());
-      console.log("TARGET: ", randomRowY.dataSync());
+      const result = this.projectService.model()?.predict(X) as tf.Tensor2D;
+      return result?.dataSync()[0].toString();
     } catch (e: any) {
-      console.log(e.message);
       this.dialog.open(MessageDialogComponent, {
         maxWidth: '600px',
         data: {
@@ -92,6 +88,7 @@ export class MachineLearningService {
           warning: true
         }
       });
+      return "-";
     }
   }
 
@@ -112,7 +109,6 @@ export class MachineLearningService {
           const tensor = evaluation[i];
           const metricName = metricsNames[i];
           const value = tensor.dataSync()[0];
-          console.log(metricName, value);
         }
       }
 
@@ -143,18 +139,16 @@ export class MachineLearningService {
       const shape = this.modelBuilderService.getDataInputShape();
       return tensor.reshape([tensor.shape[0], ...shape]);
     } catch (e: any) {
-      console.log(e.message);
       return false;
     }
   }
 
-  async extractFeaturesAndTargets(): Promise<[Tensor, Tensor]> {
+  async extractFeaturesAndTargets(df: DataFrame): Promise<[Tensor, Tensor]> {
     const dataset = this.projectService.dataset();
-
     const inputColumns: string[] = dataset.inputColumns;
     const targetColumns: string[] = dataset.targetColumns;
 
-    const df = await this.projectService.dataframe();
+
     const dfInputColumns = df.columns.filter(column => inputColumns.includes(column.split('_')[0]));
 
     const inputs = df.loc({columns: dfInputColumns});

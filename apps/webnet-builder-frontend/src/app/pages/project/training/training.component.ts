@@ -102,7 +102,8 @@ export class TrainingComponent {
       const backend = this.trainingForm.get('tfBackend')?.value;
       const backendSelected = await this.ml.setTfBackend(backend);
       if (backendSelected) {
-        const [X, Y] = await this.ml.extractFeaturesAndTargets();
+        const df = await this.projectService.dataframe();
+        const [X, Y] = await this.ml.extractFeaturesAndTargets(df);
 
         const reshapedX = this.ml.reshapeTensors(X);
         const reshapedY = Y;

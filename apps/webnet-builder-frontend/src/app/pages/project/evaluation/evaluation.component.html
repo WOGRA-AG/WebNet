@@ -26,13 +26,17 @@
   <div class="right-column">
     <div class="model-info">
       <h3 class="section-heading">Model Info</h3>
-      <div>
-        <p><b>#{{selectedRecord?.id}}</b> - <span
-          class="record-date">{{selectedRecord?.date | date:'d. MMM yyyy, H:mm:ss'}}</span></p>
-        <p><b>Trained on:</b> {{selectedRecord?.datasetName}}</p>
-        <p><b>Epochs trained:</b> {{selectedRecord?.trainStats?.epoch}}</p>
-        <p><b>Accuracy:</b> {{selectedRecord?.trainStats?.accuracy | number:'1.1-5'}} |
-          <b>Loss:</b> {{selectedRecord?.trainStats?.loss | number:'1.1-5'}}</p>
+      <div class="model-info-container">
+        <p><b>#{{selectedRecord?.id}}</b> - <span class="record-date">{{selectedRecord?.date | date:'d. MMM yyyy, H:mm:ss'}}</span> | <span>Dataset:</span> {{selectedRecord?.datasetName}}</p>
+
+        <p><b>Trained for</b></p>
+        <p class="value-line"><span>Epochs:</span> {{selectedRecord?.trainStats?.epoch}} | <span>Batch Size:</span> {{selectedRecord?.config?.batchSize}}</p>
+
+        <p><b>Validation Metrics</b></p>
+        <p class="value-line"><span>Accuracy:</span> {{selectedRecord?.trainStats?.accuracy | number:'1.1-5'}} | <span>Loss:</span> {{selectedRecord?.trainStats?.loss | number:'1.1-5'}}</p>
+
+        <p><b>Training Parameters</b></p>
+        <p class="value-line"><span>Loss Function:</span> {{selectedRecord?.config?.loss}} | <span>Optimizer:</span> {{selectedRecord?.config?.optimizer}} | <span>Learning Rate:</span> {{selectedRecord?.config?.learningRate}}</p>
       </div>
     </div>
     <div class="plot-section">
@@ -43,8 +47,37 @@
       </div>
     </div>
     <div *ngIf="trainHistoryList.selectedOptions.hasValue()" class="prediction-container">
-      <h3 class="section-heading">Evaluation</h3>
+      <h3 class="section-heading">Prediction</h3>
 
+      <div *ngIf="prediction && target" class="prediction-target-container">
+        <div>
+          <strong>Prediction</strong>
+          <span>{{ prediction }}</span>
+        </div>
+        <div>
+          <strong>Target</strong>
+          <span>{{ target }}</span>
+        </div>
+      </div>
+
+      <h4 class="bold-section-title">Model Input for Prediction</h4>
+      <div class="custom-input-container" *ngIf="sample">
+        <ng-container *ngFor="let column of inputColumns; let i = index">
+          <div class="input-group">
+            <label class="input-label">{{ column }}</label>
+            <input matInput [(ngModel)]="tempSample[column]" (ngModelChange)="onInputChange(column)">
+          </div>
+          <span *ngIf="i < inputColumns.length - 1" class="comma-separator">,</span>
+        </ng-container>
+      </div>
+
+      <button mat-stroked-button color="primary" (click)="loadRandomDataSample()">
+        Load Random Data
+      </button>
+
+      <button mat-raised-button color="primary" (click)="predict()">
+        Predict
+      </button>
     </div>
   </div>
 </div>

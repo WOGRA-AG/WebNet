@@ -7,6 +7,9 @@ import {ModelBuilderService} from "../../../core/services/model-builder.service"
 import {MatDialog} from "@angular/material/dialog";
 import {MessageDialogComponent} from "../../../shared/components/message-dialog/message-dialog.component";
 import {areBuilderEqual} from "../../../shared/utils";
+import * as dfd from "danfojs";
+import * as tf from "@tensorflow/tfjs";
+import {DataFrame} from "danfojs";
 
 @Component({
   selector: 'app-evaluation',
@@ -20,6 +23,11 @@ export class EvaluationComponent {
   selectedRecord: TrainingRecords | null = null;
   trainingRecords: TrainingRecords[];
   isSelectedRecordAlreadyLoaded: boolean = false;
+  inputColumns: string[] = [];
+  sample: DataFrame|null = null;
+  tempSample: { [key: string]: any } = {};
+  prediction: string = "-";
+  target: string = "-";
 
   constructor(public projectService: ProjectService,
               private ml: MachineLearningService,
@@ -28,8 +36,10 @@ export class EvaluationComponent {
     this.trainingRecords = this.projectService.trainingRecords();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isSelectedRecordAlreadyLoaded = areBuilderEqual(this.selectedRecord?.builder, this.projectService.builder());
+    this.inputColumns = this.projectService.dataset().inputColumns;
+    this.loadRandomDataSample();
   }
 
   async ngAfterViewInit() {
@@ -75,11 +85,6 @@ export class EvaluationComponent {
     }
   }
 
-  predict() {
-    // const [X, Y] = this.ml.extractFeaturesAndTargets(this.projectService.dataset());
-    // this.ml.predict(X, Y);
-  }
-
   loadTrainingRecord(): void {
     const record = this.selectedRecord;
     if (record && record?.builder, record?.config) {
@@ -104,6 +109,49 @@ export class EvaluationComponent {
           warning: true
         },
       });
+    }
+  }
+
+  async predict() {
+    if (this.sample && this.sample.shape[0] !== 0) {
+      await tf.ready();
+      await this.projectService.dataframe(); // to trigger computed, before preprocessing!
+      const preprocessData = this.projectService.preprocessData(this.sample, false);
+
+      const [X, Y] = await this.ml.extractFeaturesAndTargets(preprocessData);
+      const reshapedX = this.ml.reshapeTensors(X);
+
+      if (reshapedX) {
+        this.prediction = this.ml.predict(reshapedX);
+        this.target = Y.dataSync()[0].toString();
+      } else {
+        this.dialog.open(MessageDialogComponent, {
+          maxWidth: '600px',
+          data: {
+            title: 'Predicting Failed',
+            message: 'Make sure that your model and dataset are loaded correctly.',
+            warning: true
+          },
+        });
+      }
+    }
+  }
+
+  loadRandomDataSample(): void {
+    const dataset = this.projectService.dataset();
+    const df = new dfd.DataFrame(dataset.data);
+    const columns =  [...this.inputColumns, ...this.projectService.dataset().targetColumns];
+
+    this.sample = df.loc({rows: [Math.floor(Math.random() * df.shape[0])],
+      columns: columns});
+    this.inputColumns.forEach(column => {
+      this.tempSample[column] = this.sample![column].values[0]; // Assuming single-row DataFrame
+    });
+  }
+
+  onInputChange(column: string) {
+    if (this.sample) {
+      this.sample[column].values[0] = this.tempSample[column];
     }
   }
 }

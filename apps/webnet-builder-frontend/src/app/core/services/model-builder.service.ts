@@ -233,7 +233,6 @@ export class ModelBuilderService {
       return layer !== this.outputLayer ? null : tf.model({inputs: input, outputs: hidden});
     } catch (error) {
       console.log("Error: Generating Model");
-      console.log(error);
       return null;
     }
   }

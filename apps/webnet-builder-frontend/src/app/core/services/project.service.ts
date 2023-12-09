@@ -237,28 +237,38 @@ export class ProjectService {
   }
 
 
-  minMaxEncode(scaler: MinMaxScaler,columnName: string, series: Series): DataFrame {
+  minMaxEncode(scaler: MinMaxScaler, columnName: string, series: Series, fitting: boolean): DataFrame {
     series.asType('float32', {inplace: true});
-    const encodedValues = scaler.fitTransform(series).values;
+    const encodedValues = fitting ? scaler.fitTransform(series).values : scaler.transform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  standardScaler(scaler: StandardScaler, columnName: string, series: Series): DataFrame {
-    const encodedValues = scaler.fitTransform(series).values;
+  standardScaler(scaler: StandardScaler, columnName: string, series: Series, fitting: boolean): DataFrame {
+    const encodedValues = fitting ? scaler.fitTransform(series).values : scaler.transform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  labelEncode(encoder: LabelEncoder, columnName: string, series: Series): DataFrame {
-    const encodedValues = encoder.fitTransform(series).values;
+  labelEncode(encoder: LabelEncoder, columnName: string, series: Series, fitting: boolean): DataFrame {
+    const encodedValues = fitting ? encoder.fitTransform(series).values : encoder.transform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  oneHotEncode(encoder: OneHotEncoder, columnName: string, series: Series): DataFrame {
-    const encodedValues = encoder.fitTransform(series.values);
-    const labels = series.unique().values;
-    const newColumns = labels.map(label => columnName + '_' + label);
-    const df = new dfd.DataFrame(encodedValues, {columns: newColumns});
-    return df;
+  oneHotEncode(encoder: OneHotEncoder, columnName: string, series: Series, fitting: boolean): DataFrame {
+    if (fitting) {
+      const encodedValues = encoder.fitTransform(series.values);
+      const labels = series.unique().values;
+      const newColumns = labels.map(label => columnName + '_' + label);
+      const df = new dfd.DataFrame(encodedValues, {columns: newColumns});
+      return df;
+    } else {
+      const encodedValues = encoder.transform(series.values);
+      const columns = [];
+      for (let i = 0; i < encodedValues[0].length; i++) {
+        columns.push(columnName + '_' + i);
+      }
+      const df = new dfd.DataFrame(encodedValues, {columns: columns});
+      return df;
+    }
   }
 
 
@@ -270,21 +280,23 @@ export class ProjectService {
     return series.apply(replaceEmptyValues);
   }
 
-  preprocessData(df: DataFrame): DataFrame {
+  preprocessData(df: DataFrame, fitting: boolean = true): DataFrame {
     const encDfList: DataFrame[] = [];
     for (const column of this.dataset().columns) {
       let series = df[column.name];
-      if (column.encoder instanceof MinMaxScaler) {
-        series = this.replaceEmptyValues(series);
-        encDfList.push(this.minMaxEncode(column.encoder, column.name, series));
-      } else if (column.encoder instanceof StandardScaler) {
-        encDfList.push(this.standardScaler(column.encoder, column.name, series));
-      } else if (column.encoder instanceof LabelEncoder) {
-        encDfList.push(this.labelEncode(column.encoder, column.name, series));
-      } else if (column.encoder instanceof OneHotEncoder) {
-        encDfList.push(this.oneHotEncode(column.encoder, column.name, series));
-      } else {
-        encDfList.push(series);
+      if (series) {
+        if (column.encoder instanceof MinMaxScaler) {
+          series = this.replaceEmptyValues(series);
+          encDfList.push(this.minMaxEncode(column.encoder, column.name, series, fitting));
+        } else if (column.encoder instanceof StandardScaler) {
+          encDfList.push(this.standardScaler(column.encoder, column.name, series, fitting));
+        } else if (column.encoder instanceof LabelEncoder) {
+          encDfList.push(this.labelEncode(column.encoder, column.name, series, fitting));
+        } else if (column.encoder instanceof OneHotEncoder) {
+          encDfList.push(this.oneHotEncode(column.encoder, column.name, series, fitting));
+        } else {
+          encDfList.push(series);
+        }
       }
     }
     const prepDf = dfd.concat({dfList: encDfList, axis: 1}) as DataFrame;
