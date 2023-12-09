@@ -3,10 +3,11 @@ import {ProjectService} from "../../../core/services/project.service";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatTableDataSource} from "@angular/material/table";
 import {SerializationService} from "../../../core/services/serialization.service";
-import {Dataset, TrainingConfig} from "../../../core/interfaces/project";
+import {Dataset, EncoderType, TrainingConfig} from "../../../core/interfaces/project";
 import {FormBuilder, Validators} from "@angular/forms";
 import * as dfd from "danfojs";
 import {Encoder} from "../../../shared/ml_objects/encoder";
+import {EncoderEnum} from "../../../core/enums";
 
 @Component({
   selector: 'app-dataset',
@@ -19,12 +20,12 @@ export class DatasetComponent {
   splitValue = 80;
   file: File | undefined;
   trainConfig: TrainingConfig;
-  displayedColumns: { name: string, type: string, uniqueValues: number, encoding: string }[] = [];
+  displayedColumns: { name: string, type: string, uniqueValues: number, encoding: EncoderEnum, encoder: EncoderType }[] = [];
   dfColumns: string[] = [];
   columnNames: string[] = [];
   dataSource: MatTableDataSource<any>;
   selectedTable: string = 'original';
-  selectedEncoders: { [key: string]: string } = {};
+  selectedEncoders: { [key: string]: EncoderEnum } = {};
 
   constructor(public projectService: ProjectService,
               private serializationService: SerializationService,
@@ -69,6 +70,9 @@ export class DatasetComponent {
       this.displayedColumns = dataset.columns;
       this.selectedEncoders = dataset.columns.reduce((acc: any, column) => {
         acc[column.name] = column.encoding;
+        if (column.encoding !== EncoderEnum.no) {
+          this.onEncoderChange(column.name, column.encoding);
+        }
         return acc;
       }, {});
       this.columnNames = dataset.columns.map(column => column.name);
@@ -106,9 +110,9 @@ export class DatasetComponent {
       const dataset = await this.serializationService.parseCSV(this.file);
       const df = new dfd.DataFrame(dataset.data);
 
-      const columns: { name: string, type: string, uniqueValues: number, encoding: string }[] = [];
+      const columns: { name: string, type: string, uniqueValues: number, encoding: EncoderEnum, encoder: EncoderType }[] = [];
       df.columns.forEach(column => {
-        columns.push({name: column, type: df[column].dtype, uniqueValues: df[column].nUnique(), encoding: 'no'});
+        columns.push({name: column, type: df[column].dtype, uniqueValues: df[column].nUnique(), encoding: EncoderEnum.no, encoder: null});
       })
 
       this.projectService.dataset.mutate((value: Dataset) => {
@@ -122,11 +126,13 @@ export class DatasetComponent {
     }
   }
 
-  onEncoderChange(columnName: string, encoding: string) {
-    this.projectService.dataset.mutate((dataset: Dataset) => {
+  onEncoderChange(columnName: string, encoding: EncoderEnum) {
+    this.selectedEncoders[columnName] = encoding;
+    this.projectService.dataset.mutate(async (dataset: Dataset) => {
       const columnToUpdate = dataset.columns.find(column => column.name === columnName);
         if (columnToUpdate) {
           columnToUpdate.encoding = encoding;
+          columnToUpdate.encoder = await this.projectService.createEncoderInstance(encoding);
         }
       });
     }

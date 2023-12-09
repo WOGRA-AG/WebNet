@@ -1,5 +1,6 @@
 import {TrainStats, XY} from "./interfaces";
-import {StorageOption} from "../enums";
+import {EncoderEnum, StorageOption} from "../enums";
+import {LabelEncoder, MinMaxScaler, OneHotEncoder, StandardScaler} from "danfojs";
 
 export interface Project {
   projectInfo: ProjectInfo,
@@ -19,10 +20,12 @@ export interface ProjectInfo {
 export interface Dataset {
   fileName: string,
   data: { [key: string]: any }[],
-  columns: { name: string, type: string, uniqueValues: number, encoding: string}[],
+  columns: { name: string, type: string, uniqueValues: number, encoding: EncoderEnum, encoder: EncoderType}[],
   inputColumns: string[],
   targetColumns: string[]
 }
+
+export type EncoderType = OneHotEncoder|MinMaxScaler|StandardScaler|LabelEncoder|null;
 
 export interface Builder {
   layers: { id?: string, type: string, parameters?: any, position?: XY }[],

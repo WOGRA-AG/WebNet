@@ -27,3 +27,11 @@ export enum StorageOption {
   ZipFile = "Zip File",
   Unknown = "Unknown"
 }
+
+export enum EncoderEnum {
+  no="No",
+  minmax="MinMax",
+  label="Label",
+  onehot="Onehot",
+  standard="Standard"
+}

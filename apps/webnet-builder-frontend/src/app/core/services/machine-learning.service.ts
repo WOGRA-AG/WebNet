@@ -160,8 +160,6 @@ export class MachineLearningService {
     const inputs = df.loc({columns: dfInputColumns});
     const targets = df.loc({columns: targetColumns});
 
-    inputs.print();
-    targets.print();
     return [inputs.tensor, targets.tensor];
   }
 

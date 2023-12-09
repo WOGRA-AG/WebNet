@@ -3,7 +3,7 @@ import {BehaviorSubject} from "rxjs";
 import {MnistTemplate} from "../../shared/template_objects/mnist";
 import {
   Builder,
-  Dataset,
+  Dataset, EncoderType,
   MetricHistory,
   Project,
   ProjectInfo,
@@ -11,12 +11,12 @@ import {
   TrainingRecords
 } from "../interfaces/project";
 import {LocalstorageService} from "./localstorage.service";
-import {LayerType, StorageOption} from "../enums";
+import {EncoderEnum, LayerType, StorageOption} from "../enums";
 import * as tf from "@tensorflow/tfjs";
 import {ModelBuilderService} from "./model-builder.service";
 import {TrainStats} from "../interfaces/interfaces";
 import * as dfd from "danfojs";
-import {DataFrame, Series} from "danfojs";
+import {DataFrame, LabelEncoder, MinMaxScaler, OneHotEncoder, Series, StandardScaler} from "danfojs";
 
 
 @Injectable({
@@ -115,10 +115,31 @@ export class ProjectService {
     const project = this.getProjectByName(name);
     if (project) {
       this.projectInfo.set(project.projectInfo);
+      project.dataset.columns.map(async (column: any) => {
+        if (column.encoding !== EncoderEnum.no) {
+          column.encoder = await this.createEncoderInstance(column.encoding);
+        }
+      })
       this.dataset.set(project.dataset);
       this.builder.set(project.builder);
       this.trainConfig.set(project.trainConfig);
       this.trainingRecords.set(project.trainRecords);
+    }
+  }
+
+  async createEncoderInstance(encoding: EncoderEnum): Promise<EncoderType> {
+    await tf.ready();
+    switch (encoding) {
+      case EncoderEnum.onehot:
+        return new dfd.OneHotEncoder();
+      case EncoderEnum.minmax:
+        return new dfd.MinMaxScaler();
+      case EncoderEnum.label:
+        return new dfd.LabelEncoder();
+      case EncoderEnum.standard:
+        return new dfd.StandardScaler();
+      default:
+        return null;
     }
   }
 
@@ -216,28 +237,24 @@ export class ProjectService {
   }
 
 
-  minMaxEncode(columnName: string, series: Series): DataFrame {
+  minMaxEncode(scaler: MinMaxScaler,columnName: string, series: Series): DataFrame {
     series.asType('float32', {inplace: true});
-    const scaler = new dfd.MinMaxScaler();
     const encodedValues = scaler.fitTransform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  standardScaler(columnName: string, series: Series): DataFrame {
-    const scaler = new dfd.StandardScaler();
+  standardScaler(scaler: StandardScaler, columnName: string, series: Series): DataFrame {
     const encodedValues = scaler.fitTransform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  labelEncode(columnName: string, series: Series): DataFrame {
-    let encode = new dfd.LabelEncoder();
-    const encodedValues = encode.fitTransform(series).values;
+  labelEncode(encoder: LabelEncoder, columnName: string, series: Series): DataFrame {
+    const encodedValues = encoder.fitTransform(series).values;
     return new dfd.DataFrame({[columnName]: encodedValues});
   }
 
-  oneHotEncode(columnName: string, series: Series): DataFrame {
-    let encode = new dfd.OneHotEncoder();
-    const encodedValues = encode.fitTransform(series.values);
+  oneHotEncode(encoder: OneHotEncoder, columnName: string, series: Series): DataFrame {
+    const encodedValues = encoder.fitTransform(series.values);
     const labels = series.unique().values;
     const newColumns = labels.map(label => columnName + '_' + label);
     const df = new dfd.DataFrame(encodedValues, {columns: newColumns});
@@ -257,21 +274,20 @@ export class ProjectService {
     const encDfList: DataFrame[] = [];
     for (const column of this.dataset().columns) {
       let series = df[column.name];
-      if (column.encoding === 'minmax') {
+      if (column.encoder instanceof MinMaxScaler) {
         series = this.replaceEmptyValues(series);
-        encDfList.push(this.minMaxEncode(column.name, series));
-      } else if (column.encoding === 'standard') {
-        encDfList.push(this.standardScaler(column.name, series));
-      } else if (column.encoding === 'label') {
-        encDfList.push(this.labelEncode(column.name, series));
-      } else if (column.encoding === 'onehot') {
-        encDfList.push(this.oneHotEncode(column.name, series));
+        encDfList.push(this.minMaxEncode(column.encoder, column.name, series));
+      } else if (column.encoder instanceof StandardScaler) {
+        encDfList.push(this.standardScaler(column.encoder, column.name, series));
+      } else if (column.encoder instanceof LabelEncoder) {
+        encDfList.push(this.labelEncode(column.encoder, column.name, series));
+      } else if (column.encoder instanceof OneHotEncoder) {
+        encDfList.push(this.oneHotEncode(column.encoder, column.name, series));
       } else {
         encDfList.push(series);
       }
     }
     const prepDf = dfd.concat({dfList: encDfList, axis: 1}) as DataFrame;
-    prepDf.print();
     return prepDf;
   }
 }

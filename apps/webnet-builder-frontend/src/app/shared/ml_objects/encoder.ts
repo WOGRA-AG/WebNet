@@ -1,9 +1,10 @@
+import {EncoderEnum} from "../../core/enums";
 
-export const Encoder  = new Map<string, { name: string }>([
-  ['no', {name: 'No Encoding'}],
-  ['minmax', {name: 'MinMax Scaler'}],
-  ['label', {name: 'Label Encoder'}],
-  ['onehot', {name: 'One-Hot Encoder'}],
-  ['standard', {name: 'Standard Scaler'}],
+export const Encoder  = new Map<EncoderEnum, { name: string }>([
+  [EncoderEnum.no, {name: 'No Encoding'}],
+  [EncoderEnum.minmax, {name: 'MinMax Scaler'}],
+  [EncoderEnum.label, {name: 'Label Encoder'}],
+  [EncoderEnum.onehot, {name: 'One-Hot Encoder'}],
+  [EncoderEnum.standard, {name: 'Standard Scaler'}],
 ])
 
