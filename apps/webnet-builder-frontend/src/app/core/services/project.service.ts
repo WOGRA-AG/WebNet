@@ -58,12 +58,12 @@ export class ProjectService {
   initNewWeights = signal<boolean>(false);
   model = signal<tf.LayersModel | null>(null);
   trainConfig = signal<TrainingConfig>({
-    epochs: 100,
+    epochs: 10,
     batchSize: 32,
-    optimizer: 'adam',
-    learningRate: 0.01,
+    optimizer: 'sgd',
+    learningRate: 0.1,
     loss: 'meanSquaredError',
-    accuracyPlot: true,
+    accuracyPlot: false,
     lossPlot: false,
     shuffle: true,
     earlyStopping: false,

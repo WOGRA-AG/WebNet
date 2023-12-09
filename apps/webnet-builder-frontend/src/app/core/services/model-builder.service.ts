@@ -110,7 +110,7 @@ export class ModelBuilderService {
     switch (options.layerType) {
       case LayerType.Input:
         const inputPosition = this.getInputOutputPosition();
-        layer = new Input(id, options.parameters ?? {shape: '13'},
+        layer = new Input(id, options.parameters ?? {shape: '1'},
           options.position ?? {x: 30, y: inputPosition.y},
           this, this.fb);
         this.inputLayer = layer;
