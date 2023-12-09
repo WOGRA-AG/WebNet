@@ -38,13 +38,13 @@ export class TrainingComponent {
       this.trainingStats = stats;
     });
     this.trainingForm = fb.group({
-      epochs: [100, Validators.required],
+      epochs: [10, Validators.required],
       batchSize: [32, Validators.required],
-      optimizer: ['adam', Validators.required],
-      learningRate: [0.01, Validators.required],
+      optimizer: ['sgd', Validators.required],
+      learningRate: [0.1, Validators.required],
       loss: ['meanSquaredError', Validators.required],
       tfBackend: ['webgpu', Validators.required],
-      accuracyPlot: true,
+      accuracyPlot: false,
       lossPlot: false,
       shuffle: true,
       earlyStopping: false,
