@@ -18,9 +18,9 @@ export class DynamicLayerFormComponent {
       .filter((parameter) => parameter.type === 'number')
       .forEach((parameter) => {
         const sub = this.form.get(parameter.key)?.valueChanges.subscribe((value) => {
-          const intValue = parseInt(value, 10);
-          if (!isNaN(intValue)) {
-            this.form.get(parameter.key)?.setValue(intValue, { emitEvent: false });
+          const number = parseFloat(value);
+          if (!isNaN(number)) {
+            this.form.get(parameter.key)?.setValue(number, { emitEvent: false });
           }
         });
         this.subscriptions.push(sub!);
