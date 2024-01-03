@@ -229,6 +229,7 @@ export class MachineLearningService {
       this.compile();
 
       // todo: use fitDataset instead for more memory-efficiency?
+      const startTime = performance.now();
       const history = await this.projectService.model()?.fit(X, Y, {
         batchSize: BATCH_SIZE,
         validationSplit: VALIDATION_SPLIT,
@@ -236,7 +237,9 @@ export class MachineLearningService {
         callbacks: callbacks,
         shuffle: SHUFFLE,
       });
-
+      const endTime = performance.now();
+      const totalTimeInMilliseconds = endTime - startTime;
+      console.log("TRAINING TIME: ", totalTimeInMilliseconds);
       return history;
     } catch (e: any) {
       console.log(e.message);
