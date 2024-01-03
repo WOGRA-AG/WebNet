@@ -19,7 +19,7 @@ export class TestingComponent {
   hyperParameter = new FormGroup({
     example: new FormControl(TrainingExample.MNIST, Validators.required),
     backend: new FormControl(Backend.WEB_GPU, Validators.required),
-    trainDataSize: new FormControl(5000, Validators.required),
+    // trainDataSize: new FormControl(5000, Validators.required),
     epochs: new FormControl(100, Validators.required),
     batchSize: new FormControl(5000, Validators.required)
   });
@@ -73,12 +73,12 @@ export class TestingComponent {
   }
 
   async train(): Promise<number> {
-    const { example, backend, batchSize, epochs, trainDataSize } = this.hyperParameter.value;
+    const { example, backend, batchSize, epochs } = this.hyperParameter.value;
     this.trainingStats.trainingInfo.example = example!;
     this.trainingStats.trainingInfo.backend = backend!;
     this.trainingStats.trainingInfo.batchSize = batchSize!;
     this.trainingStats.trainingInfo.epochs = epochs!;
-    this.trainingStats.trainingInfo.sampleSize = trainDataSize!;
+    this.trainingStats.trainingInfo.sampleSize = 55000;
 
     const {trainXs, trainYs, testXs, testYs} = this.modelWrapperService.prepData(example!, batchSize!)!;
     const model = this.modelWrapperService.getModel(example!);
@@ -114,12 +114,13 @@ export class TestingComponent {
       }
     }
     const startTime = performance.now();
-    const h = await model?.fit(trainXs, trainYs, {
+    await model?.fit(trainXs, trainYs, {
         batchSize: batchSize!, validationData: [testXs, testYs], epochs: epochs!, shuffle: true, callbacks: fitCallback
       }
     )
     const endTime = performance.now();
     const totalTimeInMilliseconds = endTime - startTime;
+    console.log("TRAINING TIME: ", totalTimeInMilliseconds);
     return totalTimeInMilliseconds;
   }
 
