@@ -5,6 +5,9 @@ import {MnistDataService} from "../../core/services/model-data-services/mnist-da
 import {ModelWrapperService} from "../../core/services/model-wrapper.service";
 import {TrainingStats} from "../../core/interfaces/interfaces";
 import * as tf from "@tensorflow/tfjs";
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
+import '@tensorflow/tfjs-backend-wasm';
+setWasmPaths('/assets/wasm/');
 import * as tfvis from '@tensorflow/tfjs-vis';
 import {cloneObject} from "../../shared/utils";
 import {Subscription} from "rxjs";
@@ -59,6 +62,8 @@ export class TestingComponent {
     if (backendControl) {
       await tf.setBackend(backendControl.value!.toString());
       await tf.ready();
+      const backend = await tf.getBackend();
+      console.log("BACKEND SET: ", backend);
     }
   }
 

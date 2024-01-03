@@ -27,7 +27,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*.wasm",
+                "input": "./node_modules/@tensorflow/tfjs-backend-wasm/dist/",
+                "output": "./assets/wasm/"
+              }
             ],
             "styles": [
               "src/app/material/custom-material-theme.scss",
@@ -91,7 +96,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*.wasm",
+                "input": "./node_modules/@tensorflow/tfjs-backend-wasm/dist/",
+                "output": "./assets/wasm/"
+              }
             ],
             "styles": [
               "src/app/material/custom-material-theme.scss",

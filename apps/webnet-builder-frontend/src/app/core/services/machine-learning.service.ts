@@ -1,5 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as tf from "@tensorflow/tfjs";
+import '@tensorflow/tfjs-backend-webgpu';
+import '@tensorflow/tfjs-backend-wasm';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
+setWasmPaths('/assets/wasm/');
 import * as tfvis from "@tensorflow/tfjs-vis";
 import {BehaviorSubject} from "rxjs";
 import {TrainStats, XY} from "../interfaces/interfaces";
