@@ -1,0 +1,17 @@
+@startuml
+node "Webserver" {
+		artifact "Angular Web-App-Distribution"
+	}
+
+node "Client-Browser" {
+		artifact "Web-App-Frontend"
+		database "LocalStorage" {
+				[Projektdaten]
+			}
+	}
+
+[Angular Web-App-Distribution] .right-> [Web-App-Frontend] : Stellt Web-App bereit
+[Web-App-Frontend] -up-> [Projektdaten] : Speichert Daten
+[Web-App-Frontend] <-up- [Projektdaten] : Ruft Daten ab
+
+@enduml
